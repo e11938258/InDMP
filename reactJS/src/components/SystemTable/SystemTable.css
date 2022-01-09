@@ -1,0 +1,13 @@
+/*******************************
+          System table
+*******************************/
+table {
+  width: 100%;
+}
+
+table th {
+  background-color: var(--grey);
+}
+table td {
+  background-color: var(--light-grey);
+}

@@ -1,0 +1,19 @@
+/*******************************
+          System form
+*******************************/
+.panel form {
+    margin-left: 6px;
+  display: flex;
+  align-items: flex-start;
+  flex-direction: column;
+}
+
+.panel form * {
+    margin: 4px;
+}
+
+.panel form .button {
+    margin-left: auto;
+    margin-right: auto;
+    width: 260px;
+}

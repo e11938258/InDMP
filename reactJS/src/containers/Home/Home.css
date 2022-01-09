@@ -1,0 +1,20 @@
+/*******************************
+            Home
+*******************************/
+.page {
+  margin-top: 12px;
+  margin-bottom: 12px;
+  margin-right: auto;
+  margin-left: auto;
+  max-width: 800px;
+  background-color: var(--d6d6d6);
+}
+
+.page > * {
+  margin: 6px;
+  padding: 6px;
+  background-color: var(--dark-white);
+  -moz-box-shadow: 0 1px 2px var(--grey);
+  -webkit-box-shadow: 0 1px 2px var(--grey);
+  box-shadow: 0 1px 2px var(--grey);
+}
