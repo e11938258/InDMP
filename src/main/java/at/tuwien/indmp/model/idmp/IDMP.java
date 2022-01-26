@@ -6,23 +6,28 @@ import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
-import at.tuwien.indmp.model.dmp.Dmp_id;
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import at.tuwien.indmp.model.dmp.DMP_id;
+import at.tuwien.indmp.util.DMPConstants;
 
 public class IDMP {
 
     /* Properties */
     @NotNull
+    @JsonFormat(pattern = DMPConstants.DATE_TIME_FORMAT_ISO_8601)
     private Date created;
 
     @NotNull
+    @JsonFormat(pattern = DMPConstants.DATE_TIME_FORMAT_ISO_8601)
     private Date modified;
 
     /* Nested data structure */
     @NotNull
-    private Dmp_id dmp_id;
+    private DMP_id dmp_id;
 
     @NotNull
-    private List<Identifier> identifier = new ArrayList<>();
+    private List<IdentifierUnit> identifier = new ArrayList<>();
 
     public IDMP() {
     }
@@ -43,19 +48,19 @@ public class IDMP {
         this.modified = modified;
     }
 
-    public Dmp_id getDmp_id() {
+    public DMP_id getDmp_id() {
         return this.dmp_id;
     }
 
-    public void setDmp_id(Dmp_id dmp_id) {
+    public void setDmp_id(DMP_id dmp_id) {
         this.dmp_id = dmp_id;
     }
 
-    public List<Identifier> getIdentifier() {
+    public List<IdentifierUnit> getIdentifier() {
         return this.identifier;
     }
 
-    public void setIdentifier(List<Identifier> identifier) {
+    public void setIdentifier(List<IdentifierUnit> identifier) {
         this.identifier = identifier;
     }
 }

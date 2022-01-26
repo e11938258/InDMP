@@ -1,7 +1,8 @@
 package at.tuwien.indmp.dao;
 
-import at.tuwien.indmp.model.System;
+import at.tuwien.indmp.model.RDMService;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Objects;
 
@@ -13,10 +14,10 @@ import javax.persistence.criteria.Root;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class SystemDao extends AbstractDao<System> {
+public class RDMServiceDao extends AbstractDao<RDMService> {
 
-    public SystemDao() {
-        super(System.class);
+    public RDMServiceDao() {
+        super(RDMService.class);
     }
 
     /**
@@ -25,10 +26,10 @@ public class SystemDao extends AbstractDao<System> {
      * 
      * @return
      */
-    public List<System> findAll() {
+    public List<RDMService> findAll() {
         final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        final CriteriaQuery<System> criteriaQuery = criteriaBuilder.createQuery(System.class);
-        final Root<System> root = criteriaQuery.from(System.class);
+        final CriteriaQuery<RDMService> criteriaQuery = criteriaBuilder.createQuery(RDMService.class);
+        final Root<RDMService> root = criteriaQuery.from(RDMService.class);
         criteriaQuery.select(root).distinct(true);
         return entityManager.createQuery(criteriaQuery).getResultList();
     }
@@ -40,16 +41,16 @@ public class SystemDao extends AbstractDao<System> {
      * @param host
      * @return
      */
-    public System findByHost(String host) {
+    public RDMService findByHost(URI host) {
         Objects.requireNonNull(host);
 
         final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        final CriteriaQuery<System> criteriaQuery = criteriaBuilder.createQuery(System.class);
-        final Root<System> root = criteriaQuery.from(System.class);
+        final CriteriaQuery<RDMService> criteriaQuery = criteriaBuilder.createQuery(RDMService.class);
+        final Root<RDMService> root = criteriaQuery.from(RDMService.class);
         criteriaQuery.select(root).distinct(true);
 
         // Conditions
-        Predicate predicate = criteriaBuilder.equal(root.get("host"), host);
+        Predicate predicate = criteriaBuilder.equal(root.get("host"), host.toString());
         criteriaQuery.where(predicate);
 
         return entityManager.createQuery(criteriaQuery).getSingleResult();

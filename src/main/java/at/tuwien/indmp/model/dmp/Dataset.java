@@ -1,49 +1,46 @@
 package at.tuwien.indmp.model.dmp;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import at.tuwien.indmp.model.Property;
-import at.tuwien.indmp.model.System;
+import at.tuwien.indmp.model.RDMService;
 import at.tuwien.indmp.service.PropertyService;
+import at.tuwien.indmp.util.DMPConstants;
 import at.tuwien.indmp.util.Functions;
-import at.tuwien.indmp.util.dmp.AllowedValues;
-import at.tuwien.indmp.util.dmp.DataIdentifierType;
-import at.tuwien.indmp.util.dmp.Language;
-import at.tuwien.indmp.util.var.ServiceType;
 
 public class Dataset extends ClassEntity {
-
-    public final static String DATE_FORMAT = "yyyy-MM-dd";
-    public final static SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat(DATE_FORMAT);
 
     /* Properties */
     private List<String> data_quality_assurance = new ArrayList<>();
 
     private String description;
 
-    @JsonFormat(pattern = DATE_FORMAT)
+    @JsonFormat(pattern = DMPConstants.DATE_FORMAT_ISO_8601)
     private Date issued;
 
     private List<String> keyword = new ArrayList<>();
 
-    private Language language;
+    @Pattern(regexp = DMPConstants.REGEX_ISO_639_3)
+    private String language;
 
     @NotNull
-    private AllowedValues personal_data;
+    @Pattern(regexp = DMPConstants.REGEX_YES_NO_UNKNOWN)
+    private String personal_data;
 
     private String preservation_statement;
 
     @NotNull
-    private AllowedValues sensitive_data;
+    @Pattern(regexp = DMPConstants.REGEX_YES_NO_UNKNOWN)
+    private String sensitive_data;
 
     @NotNull
     private String title;
@@ -97,19 +94,19 @@ public class Dataset extends ClassEntity {
         this.keyword = keyword;
     }
 
-    public Language getLanguage() {
+    public String getLanguage() {
         return this.language;
     }
 
-    public void setLanguage(Language language) {
+    public void setLanguage(String language) {
         this.language = language;
     }
 
-    public AllowedValues getPersonal_data() {
+    public String getPersonal_data() {
         return this.personal_data;
     }
 
-    public void setPersonal_data(AllowedValues personal_data) {
+    public void setPersonal_data(String personal_data) {
         this.personal_data = personal_data;
     }
 
@@ -121,11 +118,11 @@ public class Dataset extends ClassEntity {
         this.preservation_statement = preservation_statement;
     }
 
-    public AllowedValues getSensitive_data() {
+    public String getSensitive_data() {
         return this.sensitive_data;
     }
 
-    public void setSensitive_data(AllowedValues sensitive_data) {
+    public void setSensitive_data(String sensitive_data) {
         this.sensitive_data = sensitive_data;
     }
 
@@ -190,7 +187,7 @@ public class Dataset extends ClassEntity {
         return new Object[] {
                 getData_quality_assurance().toString(),
                 getDescription(),
-                getIssued() != null ? DATE_FORMATTER.format(getIssued()) : null,
+                getIssued() != null ? DMPConstants.DATE_FORMATTER_ISO_8601.format(getIssued()) : null,
                 getKeyword().toString(),
                 getLanguage(),
                 getPersonal_data(),
@@ -223,12 +220,12 @@ public class Dataset extends ClassEntity {
     }
 
     @Override
-    public List<Property> getPropertiesFromIdentifier(DMP dmp, String reference, System system) {
+    public List<Property> getPropertiesFromIdentifier(DMP dmp, String reference, RDMService system) {
         return getDataset_id().getProperties(dmp, reference, system);
     }
 
     @Override
-    public List<Property> getPropertiesFromNestedClasses(DMP dmp, System system) {
+    public List<Property> getPropertiesFromNestedClasses(DMP dmp, RDMService system) {
         final List<Property> properties = new ArrayList<>();
 
         // Distribution
@@ -250,15 +247,6 @@ public class Dataset extends ClassEntity {
         }
 
         return properties;
-    }
-
-    @Override
-    public boolean hasRightsToUpdate(System system) {
-        return Functions.isServiceTypeInArray(new ServiceType[] {
-                ServiceType.DMP_APP,
-                ServiceType.REPOSITORY_STORE,
-                ServiceType.REPOSITORY_INGESTOR,
-        }, system.getType());
     }
 
     @Override
@@ -297,7 +285,7 @@ public class Dataset extends ClassEntity {
         }
 
         // Set properties
-        final List<Property> properties = propertyService.findProperties(dmpIdentifier, "dataset", classIdentifier,
+        final List<Property> properties = propertyService.findProperties(dmpIdentifier, getClassType(), classIdentifier,
                 null, null, null);
 
         Property p = Functions.findPropertyInList("data_quality_assurance", properties);
@@ -310,7 +298,7 @@ public class Dataset extends ClassEntity {
 
         p = Functions.findPropertyInList("issued", properties);
         try {
-            setIssued(p != null ? DATE_FORMATTER.parse(p.getValue()) : null);
+            setIssued(p != null ? DMPConstants.DATE_FORMATTER_ISO_8601.parse(p.getValue()) : null);
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -321,16 +309,16 @@ public class Dataset extends ClassEntity {
                 : null);
 
         p = Functions.findPropertyInList("language", properties);
-        setLanguage(p != null ? Language.valueOf(p.getValue()) : null);
+        setLanguage(p != null ? p.getValue() : null);
 
         p = Functions.findPropertyInList("personal_data", properties);
-        setPersonal_data(p != null ? AllowedValues.valueOf(p.getValue()) : null);
+        setPersonal_data(p != null ? p.getValue() : null);
 
         p = Functions.findPropertyInList("preservation_statement", properties);
         setPreservation_statement(p != null ? p.getValue() : null);
 
         p = Functions.findPropertyInList("sensitive_data", properties);
-        setSensitive_data(p != null ? AllowedValues.valueOf(p.getValue()) : null);
+        setSensitive_data(p != null ? p.getValue() : null);
 
         p = Functions.findPropertyInList("title", properties);
         setTitle(p != null ? p.getValue() : null);
@@ -343,7 +331,7 @@ public class Dataset extends ClassEntity {
                 classIdentifier, null, null, null);
         final Property identifier = Functions.findPropertyInList("identifier", identifierProperties);
         final Property type = Functions.findPropertyInList("type", identifierProperties);
-        dataset_id = new Dataset_id(identifier.getValue(), DataIdentifierType.valueOf(type.getValue()));
+        dataset_id = new Dataset_id(identifier.getValue(), type.getValue());
 
     }
 }

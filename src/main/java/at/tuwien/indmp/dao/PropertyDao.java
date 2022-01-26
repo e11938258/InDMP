@@ -24,14 +24,14 @@ public class PropertyDao extends AbstractDao<Property> {
      * Find property
      * 
      * @param dmpIdentifier
-     * @param className
+     * @param classType
      * @param classIdentifier
      * @param propertyName
      * @param value
      * @param reference
      * @return
      */
-    public List<Property> findProperty(String dmpIdentifier, String className, String classIdentifier,
+    public List<Property> findProperty(String dmpIdentifier, String classType, String classIdentifier,
             String propertyName, String value, String reference) {
         final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         final CriteriaQuery<Property> criteriaQuery = criteriaBuilder.createQuery(Property.class);
@@ -39,17 +39,17 @@ public class PropertyDao extends AbstractDao<Property> {
         criteriaQuery.select(root).distinct(true);
 
         // Conditions
-        // Get only active properties
-        Predicate predicate = criteriaBuilder.isNull(root.get("validUntil"));
+        Predicate predicate = null;
 
         // DMP identifier
         if (dmpIdentifier != null) {
             predicate = criteriaBuilder.and(predicate,
                     criteriaBuilder.equal(root.get("dmpIdentifier"), dmpIdentifier));
         }
+        
         // Class name
-        if (className != null) {
-            predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(root.get("className"), className));
+        if (classType != null) {
+            predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(root.get("classType"), classType));
         }
 
         // Class identifier
@@ -57,18 +57,22 @@ public class PropertyDao extends AbstractDao<Property> {
             predicate = criteriaBuilder.and(predicate,
                     criteriaBuilder.equal(root.get("classIdentifier"), classIdentifier));
         }
+
         // Property name
         if (propertyName != null) {
             predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(root.get("propertyName"), propertyName));
         }
+
         // Value
         if (value != null) {
             predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(root.get("value"), value));
         }
+
         // Reference
         if (reference != null) {
             predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(root.get("reference"), reference));
         }
+        
         criteriaQuery.where(predicate);
 
         return entityManager.createQuery(criteriaQuery).getResultList();
@@ -79,11 +83,11 @@ public class PropertyDao extends AbstractDao<Property> {
      * Find identifiers
      * 
      * @param dmpIdentifier
-     * @param className
+     * @param classType
      * @param propertyName
      * @return
      */
-    public List<Property> findIdentifiers(String dmpIdentifier, String className, String propertyName) {
+    public List<Property> findIdentifiers(String dmpIdentifier, String classType, String propertyName) {
         Objects.requireNonNull(dmpIdentifier);
 
         final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -94,9 +98,9 @@ public class PropertyDao extends AbstractDao<Property> {
         // Conditions
         Predicate predicate = criteriaBuilder.equal(root.get("dmpIdentifier"), dmpIdentifier);
 
-        // Class name
-        if (className != null) {
-            predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(root.get("className"), className));
+        // Class type
+        if (classType != null) {
+            predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(root.get("classType"), classType));
         }
 
         // Property name

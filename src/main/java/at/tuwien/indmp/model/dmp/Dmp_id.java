@@ -1,29 +1,31 @@
 package at.tuwien.indmp.model.dmp;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
-import at.tuwien.indmp.util.dmp.DataIdentifierType;
+import at.tuwien.indmp.util.DMPConstants;
 
-public class Dmp_id extends Identifier {
+public class DMP_id extends Identifier {
 
     /* Properties */
     @NotNull
-    private DataIdentifierType type;
+    @Pattern(regexp = DMPConstants.REGEX_DATA_IDENTIFIER_TYPE)
+    private String type;
 
-    public Dmp_id() {
+    public DMP_id() {
         super(null);
     }
 
-    public Dmp_id(String identifier, DataIdentifierType type) {
+    public DMP_id(String identifier, String type) {
         super(identifier);
         this.type = type;
     }
 
-    public DataIdentifierType getType() {
+    public String getType() {
         return this.type;
     }
 
-    public void setType(DataIdentifierType type) {
+    public void setType(String type) {
         this.type = type;
     }
 }

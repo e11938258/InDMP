@@ -2,38 +2,35 @@ package at.tuwien.indmp.model.dmp;
 
 import java.net.URI;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import at.tuwien.indmp.model.Property;
-import at.tuwien.indmp.model.System;
+import at.tuwien.indmp.model.RDMService;
 import at.tuwien.indmp.service.PropertyService;
+import at.tuwien.indmp.util.DMPConstants;
 import at.tuwien.indmp.util.Functions;
-import at.tuwien.indmp.util.dmp.DataAccess;
-import at.tuwien.indmp.util.var.ServiceType;
 
 public class Distribution extends ClassEntity {
-
-    public final static String DATE_FORMAT = "yyyy-MM-dd";
-    public final static SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat(DATE_FORMAT);
 
     /* Properties */
     @NotNull
     private URI access_url;
 
-    @JsonFormat(pattern = DATE_FORMAT)
+    @JsonFormat(pattern = DMPConstants.DATE_FORMAT_ISO_8601)
     private Date available_until;
 
     private Long byte_size;
 
-    private DataAccess data_access;
+    @Pattern(regexp = DMPConstants.REGEX_DATA_ACCESS)
+    private String data_access;
 
     private String description;
 
@@ -76,11 +73,11 @@ public class Distribution extends ClassEntity {
         this.byte_size = byte_size;
     }
 
-    public DataAccess getData_access() {
+    public String getData_access() {
         return this.data_access;
     }
 
-    public void setData_access(DataAccess data_access) {
+    public void setData_access(String data_access) {
         this.data_access = data_access;
     }
 
@@ -136,7 +133,7 @@ public class Distribution extends ClassEntity {
     public Object[] getValues() {
         return new Object[] {
                 getData_access(),
-                getAvailable_until() != null ? DATE_FORMATTER.format(getAvailable_until()) : null,
+                getAvailable_until() != null ? DMPConstants.DATE_FORMATTER_ISO_8601.format(getAvailable_until()) : null,
                 getByte_size(),
                 getDescription(),
                 getDownload_url(),
@@ -164,19 +161,20 @@ public class Distribution extends ClassEntity {
     }
 
     @Override
-    public List<Property> getPropertiesFromIdentifier(DMP dmp, String reference, System system) {
+    public List<Property> getPropertiesFromIdentifier(DMP dmp, String reference, RDMService rdmService) {
         final List<Property> properties = new ArrayList<>();
 
-        final Property property = new Property(dmp.getClassIdentifier(), getClassName(), getClassIdentifier(), "access_url",
-        getClassIdentifier(), reference, dmp.getModified(), system);
-        properties.add(property);
-        system.add(property);
+        if (hasRightsToUpdate(rdmService)) {
+            final Property property = new Property(dmp.getClassIdentifier(), getClassType(), getClassIdentifier(),
+                    "access_url", getClassIdentifier(), reference);
+            properties.add(property);
+        }
 
         return properties;
     }
 
     @Override
-    public List<Property> getPropertiesFromNestedClasses(DMP dmp, System system) {
+    public List<Property> getPropertiesFromNestedClasses(DMP dmp, RDMService system) {
         final List<Property> properties = new ArrayList<>();
 
         // Host
@@ -193,19 +191,10 @@ public class Distribution extends ClassEntity {
     }
 
     @Override
-    public boolean hasRightsToUpdate(System system) {
-        return Functions.isServiceTypeInArray(new ServiceType[] {
-                ServiceType.DMP_APP,
-                ServiceType.REPOSITORY_STORE,
-                ServiceType.REPOSITORY_INGESTOR,
-        }, system.getType());
-    }
-
-    @Override
     public void build(PropertyService propertyService, String dmpIdentifier, String classIdentifier) {
         // Nested classes
         // Host
-        final Property hostIdentifier = propertyService.findProperty(dmpIdentifier, "host", null, "url", null,
+        final Property hostIdentifier = propertyService.find(dmpIdentifier, "host", null, "url", null,
                 classIdentifier);
         if (hostIdentifier != null) {
             host = new Host();
@@ -221,15 +210,15 @@ public class Distribution extends ClassEntity {
         }
 
         // Set properties
-        final List<Property> properties = propertyService.findProperties(dmpIdentifier, "distribution", classIdentifier,
+        final List<Property> properties = propertyService.findProperties(dmpIdentifier, getClassType(), classIdentifier,
                 null, null, null);
 
         Property p = Functions.findPropertyInList("data_access", properties);
-        setData_access(p != null ? DataAccess.valueOf(p.getValue()) : null);
+        setData_access(p != null ? p.getValue() : null);
 
         p = Functions.findPropertyInList("available_until", properties);
         try {
-            setAvailable_until(p != null ? DATE_FORMATTER.parse(p.getValue()) : null);
+            setAvailable_until(p != null ? DMPConstants.DATE_FORMATTER_ISO_8601.parse(p.getValue()) : null);
         } catch (ParseException e) {
             e.printStackTrace();
         }

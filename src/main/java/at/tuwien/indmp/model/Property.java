@@ -1,118 +1,82 @@
 package at.tuwien.indmp.model;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.Index;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonView;
-import at.tuwien.indmp.util.Constants;
-import at.tuwien.indmp.util.Views;
+
+import at.tuwien.indmp.util.DMPConstants;
+import at.tuwien.indmp.util.ModelConstants;
 
 @Entity
-@Table(name = "property", indexes = {
-        @Index(name = "idx_id", columnList = "id", unique = true) })
+@Table(name = "property")
 public class Property extends AbstractEntity {
 
-    @Column(length = Constants.PROPERTY_DMP_IDENTIFIER_MAX, name = "dmp_identifier", nullable = false)
-    @Size(min = Constants.PROPERTY_DMP_IDENTIFIER_MIN, max = Constants.PROPERTY_DMP_IDENTIFIER_MAX)
-    @Pattern(regexp = Constants.PROPERTY_DMP_IDENTIFIER_REGEX)
-    @JsonView(Views.Basic.class)
+    @Column(name = "dmp_identifier", nullable = false)
+    @Size(min = ModelConstants.PROPERTY_DMP_IDENTIFIER_MIN, max = ModelConstants.PROPERTY_DMP_IDENTIFIER_MAX)
+    @Pattern(regexp = ModelConstants.PROPERTY_DMP_IDENTIFIER_REGEX)
     @JsonProperty("dmp_identifier")
     private String dmpIdentifier;
 
-    @Column(length = Constants.PROPERTY_CLASS_NAME_MAX, name = "class_name", nullable = false)
-    @Size(min = Constants.PROPERTY_CLASS_NAME_MIN, max = Constants.PROPERTY_CLASS_NAME_MAX)
-    @Pattern(regexp = Constants.PROPERTY_CLASS_NAME_REGEX)
-    @JsonView(Views.Basic.class)
-    @JsonProperty("class_name")
-    private String className;
+    @Column(name = "class_type", nullable = false)
+    @Pattern(regexp = DMPConstants.REGEX_DMP_CLASS_TYPE)
+    @JsonProperty("class_type")
+    private String classType;
 
-    @Column(length = Constants.PROPERTY_CLASS_IDENTIFIER_MAX, name = "class_identifier", nullable = false)
-    @Size(min = Constants.PROPERTY_CLASS_IDENTIFIER_MIN, max = Constants.PROPERTY_CLASS_IDENTIFIER_MAX)
-    @Pattern(regexp = Constants.PROPERTY_CLASS_IDENTIFIER_REGEX)
-    @JsonView(Views.Basic.class)
+    @Column(name = "class_identifier", nullable = false)
+    @Size(min = ModelConstants.PROPERTY_CLASS_IDENTIFIER_MIN, max = ModelConstants.PROPERTY_CLASS_IDENTIFIER_MAX)
+    @Pattern(regexp = ModelConstants.PROPERTY_CLASS_IDENTIFIER_REGEX)
     @JsonProperty("class_identifier")
     private String classIdentifier;
 
-    @Column(length = Constants.PROPERTY_NAME_MAX, name = "property_name", nullable = false)
-    @Size(min = Constants.PROPERTY_NAME_MIN, max = Constants.PROPERTY_NAME_MAX)
-    @Pattern(regexp = Constants.PROPERTY_NAME_REGEX)
-    @JsonView(Views.Basic.class)
+    @Column(name = "property_name", nullable = false)
+    @Size(min = ModelConstants.PROPERTY_NAME_MIN, max = ModelConstants.PROPERTY_NAME_MAX)
+    @Pattern(regexp = ModelConstants.PROPERTY_NAME_REGEX)
     @JsonProperty("property_name")
     private String propertyName;
 
-    @Column(length = Constants.PROPERTY_VALUE_MAX, nullable = false)
-    @Size(min = Constants.PROPERTY_VALUE_MIN, max = Constants.PROPERTY_VALUE_MAX)
-    @Pattern(regexp = Constants.PROPERTY_VALUE_REGEX)
-    @JsonView(Views.Basic.class)
+    @Column(nullable = false)
+    @Size(min = ModelConstants.PROPERTY_VALUE_MIN, max = ModelConstants.PROPERTY_VALUE_MAX)
+    @Pattern(regexp = ModelConstants.PROPERTY_VALUE_REGEX)
     private String value;
 
-    @Column(length = Constants.PROPERTY_CLASS_IDENTIFIER_MAX)
-    @Size(min = Constants.PROPERTY_CLASS_IDENTIFIER_MIN, max = Constants.PROPERTY_CLASS_IDENTIFIER_MAX)
-    @Pattern(regexp = Constants.PROPERTY_CLASS_IDENTIFIER_REGEX)
-    @JsonView(Views.Basic.class)
+    @Column
+    @Size(min = ModelConstants.PROPERTY_CLASS_IDENTIFIER_MIN, max = ModelConstants.PROPERTY_CLASS_IDENTIFIER_MAX)
+    @Pattern(regexp = ModelConstants.PROPERTY_CLASS_IDENTIFIER_REGEX)
     private String reference;
 
-    @Column(name = "valid_from", nullable = false)
-    @Temporal(TemporalType.TIMESTAMP)
-    @JsonView(Views.Basic.class)
-    @JsonProperty("valid_from")
-    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
-    private Date validFrom;
+    @Column(insertable = false, updatable = false, name = "sys_start_time")
+    private LocalDateTime sysStartTime;
 
-    @Column(name = "valid_until")
-    @Temporal(TemporalType.TIMESTAMP)
-    @JsonView(Views.Basic.class)
-    @JsonProperty("valid_until")
-    @JsonFormat(pattern="yyyy-MM-dd'T'HH:mm:ss")
-    private Date validUntil;
+    @Column(insertable = false, updatable = false, name = "sys_end_time")
+    private LocalDateTime sysEndTime;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "serviceid")
-    @JsonIgnore
-    private System system;
+    @JoinColumn(name = "rdm_service_id")
+    private RDMService rdmService;
 
     public Property() {
-        this.system = null;
+        this.rdmService = null;
     }
 
-    public Property(String dmpIdentifier, String className, String classIdentifier, String propertyName,
-            String value, String reference, Date validFrom, System system) {
+    public Property(String dmpIdentifier, String classType, String classIdentifier, String propertyName,
+            String value, String reference) {
         this.dmpIdentifier = dmpIdentifier;
-        this.className = className;
+        this.classType = classType;
         this.classIdentifier = classIdentifier;
         this.propertyName = propertyName;
         this.value = value;
         this.reference = reference;
-        this.validFrom = validFrom;
-        this.system = system;
     }
 
-    public Property(Property property, String value, Date validFrom, System system) {
-        this.dmpIdentifier = property.getDmpIdentifier();
-        this.className = property.getClassName();
-        this.classIdentifier = property.getClassIdentifier();
-        this.propertyName = property.getPropertyName();
-        this.value = value;
-        this.reference = property.getReference();
-        this.validFrom = validFrom;
-        this.system = system;
-    }
-
-    @JsonIgnore
     public String getDmpIdentifier() {
         return this.dmpIdentifier;
     }
@@ -121,16 +85,14 @@ public class Property extends AbstractEntity {
         this.dmpIdentifier = dmpIdentifier;
     }
 
-    @JsonIgnore
-    public String getClassName() {
-        return this.className;
+    public String getClassType() {
+        return this.classType;
     }
 
-    public void setClassName(String className) {
-        this.className = className;
+    public void setClassType(String classType) {
+        this.classType = classType;
     }
 
-    @JsonIgnore
     public String getClassIdentifier() {
         return this.classIdentifier;
     }
@@ -139,7 +101,6 @@ public class Property extends AbstractEntity {
         this.classIdentifier = classIdentifier;
     }
 
-    @JsonIgnore
     public String getPropertyName() {
         return this.propertyName;
     }
@@ -164,29 +125,20 @@ public class Property extends AbstractEntity {
         this.reference = reference;
     }
 
-    public Date getValidFrom() {
-        return this.validFrom;
+    public LocalDateTime getSysStartTime() {
+        return this.sysStartTime;
     }
 
-    public void setValidFrom(Date validFrom) {
-        this.validFrom = validFrom;
+    public LocalDateTime getSysEndTime() {
+        return this.sysEndTime;
     }
 
-    public Date getValidUntil() {
-        return this.validUntil;
+    public RDMService getRDMService() {
+        return this.rdmService;
     }
 
-    public void setValidUntil(Date validUntil) {
-        this.validUntil = validUntil;
-    }
-
-    @JsonIgnore
-    public System getSystem() {
-        return this.system;
-    }
-
-    public void setSystem(System system) {
-        this.system = system;
+    public void setRDMService(RDMService rdmService) {
+        this.rdmService = rdmService;
     }
 
     public boolean hasSameValue(Property property) {
@@ -194,16 +146,14 @@ public class Property extends AbstractEntity {
     }
 
     @Override
-    @JsonIgnore
     public String toString() {
         return "{" +
-            " dmpIdentifier='" + getDmpIdentifier() + "'" +
-            ", className='" + getClassName() + "'" +
-            ", classIdentifier='" + getClassIdentifier() + "'" +
-            ", propertyName='" + getPropertyName() + "'" +
-            ", value='" + getValue() + "'" +
-            ", reference='" + getReference() + "'" +
-            ", validFrom='" + getValidFrom() + "'" +
-            "}";
+                " dmpIdentifier='" + getDmpIdentifier() + "'" +
+                ", classType='" + getClassType() + "'" +
+                ", classIdentifier='" + getClassIdentifier() + "'" +
+                ", propertyName='" + getPropertyName() + "'" +
+                ", value='" + getValue() + "'" +
+                ", reference='" + getReference() + "'" +
+                "}";
     }
 }

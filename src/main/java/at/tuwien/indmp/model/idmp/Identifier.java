@@ -1,59 +1,41 @@
 package at.tuwien.indmp.model.idmp;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
-import at.tuwien.indmp.util.idmp.ClassType;
+import at.tuwien.indmp.util.DMPConstants;
 
 public class Identifier {
 
     /* Properties */
     @NotNull
-    private ClassType type;
+    private String identifier;
 
-    /* Nested data structure */
-    private ElementIdentifier id;
-
-    private ElementIdentifier new_id;
+    @Pattern(regexp = DMPConstants.REGEX_ALL_IDENTIFIER_TYPES)
+    private String type;
 
     public Identifier() {
     }
 
-    public Identifier(ClassType type, ElementIdentifier id, ElementIdentifier new_id) {
+    public Identifier(String identifier, String type) {
+        this.identifier = identifier;
         this.type = type;
-        this.id = id;
-        this.new_id = new_id;
     }
 
-    public ClassType getType() {
+    public String getIdentifier() {
+        return this.identifier;
+    }
+
+    public void setIdentifier(String identifier) {
+        this.identifier = identifier;
+    }
+
+    public String getType() {
         return this.type;
     }
 
-    public void setType(ClassType type) {
+    public void setType(String type) {
         this.type = type;
-    }
-
-    public ElementIdentifier getId() {
-        return this.id;
-    }
-
-    public void setId(ElementIdentifier id) {
-        this.id = id;
-    }
-
-    public ElementIdentifier getNew_id() {
-        return this.new_id;
-    }
-
-    public void setNew_id(ElementIdentifier new_id) {
-        this.new_id = new_id;
-    }
-
-    @Override
-    public String toString() {
-        return "{" +
-                " type='" + getType() + "'" +
-                ", id='" + getId() + "'" +
-                "}";
     }
 
 }

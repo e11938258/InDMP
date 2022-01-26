@@ -49,5 +49,5 @@ public abstract class Identifier extends Entity {
                 ", type='" + getType() + "'" +
                 "}";
     }
-    
+
 }

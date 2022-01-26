@@ -2,47 +2,43 @@ package at.tuwien.indmp.model.dmp;
 
 import java.net.URI;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import at.tuwien.indmp.model.Property;
-import at.tuwien.indmp.model.System;
+import at.tuwien.indmp.model.RDMService;
 import at.tuwien.indmp.service.PropertyService;
+import at.tuwien.indmp.util.DMPConstants;
 import at.tuwien.indmp.util.Functions;
-import at.tuwien.indmp.util.dmp.AllowedValues;
-import at.tuwien.indmp.util.dmp.DataIdentifierType;
-import at.tuwien.indmp.util.dmp.Language;
-import at.tuwien.indmp.util.var.ServiceType;
 
 public class DMP extends ClassEntity {
 
-    public final static String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ss";
-    public final static SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat(DATE_FORMAT);
-
     /* Properties */
     @NotNull
-    @JsonFormat(pattern = DATE_FORMAT)
+    @JsonFormat(pattern = DMPConstants.DATE_TIME_FORMAT_ISO_8601)
     private Date created;
 
     private String description;
 
     private String ethical_issues_description;
 
-    private AllowedValues ethical_issues_exist;
+    @Pattern(regexp = DMPConstants.REGEX_YES_NO_UNKNOWN)
+    private String ethical_issues_exist;
 
     private URI ethical_issues_report;
 
-    private Language language;
+    @Pattern(regexp = DMPConstants.REGEX_ISO_639_3)
+    private String language;
 
     @NotNull
-    @JsonFormat(pattern = DATE_FORMAT)
+    @JsonFormat(pattern = DMPConstants.DATE_TIME_FORMAT_ISO_8601)
     private Date modified;
 
     private String title;
@@ -57,7 +53,7 @@ public class DMP extends ClassEntity {
     private List<Dataset> dataset = new ArrayList<>();
 
     @NotNull
-    private Dmp_id dmp_id;
+    private DMP_id dmp_id;
 
     private List<Project> project = new ArrayList<>();
 
@@ -72,7 +68,7 @@ public class DMP extends ClassEntity {
      * @param modified
      * @param dmp_id
      */
-    public DMP(Date created, Date modified, Dmp_id dmp_id) {
+    public DMP(Date created, Date modified, DMP_id dmp_id) {
         this.created = created;
         this.modified = modified;
         this.dmp_id = dmp_id;
@@ -88,7 +84,7 @@ public class DMP extends ClassEntity {
 
     @JsonIgnore
     public String getCreatedInString() {
-        return DATE_FORMATTER.format(this.created);
+        return DMPConstants.DATE_TIME_FORMATTER_ISO_8601.format(this.created);
     }
 
     public String getDescription() {
@@ -107,11 +103,11 @@ public class DMP extends ClassEntity {
         this.ethical_issues_description = ethical_issues_description;
     }
 
-    public AllowedValues getEthical_issues_exist() {
+    public String getEthical_issues_exist() {
         return this.ethical_issues_exist;
     }
 
-    public void setEthical_issues_exist(AllowedValues ethical_issues_exist) {
+    public void setEthical_issues_exist(String ethical_issues_exist) {
         this.ethical_issues_exist = ethical_issues_exist;
     }
 
@@ -123,11 +119,11 @@ public class DMP extends ClassEntity {
         this.ethical_issues_report = ethical_issues_report;
     }
 
-    public Language getLanguage() {
+    public String getLanguage() {
         return this.language;
     }
 
-    public void setLanguage(Language language) {
+    public void setLanguage(String language) {
         this.language = language;
     }
 
@@ -179,11 +175,11 @@ public class DMP extends ClassEntity {
         this.dataset = dataset;
     }
 
-    public Dmp_id getDmp_id() {
+    public DMP_id getDmp_id() {
         return this.dmp_id;
     }
 
-    public void setDmp_id(Dmp_id dmp_id) {
+    public void setDmp_id(DMP_id dmp_id) {
         this.dmp_id = dmp_id;
     }
 
@@ -198,13 +194,13 @@ public class DMP extends ClassEntity {
     @Override
     public Object[] getValues() {
         return new Object[] {
-                DATE_FORMATTER.format(getCreated()),
+                DMPConstants.DATE_TIME_FORMATTER_ISO_8601.format(getCreated()),
                 getDescription(),
                 getEthical_issues_description(),
                 getEthical_issues_exist(),
                 getEthical_issues_report(),
                 getLanguage(),
-                DATE_FORMATTER.format(getModified()),
+                DMPConstants.DATE_TIME_FORMATTER_ISO_8601.format(getModified()),
                 getTitle(),
         };
     }
@@ -229,12 +225,12 @@ public class DMP extends ClassEntity {
     }
 
     @Override
-    public List<Property> getPropertiesFromIdentifier(DMP dmp, String reference, System system) {
+    public List<Property> getPropertiesFromIdentifier(DMP dmp, String reference, RDMService system) {
         return dmp_id.getProperties(dmp, reference, system);
     }
 
     @Override
-    public List<Property> getPropertiesFromNestedClasses(DMP dmp, System system) {
+    public List<Property> getPropertiesFromNestedClasses(DMP dmp, RDMService system) {
         final List<Property> properties = new ArrayList<>();
 
         // Contact
@@ -264,58 +260,53 @@ public class DMP extends ClassEntity {
     }
 
     @Override
-    public boolean hasRightsToUpdate(System system) {
-        return Functions.isServiceTypeInArray(new ServiceType[] {
-                ServiceType.DMP_APP,
-                ServiceType.ADMINISTRATIVE_DATA_COLLECTOR,
-        }, system.getType());
-    }
-
-    @Override
     public void build(PropertyService propertyService, String dmpIdentifier, String classIdentifier) {
         // Nested classes
         // Contact
-        final Property contactIdentifier = propertyService.findProperty(dmpIdentifier, "contact_id", null, "identifier", null, null);
-        if(contactIdentifier != null) {
+        final Property contactIdentifier = propertyService.find(dmpIdentifier, "contact_id", null, "identifier",
+                null, null);
+        if (contactIdentifier != null) {
             contact = new Contact();
             contact.build(propertyService, dmpIdentifier, contactIdentifier.getValue());
         }
 
         // Contributors
-        for(Property property: propertyService.findProperties(dmpIdentifier, "contributor_id", null, "identifier", null, null)) {
+        for (Property property : propertyService.findProperties(dmpIdentifier, "contributor_id", null, "identifier",
+                null, null)) {
             final Contributor i = new Contributor();
             i.build(propertyService, dmpIdentifier, property.getValue());
             contributor.add(i);
         }
 
         // Cost
-        for(Property property: propertyService.findProperties(dmpIdentifier, "cost", null, "title", null, null)) {
+        for (Property property : propertyService.findProperties(dmpIdentifier, "cost", null, "title", null, null)) {
             final Cost i = new Cost();
             i.build(propertyService, dmpIdentifier, property.getValue());
             cost.add(i);
         }
 
         // Project
-        for(Property property: propertyService.findProperties(dmpIdentifier, "project", null, "title", null, null)) {
+        for (Property property : propertyService.findProperties(dmpIdentifier, "project", null, "title", null, null)) {
             final Project i = new Project();
             i.build(propertyService, dmpIdentifier, property.getValue());
             project.add(i);
         }
 
         // Dataset
-        for(Property property: propertyService.findProperties(dmpIdentifier, "dataset_id", null, "identifier", null, null)) {
+        for (Property property : propertyService.findProperties(dmpIdentifier, "dataset_id", null, "identifier", null,
+                null)) {
             final Dataset i = new Dataset();
             i.build(propertyService, dmpIdentifier, property.getValue());
             dataset.add(i);
         }
 
         // Set properties
-        final List<Property> properties = propertyService.findProperties(dmpIdentifier, "dmp", null, null,
+        final List<Property> properties = propertyService.findProperties(dmpIdentifier, getClassType(), null, null,
                 null, null);
 
         Property p = Functions.findPropertyInList("created", properties);
         try {
-            setCreated(p != null ? DATE_FORMATTER.parse(p.getValue()) : null);
+            setCreated(p != null ? DMPConstants.DATE_TIME_FORMATTER_ISO_8601.parse(p.getValue()) : null);
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -327,17 +318,17 @@ public class DMP extends ClassEntity {
         setEthical_issues_description(p != null ? p.getValue() : null);
 
         p = Functions.findPropertyInList("ethical_issues_exist", properties);
-        setEthical_issues_exist(p != null ? AllowedValues.valueOf(p.getValue()) : null);
+        setEthical_issues_exist(p != null ? p.getValue() : null);
 
         p = Functions.findPropertyInList("ethical_issues_report", properties);
         setEthical_issues_report(p != null ? URI.create(p.getValue()) : null);
 
         p = Functions.findPropertyInList("language", properties);
-        setLanguage(p != null ? Language.valueOf(p.getValue()) : null);
+        setLanguage(p != null ? p.getValue() : null);
 
         p = Functions.findPropertyInList("modified", properties);
         try {
-            setModified(p != null ? DATE_FORMATTER.parse(p.getValue()) : null);
+            setModified(p != null ? DMPConstants.DATE_TIME_FORMATTER_ISO_8601.parse(p.getValue()) : null);
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -350,7 +341,7 @@ public class DMP extends ClassEntity {
                 null, null, null);
         final Property identifier = Functions.findPropertyInList("identifier", identifierProperties);
         final Property type = Functions.findPropertyInList("type", identifierProperties);
-        dmp_id = new Dmp_id(identifier.getValue(), DataIdentifierType.valueOf(type.getValue()));
+        dmp_id = new DMP_id(identifier.getValue(), type.getValue());
 
     }
 }

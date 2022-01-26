@@ -7,14 +7,15 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import at.tuwien.indmp.exception.ForbiddenException;
+import at.tuwien.indmp.model.Permission;
 import at.tuwien.indmp.model.Property;
-import at.tuwien.indmp.model.System;
+import at.tuwien.indmp.model.RDMService;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public abstract class Entity {
 
     @JsonIgnore
-    public String getClassName() {
+    public String getClassType() {
         return getClass().getSimpleName().toLowerCase();
     }
 
@@ -33,24 +34,40 @@ public abstract class Entity {
     }
 
     @JsonIgnore
-    public List<Property> getProperties(DMP dmp, String reference, System system) {
-        final List<Property> properties = new ArrayList<>();
-        // Get current values and their names
-        final Object[] values = getValues();
-        final String[] propertyNames = getValueNames();
-        // Same length of arrays?
-        if (values.length != propertyNames.length) {
-            throw new ForbiddenException("Lengths are not same!");
+    public boolean hasRightsToUpdate(RDMService rdmService) {
+        final List<Permission> permissions = rdmService.getPermissions();
+        for (Permission permission : permissions) {
+            if (permission.getAllowed() && permission.getClassType().equals(getClassType())) {
+                return true;
+            }
         }
-        // For each value
-        for (int i = 0; i < values.length; i++) {
-            // If value is not null
-            if (values[i] != null) {
-                // Add a new property
-                final Property property = new Property(dmp.getClassIdentifier(), getClassName(), getClassIdentifier(),
-                propertyNames[i], values[i].toString(), reference, dmp.getModified(), system);
-                properties.add(property);
-                system.add(property);
+        return false;
+    }
+
+    @JsonIgnore
+    public List<Property> getProperties(DMP dmp, String reference, RDMService rdmService) {
+        final List<Property> properties = new ArrayList<>();
+
+        // Has service rights to update the class?
+        if (hasRightsToUpdate(rdmService)) {
+            // Get current values and their names
+            final Object[] values = getValues();
+            final String[] propertyNames = getValueNames();
+
+            // Same length of arrays?
+            if (values.length != propertyNames.length) {
+                throw new ForbiddenException("Lengths are not same!");
+            }
+
+            // For each value
+            for (int i = 0; i < values.length; i++) {
+                // If value is not null
+                if (values[i] != null) {
+                    // Add a new property
+                    final Property property = new Property(dmp.getClassIdentifier(), getClassType(),
+                            getClassIdentifier(), propertyNames[i], values[i].toString(), reference);
+                    properties.add(property);
+                }
             }
         }
 

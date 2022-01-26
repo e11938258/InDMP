@@ -1,7 +1,6 @@
 package at.tuwien.indmp.model.dmp;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -11,23 +10,20 @@ import javax.validation.constraints.NotNull;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import at.tuwien.indmp.model.Property;
-import at.tuwien.indmp.model.System;
+import at.tuwien.indmp.model.RDMService;
 import at.tuwien.indmp.service.PropertyService;
+import at.tuwien.indmp.util.DMPConstants;
 import at.tuwien.indmp.util.Functions;
-import at.tuwien.indmp.util.var.ServiceType;
 
 public class Project extends ClassEntity {
-
-    public final static String DATE_FORMAT = "yyyy-MM-dd";
-    public final static SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat(DATE_FORMAT);
 
     /* Properties */
     private String description;
 
-    @JsonFormat(pattern = DATE_FORMAT)
+    @JsonFormat(pattern = DMPConstants.DATE_FORMAT_ISO_8601)
     private Date end;
 
-    @JsonFormat(pattern = DATE_FORMAT)
+    @JsonFormat(pattern = DMPConstants.DATE_FORMAT_ISO_8601)
     private Date start;
 
     @NotNull
@@ -83,8 +79,8 @@ public class Project extends ClassEntity {
     public Object[] getValues() {
         return new Object[] {
                 getDescription(),
-                getEnd() != null ? DATE_FORMATTER.format(getEnd()) : null,
-                getStart() != null ? DATE_FORMATTER.format(getStart()) : null
+                getEnd() != null ? DMPConstants.DATE_FORMATTER_ISO_8601.format(getEnd()) : null,
+                getStart() != null ? DMPConstants.DATE_FORMATTER_ISO_8601.format(getStart()) : null
         };
     }
 
@@ -103,19 +99,20 @@ public class Project extends ClassEntity {
     }
 
     @Override
-    public List<Property> getPropertiesFromIdentifier(DMP dmp, String reference, System system) {
+    public List<Property> getPropertiesFromIdentifier(DMP dmp, String reference, RDMService rdmService) {
         final List<Property> properties = new ArrayList<>();
 
-        final Property property = new Property(dmp.getClassIdentifier(), getClassName(), getClassIdentifier(), "title",
-        getClassIdentifier(), reference, dmp.getModified(), system);
-        properties.add(property);
-        system.add(property);
+        if (hasRightsToUpdate(rdmService)) {
+            final Property property = new Property(dmp.getClassIdentifier(), getClassType(), getClassIdentifier(),
+                    "title", getClassIdentifier(), reference);
+            properties.add(property);
+        }
 
         return properties;
     }
 
     @Override
-    public List<Property> getPropertiesFromNestedClasses(DMP dmp, System system) {
+    public List<Property> getPropertiesFromNestedClasses(DMP dmp, RDMService system) {
         final List<Property> properties = new ArrayList<>();
 
         // Funding
@@ -125,15 +122,6 @@ public class Project extends ClassEntity {
         }
 
         return properties;
-    }
-
-    @Override
-    public boolean hasRightsToUpdate(System system) {
-        return Functions.isServiceTypeInArray(new ServiceType[] {
-                ServiceType.DMP_APP,
-                ServiceType.ADMINISTRATIVE_DATA_COLLECTOR,
-                ServiceType.FUNDER_SYSTEM,
-        }, system.getType());
     }
 
     @Override
@@ -148,7 +136,7 @@ public class Project extends ClassEntity {
         }
 
         // Set properties
-        final List<Property> properties = propertyService.findProperties(dmpIdentifier, "project", classIdentifier,
+        final List<Property> properties = propertyService.findProperties(dmpIdentifier, getClassType(), classIdentifier,
                 null, null, null);
 
         Property p = Functions.findPropertyInList("description", properties);
@@ -156,14 +144,14 @@ public class Project extends ClassEntity {
 
         p = Functions.findPropertyInList("end", properties);
         try {
-            setEnd(p != null ? DATE_FORMATTER.parse(p.getValue()) : null);
+            setEnd(p != null ? DMPConstants.DATE_FORMATTER_ISO_8601.parse(p.getValue()) : null);
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
         p = Functions.findPropertyInList("start", properties);
         try {
-            setStart(p != null ? DATE_FORMATTER.parse(p.getValue()) : null);
+            setStart(p != null ? DMPConstants.DATE_FORMATTER_ISO_8601.parse(p.getValue()) : null);
         } catch (ParseException e) {
             e.printStackTrace();
         }

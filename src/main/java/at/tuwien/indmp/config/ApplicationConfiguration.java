@@ -6,6 +6,6 @@ import org.springframework.context.annotation.Import;
 
 @Configuration
 @EnableAspectJAutoProxy(proxyTargetClass = true)
-@Import({ PersistenceConfiguration.class, ServiceConfiguration.class })
+@Import({ ServiceConfiguration.class })
 public class ApplicationConfiguration {
 }

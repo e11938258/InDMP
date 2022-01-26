@@ -3,14 +3,13 @@ package at.tuwien.indmp.model.dmp;
 import java.util.List;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 import at.tuwien.indmp.model.Property;
-import at.tuwien.indmp.model.System;
+import at.tuwien.indmp.model.RDMService;
 import at.tuwien.indmp.service.PropertyService;
+import at.tuwien.indmp.util.DMPConstants;
 import at.tuwien.indmp.util.Functions;
-import at.tuwien.indmp.util.dmp.GrantIdentifierType;
-import at.tuwien.indmp.util.dmp.Language;
-import at.tuwien.indmp.util.var.ServiceType;
 
 public class Metadata extends ClassEntity {
 
@@ -18,7 +17,8 @@ public class Metadata extends ClassEntity {
     private String description;
 
     @NotNull
-    private Language language;
+    @Pattern(regexp = DMPConstants.REGEX_ISO_639_3)
+    private String language;
 
     /* Nested data structure */
     @NotNull
@@ -35,11 +35,11 @@ public class Metadata extends ClassEntity {
         this.description = description;
     }
 
-    public Language getLanguage() {
+    public String getLanguage() {
         return this.language;
     }
 
-    public void setLanguage(Language language) {
+    public void setLanguage(String language) {
         this.language = language;
     }
 
@@ -73,42 +73,27 @@ public class Metadata extends ClassEntity {
     }
 
     @Override
-    public List<Property> getPropertiesFromIdentifier(DMP dmp, String reference, System system) {
-        return getMetadata_standard_id().getProperties(dmp, reference, system);
-    }
-
-    @Override
-    public List<Property> getPropertiesFromNestedClasses(DMP dmp, System system) {
-        return null;
-    }
-
-    @Override
-    public boolean hasRightsToUpdate(System system) {
-        return Functions.isServiceTypeInArray(new ServiceType[] {
-                ServiceType.DMP_APP,
-                ServiceType.REPOSITORY_STORE,
-                ServiceType.IT_RESOURCE,
-                ServiceType.REPOSITORY_INGESTOR,
-        }, system.getType());
+    public List<Property> getPropertiesFromIdentifier(DMP dmp, String reference, RDMService rdmService) {
+        return getMetadata_standard_id().getProperties(dmp, reference, rdmService);
     }
 
     @Override
     public void build(PropertyService propertyService, String dmpIdentifier, String classIdentifier) {
         // Set properties
-        final List<Property> properties = propertyService.findProperties(dmpIdentifier, "license", classIdentifier,
+        final List<Property> properties = propertyService.findProperties(dmpIdentifier, getClassType(), classIdentifier,
                 null, null, null);
 
         Property p = Functions.findPropertyInList("description", properties);
         setDescription(p != null ? p.getValue() : null);
 
         p = Functions.findPropertyInList("language", properties);
-        setLanguage(p != null ? Language.valueOf(p.getValue()) : null);
+        setLanguage(p != null ? p.getValue() : null);
 
         // Set identifier
-        final List<Property> identifierProperties = propertyService.findProperties(dmpIdentifier, "metadata_standard_id",
-                classIdentifier, null, null, null);
+        final List<Property> identifierProperties = propertyService.findProperties(dmpIdentifier,
+                "metadata_standard_id", classIdentifier, null, null, null);
         final Property identifier = Functions.findPropertyInList("identifier", identifierProperties);
         final Property type = Functions.findPropertyInList("type", identifierProperties);
-        metadata_standard_id = new Metadata_standard_id(identifier.getValue(), GrantIdentifierType.valueOf(type.getValue()));
+        metadata_standard_id = new Metadata_standard_id(identifier.getValue(), type.getValue());
     }
 }

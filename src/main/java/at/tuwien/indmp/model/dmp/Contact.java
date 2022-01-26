@@ -5,11 +5,9 @@ import java.util.List;
 import javax.validation.constraints.NotNull;
 
 import at.tuwien.indmp.model.Property;
-import at.tuwien.indmp.model.System;
+import at.tuwien.indmp.model.RDMService;
 import at.tuwien.indmp.service.PropertyService;
 import at.tuwien.indmp.util.Functions;
-import at.tuwien.indmp.util.dmp.PersonIdentifierType;
-import at.tuwien.indmp.util.var.ServiceType;
 
 public class Contact extends ClassEntity {
 
@@ -52,18 +50,6 @@ public class Contact extends ClassEntity {
     }
 
     @Override
-    public boolean hasRightsToUpdate(System system) {
-        return Functions.isServiceTypeInArray(new ServiceType[] {
-                ServiceType.DMP_APP,
-                ServiceType.REPOSITORY_STORE,
-                ServiceType.ADMINISTRATIVE_DATA_COLLECTOR,
-                ServiceType.FUNDER_SYSTEM,
-                ServiceType.IT_RESOURCE,
-                ServiceType.REPOSITORY_INGESTOR,
-        }, system.getType());
-    }
-
-    @Override
     public Object[] getValues() {
         return new Object[] {
                 getMbox(),
@@ -85,19 +71,14 @@ public class Contact extends ClassEntity {
     }
 
     @Override
-    public List<Property> getPropertiesFromIdentifier(DMP dmp, String reference, System system) {
+    public List<Property> getPropertiesFromIdentifier(DMP dmp, String reference, RDMService system) {
         return getContact_id().getProperties(dmp, reference, system);
-    }
-
-    @Override
-    public List<Property> getPropertiesFromNestedClasses(DMP dmp, System system) {
-        return null;
     }
 
     @Override
     public void build(PropertyService propertyService, String dmpIdentifier, String classIdentifier) {
         // Set properties
-        final List<Property> properties = propertyService.findProperties(dmpIdentifier, "contributor", null,
+        final List<Property> properties = propertyService.findProperties(dmpIdentifier, getClassType(), null,
                 null, null, null);
 
         Property p = Functions.findPropertyInList("mbox", properties);
@@ -111,6 +92,6 @@ public class Contact extends ClassEntity {
                 classIdentifier, null, null, null);
         final Property identifier = Functions.findPropertyInList("identifier", identifierProperties);
         final Property type = Functions.findPropertyInList("type", identifierProperties);
-        contact_id = new Contact_id(identifier.getValue(), PersonIdentifierType.valueOf(type.getValue()));
+        contact_id = new Contact_id(identifier.getValue(), type.getValue());
     }
 }

@@ -6,14 +6,13 @@ import java.util.Arrays;
 import java.util.List;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
 import at.tuwien.indmp.model.Property;
-import at.tuwien.indmp.model.System;
+import at.tuwien.indmp.model.RDMService;
 import at.tuwien.indmp.service.PropertyService;
+import at.tuwien.indmp.util.DMPConstants;
 import at.tuwien.indmp.util.Functions;
-import at.tuwien.indmp.util.dmp.AllowedValues;
-import at.tuwien.indmp.util.dmp.CountryCode;
-import at.tuwien.indmp.util.var.ServiceType;
 
 public class Host extends ClassEntity {
 
@@ -24,19 +23,21 @@ public class Host extends ClassEntity {
 
     private String backup_type;
 
-    // TODO: Restrict the values
+    @Pattern(regexp = DMPConstants.REGEX_REPOSITORY_CERTIFIED)
     private String certified_with;
 
     private String description;
 
-    private CountryCode geo_location;
+    @Pattern(regexp = DMPConstants.REGEX_ISO_3166_1)
+    private String geo_location;
 
-    // TODO: Restrict the values
+    @Pattern(regexp = DMPConstants.REGEX_PID_SYSTEM)
     private List<String> pid_system = new ArrayList<>();
 
     private String storage_type;
 
-    private AllowedValues support_versioning;
+    @Pattern(regexp = DMPConstants.REGEX_YES_NO_UNKNOWN)
+    private String support_versioning;
 
     @NotNull
     private String title;
@@ -87,11 +88,11 @@ public class Host extends ClassEntity {
         this.description = description;
     }
 
-    public CountryCode getGeo_location() {
+    public String getGeo_location() {
         return this.geo_location;
     }
 
-    public void setGeo_location(CountryCode geo_location) {
+    public void setGeo_location(String geo_location) {
         this.geo_location = geo_location;
     }
 
@@ -111,11 +112,11 @@ public class Host extends ClassEntity {
         this.storage_type = storage_type;
     }
 
-    public AllowedValues getSupport_versioning() {
+    public String getSupport_versioning() {
         return this.support_versioning;
     }
 
-    public void setSupport_versioning(AllowedValues support_versioning) {
+    public void setSupport_versioning(String support_versioning) {
         this.support_versioning = support_versioning;
     }
 
@@ -173,35 +174,22 @@ public class Host extends ClassEntity {
     }
 
     @Override
-    public List<Property> getPropertiesFromIdentifier(DMP dmp, String reference, System system) {
+    public List<Property> getPropertiesFromIdentifier(DMP dmp, String reference, RDMService rdmService) {
         final List<Property> properties = new ArrayList<>();
 
-        final Property property = new Property(dmp.getClassIdentifier(), getClassName(), getClassIdentifier(), "url",
-        getClassIdentifier(), reference, dmp.getModified(), system);
-        properties.add(property);
-        system.add(property);
+        if (hasRightsToUpdate(rdmService)) {
+            final Property property = new Property(dmp.getClassIdentifier(), getClassType(), getClassIdentifier(),
+                    "url", getClassIdentifier(), reference);
+            properties.add(property);
+        }
 
         return properties;
     }
 
     @Override
-    public List<Property> getPropertiesFromNestedClasses(DMP dmp, System system) {
-        return null;
-    }
-
-    @Override
-    public boolean hasRightsToUpdate(System system) {
-        return Functions.isServiceTypeInArray(new ServiceType[] {
-                ServiceType.DMP_APP,
-                ServiceType.REPOSITORY_STORE,
-                ServiceType.REPOSITORY_INGESTOR,
-        }, system.getType());
-    }
-
-    @Override
     public void build(PropertyService propertyService, String dmpIdentifier, String classIdentifier) {
         // Set properties
-        final List<Property> properties = propertyService.findProperties(dmpIdentifier, "host", classIdentifier,
+        final List<Property> properties = propertyService.findProperties(dmpIdentifier, getClassType(), classIdentifier,
                 null, null, null);
 
         Property p = Functions.findPropertyInList("availability", properties);
@@ -220,7 +208,7 @@ public class Host extends ClassEntity {
         setDescription(p != null ? p.getValue() : null);
 
         p = Functions.findPropertyInList("geo_location", properties);
-        setGeo_location(p != null ? CountryCode.valueOf(p.getValue()) : null);
+        setGeo_location(p != null ? p.getValue() : null);
 
         p = Functions.findPropertyInList("pid_system", properties);
         setPid_system(p != null
@@ -231,7 +219,7 @@ public class Host extends ClassEntity {
         setStorage_type(p != null ? p.getValue() : null);
 
         p = Functions.findPropertyInList("support_versioning", properties);
-        setSupport_versioning(p != null ? AllowedValues.valueOf(p.getValue()) : null);
+        setSupport_versioning(p != null ? p.getValue() : null);
 
         p = Functions.findPropertyInList("title", properties);
         setTitle(p != null ? p.getValue() : null);

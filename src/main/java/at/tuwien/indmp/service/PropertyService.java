@@ -1,12 +1,11 @@
 package at.tuwien.indmp.service;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
 import at.tuwien.indmp.dao.PropertyDao;
 import at.tuwien.indmp.model.Property;
-import at.tuwien.indmp.model.System;
+import at.tuwien.indmp.model.RDMService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +19,9 @@ public class PropertyService {
     @Autowired
     private PropertyDao propertyDao;
 
+    @Autowired
+    private RDMServiceLayer rdmServiceLayer;
+
     private final Logger log = LoggerFactory.getLogger(PropertyService.class);
 
     /**
@@ -27,12 +29,24 @@ public class PropertyService {
      * Persist a new property
      *
      * @param property
+     * @param rdmService
      */
     @Transactional
-    public void persist(Property property) {
+    public void persist(Property property, RDMService rdmService) {
         Objects.requireNonNull(property, "Property is null.");
-        log.info("Persisting a new property: " + property.toString());
+        Objects.requireNonNull(rdmService, "RDM service is null.");
+
+        // Add references
+        property.setRDMService(rdmService);
+        rdmService.add(property);
+
+        // Persist the new property
         propertyDao.persist(property);
+
+        // Update the RDM service
+        rdmServiceLayer.update(rdmService);
+
+        log.info("Persisting a new property: " + property.toString());
     }
 
     /**
@@ -40,13 +54,14 @@ public class PropertyService {
      * Persist a list of properties
      *
      * @param properties
+     * @param rdmService
      */
     @Transactional
-    public void persist(List<Property> properties) {
+    public void persist(List<Property> properties, RDMService rdmService) {
         Objects.requireNonNull(properties, "List with properties is null.");
         // For each property
         for (Property property : properties) {
-            persist(property);
+            persist(property, rdmService);
         }
     }
 
@@ -55,7 +70,7 @@ public class PropertyService {
      * Find property
      * 
      * @param dmpIdentifier
-     * @param className
+     * @param classType
      * @param classIdentifier
      * @param propertyName
      * @param reference
@@ -63,9 +78,9 @@ public class PropertyService {
      * @return
      */
     @Transactional(readOnly = true)
-    public Property findProperty(String dmpIdentifier, String className, String classIdentifier, String propertyName,
+    public Property find(String dmpIdentifier, String classType, String classIdentifier, String propertyName,
             String value, String reference) {
-        List<Property> properties = propertyDao.findProperty(dmpIdentifier, className, classIdentifier,
+        List<Property> properties = propertyDao.findProperty(dmpIdentifier, classType, classIdentifier,
                 propertyName, value, reference);
         if (properties.size() == 1) {
             return properties.get(0);
@@ -81,9 +96,9 @@ public class PropertyService {
      * @return
      */
     @Transactional(readOnly = true)
-    public Property findProperty(Property property) {
+    public Property find(Property property) {
         Objects.requireNonNull(property, "Property is null.");
-        return findProperty(property.getDmpIdentifier(), property.getClassName(), property.getClassIdentifier(),
+        return find(property.getDmpIdentifier(), property.getClassType(), property.getClassIdentifier(),
                 property.getPropertyName(), property.getValue(), property.getReference());
     }
 
@@ -92,16 +107,16 @@ public class PropertyService {
      * Find properties
      * 
      * @param dmpIdentifier
-     * @param className
+     * @param classType
      * @param classIdentifier
      * @param propertyName
      * @param reference
      * @return
      */
     @Transactional(readOnly = true)
-    public List<Property> findProperties(String dmpIdentifier, String className, String classIdentifier,
+    public List<Property> findProperties(String dmpIdentifier, String classType, String classIdentifier,
             String propertyName, String value, String reference) {
-        return propertyDao.findProperty(dmpIdentifier, className, classIdentifier,
+        return propertyDao.findProperty(dmpIdentifier, classType, classIdentifier,
                 propertyName, value, reference);
     }
 
@@ -114,8 +129,148 @@ public class PropertyService {
     @Transactional(readOnly = true)
     public List<Property> findProperties(Property property) {
         Objects.requireNonNull(property, "Property is null.");
-        return findProperties(property.getDmpIdentifier(), property.getClassName(), property.getClassIdentifier(),
+        return findProperties(property.getDmpIdentifier(), property.getClassType(), property.getClassIdentifier(),
                 property.getPropertyName(), property.getValue(), property.getReference());
+    }
+
+    /**
+     * 
+     * Update the property
+     * 
+     * @param property
+     * @param rdmService
+     */
+    @Transactional
+    public void update(Property property, RDMService rdmService) {
+        Objects.requireNonNull(property, "Property is null.");
+
+        // Set new RDM service
+        if (!property.getRDMService().equals(rdmService)) {
+            // Get old RDM system
+            final RDMService currentRDMService = property.getRDMService();
+
+            // Set new system
+            currentRDMService.remove(property);
+            rdmService.add(property);
+            property.setRDMService(rdmService);
+
+            // Update RDM services
+            rdmServiceLayer.update(currentRDMService);
+            rdmServiceLayer.update(rdmService);
+        }
+
+        // Update property
+        propertyDao.update(property);
+    }
+
+    /**
+     * 
+     * Load and update the property
+     * 
+     * @param dmpIdentifier
+     * @param classType
+     * @param classIdentifier
+     * @param propertyName
+     * @param newValue
+     * @param reference
+     * @param rdmService
+     * @return
+     */
+    public void loadAndUpdate(String dmpIdentifier, String classType, String classIdentifier, String propertyName,
+            String newValue, String reference, RDMService rdmService) {
+        // Find current property
+        final Property property = find(dmpIdentifier, classType, classIdentifier, propertyName,
+                null, reference);
+        
+        // Set new value
+        if (property != null) {
+            property.setValue(newValue);
+            update(property, rdmService);
+        }
+    }
+
+    /**
+     * 
+     * Update the property if exists, otherwise create a new one
+     * 
+     * @param newProperty
+     * @param rdmService
+     */
+    @Transactional
+    public void updateOrCreateProperty(Property newProperty, RDMService rdmService) {
+        Objects.requireNonNull(newProperty, "Property is null.");
+        Objects.requireNonNull(rdmService, "RDM service is null.");
+
+        // Find current record if exists
+        final Property currentProperty = find(newProperty.getDmpIdentifier(), newProperty.getClassType(),
+                newProperty.getClassIdentifier(), newProperty.getPropertyName(), null, newProperty.getReference());
+
+        if (currentProperty != null) {
+            // If values are different
+            if (!currentProperty.hasSameValue(newProperty)) {
+                // Set new value
+                currentProperty.setValue(newProperty.getValue());
+                // Update property
+                update(currentProperty, rdmService);
+            }
+        } else {
+            // Persist new property
+            persist(newProperty, rdmService);
+        }
+    }
+
+    /**
+     * 
+     * Update or create new properties
+     * 
+     * @param properties
+     * @param rdmService
+     */
+    @Transactional
+    public void updateOrCreateProperties(List<Property> properties, RDMService rdmService) {
+        Objects.requireNonNull(properties, "List with properties is null.");
+
+        // For each property
+        for (Property property : properties) {
+            updateOrCreateProperty(property, rdmService);
+        }
+    }
+
+    /**
+     * 
+     * Delete the property
+     * 
+     * @param property
+     * @param rdmService
+     */
+    @Transactional
+    public void deleteProperty(Property property) {
+        Objects.requireNonNull(property, "Property is null.");
+
+        // Find the property
+        final Property oldProperty = find(property.getDmpIdentifier(), property.getClassType(),
+                property.getClassIdentifier(), property.getPropertyName(), null, property.getReference());
+
+        if (oldProperty != null) {
+            propertyDao.delete(oldProperty);
+        }
+    }
+
+    /**
+     * 
+     * Delete the properties
+     * 
+     * @param properties
+     * @param rdmService
+     */
+    @Transactional
+    public void deleteProperties(List<Property> properties) {
+        Objects.requireNonNull(properties, "Properties is null.");
+
+        // For each property
+        for (Property property : properties) {
+            deleteProperty(property);
+        }
     }
 
     /**
@@ -123,141 +278,45 @@ public class PropertyService {
      * Load all identifiers of class
      * 
      * @param dmpIdentifier
-     * @param className
+     * @param classType
      * @param propertyName
      * @return
      */
-    public List<Property> loadAllIdentifiers(String dmpIdentifier, String className, String propertyName) {
-        return propertyDao.findIdentifiers(dmpIdentifier, className, propertyName);
+    public List<Property> loadAllIdentifiers(String dmpIdentifier, String classType, String propertyName) {
+        return propertyDao.findIdentifiers(dmpIdentifier, classType, propertyName);
     }
 
     /**
      * 
-     * Set new property
-     * 
-     * @param property
-     */
-    @Transactional
-    public void setNewProperty(Property property) {
-        Objects.requireNonNull(property, "Property is null.");
-        // Find old record if exists
-        final Property oldProperty = findProperty(property.getDmpIdentifier(), property.getClassName(),
-                property.getClassIdentifier(), property.getPropertyName(), null, property.getReference());
-        if (oldProperty != null) {
-            // If values are different, set date until and persits new value
-            if (!oldProperty.hasSameValue(property)) {
-                oldProperty.setValidUntil(property.getValidFrom());
-                propertyDao.update(oldProperty);
-                // Persist new property
-                persist(property);
-            }
-        } else {
-            // Persist new property
-            persist(property);
-        }
-    }
-
-    /**
-     * 
-     * Set new properties
-     * 
-     * @param properties
-     */
-    @Transactional
-    public void setNewProperties(List<Property> properties) {
-        Objects.requireNonNull(properties, "List with properties is null.");
-        // For each property
-        for (Property property : properties) {
-            setNewProperty(property);
-        }
-    }
-
-    /**
-     * 
-     * Set new property with value
-     * 
-     * @param properties
-     */
-    @Transactional
-    public void setNewPropertyWithValue(Property currentProperty, String newValue, Date validFrom, System system) {
-        Objects.requireNonNull(currentProperty, "Current property is null.");
-        Objects.requireNonNull(newValue, "New value is null.");
-        Objects.requireNonNull(validFrom, "valid_from is null.");
-        // Create a new property
-        final Property property = new Property(currentProperty, newValue, validFrom, system);
-        setNewProperty(property);
-        // Add new property to system
-        system.add(property);
-    }
-
-    /**
-     * 
-     * End the life of the property
-     * 
-     * @param property
-     * @param validUntil
-     */
-    @Transactional
-    public void endPropertyLife(Property property, Date validUntil) {
-        Objects.requireNonNull(property, "Property is null.");
-        Objects.requireNonNull(validUntil, "valid_until is null.");
-
-        final Property p = findProperty(property);
-        if (p != null) {
-            p.setValidUntil(validUntil);
-            propertyDao.update(p);
-        }
-    }
-
-    /**
-     * 
-     * End the life of the properties
-     * 
-     * @param properties
-     * @param validUntil
-     */
-    @Transactional
-    public void endPropertyLife(List<Property> properties, Date validUntil) {
-        Objects.requireNonNull(properties, "Properties is null.");
-        Objects.requireNonNull(validUntil, "valid_until is null.");
-
-        // For each property
-        for (Property property : properties) {
-            endPropertyLife(property, validUntil);
-        }
-    }
-
-    /**
-     * 
-     * End all nested properties
+     * Remove all nested properties
+     * Note: the function identified instances in specific DMP only by references,
+     * not by maDMP class types
      * 
      * @param DMPIdentifier
-     * @param validUntil
      * @param identifier
      */
     @Transactional
-    public void endAllNestedProperties(String DMPIdentifier, Date validUntil, String identifier) {
+    public void removeAllNestedProperties(String DMPIdentifier, String identifier) {
         Objects.requireNonNull(DMPIdentifier, "DMP identifier is null.");
         Objects.requireNonNull(identifier, "Identifier is null.");
-
-        // TODO: Limit it to specific classes, now it ends everything what has the
-        // class identifier/reference
 
         // End all nested properties
         List<Property> properties = findProperties(DMPIdentifier, null, null, null, null, identifier);
         for (final Property property : properties) {
-            if(!identifier.equals(property.getClassIdentifier())) {
-                endAllNestedProperties(DMPIdentifier, validUntil, property.getClassIdentifier());
+            if (!identifier.equals(property.getClassIdentifier())) {
+                removeAllNestedProperties(DMPIdentifier, property.getClassIdentifier());
             }
         }
 
         // End all class properties
-        endPropertyLife(findProperties(DMPIdentifier, null, identifier, null, null, null), validUntil);
+        deleteProperties(findProperties(DMPIdentifier, null, identifier, null, null, null));
     }
 
     /**
      * 
      * Change class identifiers and references of nested instances
+     * Note: the function identified instances in specific DMP only by identifiers,
+     * not by maDMP class types
      * 
      * @param DMPIdentifier
      * @param identifier
@@ -268,9 +327,6 @@ public class PropertyService {
         Objects.requireNonNull(DMPIdentifier, "DMP identifier is null.");
         Objects.requireNonNull(identifier, "Identifier is null.");
         Objects.requireNonNull(newIdentifier, "New identifier is null.");
-
-        // TODO: Limit it to specific classes, now its upgrading everything what has the
-        // reference/class identifier
 
         // Change class identifiers
         List<Property> properties = findProperties(DMPIdentifier, null, identifier, null, null, null);

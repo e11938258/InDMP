@@ -1,30 +1,31 @@
 package at.tuwien.indmp.model.dmp;
 
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
 
-import at.tuwien.indmp.util.dmp.GrantIdentifierType;
+import at.tuwien.indmp.util.DMPConstants;
 
 public class Grant_id extends Identifier {
 
     /* Properties */
     @NotNull
-    private GrantIdentifierType type;
-
+    @Pattern(regexp = DMPConstants.REGEX_GRANT_IDENTIFIER_TYPE)
+    private String type;
 
     public Grant_id() {
         super(null);
     }
 
-    public Grant_id(String identifier, GrantIdentifierType type) {
+    public Grant_id(String identifier, String type) {
         super(identifier);
         this.type = type;
     }
 
-    public GrantIdentifierType getType() {
+    public String getType() {
         return this.type;
     }
 
-    public void setType(GrantIdentifierType type) {
+    public void setType(String type) {
         this.type = type;
     }
 }

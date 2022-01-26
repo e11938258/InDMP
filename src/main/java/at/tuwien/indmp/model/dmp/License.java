@@ -2,7 +2,6 @@ package at.tuwien.indmp.model.dmp;
 
 import java.net.URI;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -12,22 +11,19 @@ import javax.validation.constraints.NotNull;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import at.tuwien.indmp.model.Property;
-import at.tuwien.indmp.model.System;
+import at.tuwien.indmp.model.RDMService;
 import at.tuwien.indmp.service.PropertyService;
+import at.tuwien.indmp.util.DMPConstants;
 import at.tuwien.indmp.util.Functions;
-import at.tuwien.indmp.util.var.ServiceType;
 
 public class License extends ClassEntity {
-
-    public final static String DATE_FORMAT = "yyyy-MM-dd";
-    public final static SimpleDateFormat DATE_FORMATTER = new SimpleDateFormat(DATE_FORMAT);
 
     /* Properties */
     @NotNull
     private URI license_ref;
 
     @NotNull
-    @JsonFormat(pattern = DATE_FORMAT)
+    @JsonFormat(pattern = DMPConstants.DATE_FORMAT_ISO_8601)
     private Date start_date;
 
     public License() {
@@ -52,7 +48,7 @@ public class License extends ClassEntity {
     @Override
     public Object[] getValues() {
         return new Object[] {
-                getStart_date() != null ? DATE_FORMATTER.format(getStart_date()) : null,
+                getStart_date() != null ? DMPConstants.DATE_FORMATTER_ISO_8601.format(getStart_date()) : null,
         };
     }
 
@@ -69,40 +65,27 @@ public class License extends ClassEntity {
     }
 
     @Override
-    public List<Property> getPropertiesFromIdentifier(DMP dmp, String reference, System system) {
+    public List<Property> getPropertiesFromIdentifier(DMP dmp, String reference, RDMService rdmService) {
         final List<Property> properties = new ArrayList<>();
 
-        final Property property = new Property(dmp.getClassIdentifier(), getClassName(), getClassIdentifier(), "license_ref",
-        getClassIdentifier(), reference, dmp.getModified(), system);
-        properties.add(property);
-        system.add(property);
+        if (hasRightsToUpdate(rdmService)) {
+            final Property property = new Property(dmp.getClassIdentifier(), getClassType(), getClassIdentifier(),
+                    "license_ref", getClassIdentifier(), reference);
+            properties.add(property);
+        }
 
         return properties;
     }
 
     @Override
-    public List<Property> getPropertiesFromNestedClasses(DMP dmp, System system) {
-        return null;
-    }
-
-    @Override
-    public boolean hasRightsToUpdate(System system) {
-        return Functions.isServiceTypeInArray(new ServiceType[] {
-                ServiceType.DMP_APP,
-                ServiceType.REPOSITORY_STORE,
-                ServiceType.REPOSITORY_INGESTOR,
-        }, system.getType());
-    }
-
-    @Override
     public void build(PropertyService propertyService, String dmpIdentifier, String classIdentifier) {
         // Set properties
-        final List<Property> properties = propertyService.findProperties(dmpIdentifier, "license", classIdentifier,
+        final List<Property> properties = propertyService.findProperties(dmpIdentifier, getClassType(), classIdentifier,
                 null, null, null);
 
         Property p = Functions.findPropertyInList("start_date", properties);
         try {
-            setStart_date(p != null ? DATE_FORMATTER.parse(p.getValue()) : null);
+            setStart_date(p != null ? DMPConstants.DATE_FORMATTER_ISO_8601.parse(p.getValue()) : null);
         } catch (ParseException e) {
             e.printStackTrace();
         }
