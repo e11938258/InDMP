@@ -6,9 +6,14 @@ import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonView;
+
 import at.tuwien.indmp.util.DMPConstants;
+import at.tuwien.indmp.util.Views;
 
 @Entity
 @Table(name = "permission")
@@ -16,10 +21,15 @@ public class Permission extends AbstractEntity {
 
     /* Properties */
     @Column(name = "class_type", nullable = false)
-    @Pattern(regexp = DMPConstants.REGEX_DMP_CLASS_TYPE)
+    @NotNull
+    @Pattern(regexp = DMPConstants.REGEX_DMP_CLASS_TYPE_WITHOUT_ID)
+    @JsonView(Views.RDMService.class)
+    @JsonProperty("class_type")
     private String classType;
 
     @Column(nullable = false)
+    @NotNull
+    @JsonView(Views.RDMService.class)
     private boolean allowed;
 
     /* Nested data structure */

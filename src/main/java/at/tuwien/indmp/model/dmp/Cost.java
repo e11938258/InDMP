@@ -87,11 +87,9 @@ public class Cost extends ClassEntity {
     public List<Property> getPropertiesFromIdentifier(DMP dmp, String reference, RDMService rdmService) {
         final List<Property> properties = new ArrayList<>();
 
-        if (hasRightsToUpdate(rdmService)) {
-            final Property property = new Property(dmp.getClassIdentifier(), getClassType(), getClassIdentifier(),
-                    "title", getTitle(), reference);
-            properties.add(property);
-        }
+        final Property property = new Property(dmp.getClassIdentifier(), getClassType(), getClassIdentifier(),
+                "title", getTitle(), reference);
+        properties.add(property);
 
         return properties;
     }
@@ -99,7 +97,8 @@ public class Cost extends ClassEntity {
     @Override
     public void build(PropertyService propertyService, String dmpIdentifier, String classIdentifier) {
         // Set properties
-        final List<Property> properties = propertyService.findProperties(dmpIdentifier, getClassType(), classIdentifier, null,
+        final List<Property> properties = propertyService.findProperties(dmpIdentifier, getClassType(), classIdentifier,
+                null,
                 null, null);
 
         Property p = Functions.findPropertyInList("currency_code", properties);

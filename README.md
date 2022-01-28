@@ -17,15 +17,15 @@ The applications were developed using Spring Boot in Java programming language v
 
 ## Setup
 
-The application uses the PostgreSQL 11 database system. You need to install it first, create a user and a database and set the correct data in the application.properties file or use the following default values:
+The application uses the PostgreSQL 10 database system with [Temporal Tables Extension](https://github.com/arkhipov/temporal_tables) for tracking maDMP information. You need to install it first, create a user and a database and set the correct data in the application.properties file or use the following default values:
 
 | Property    | Value |
 | ----------- | ----------- |
 | Host      | localhost       |
 | Port      | 5432       |
 | Database      | indmp       |
-| Username   | indmp        |
-| Password   | indmp123        |
+| Username   | postgres        |
+| Password   | postgres        |
 
 If you have set up and enabled the database system, you can build and run the application using the command:
 

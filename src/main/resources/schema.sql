@@ -1,4 +1,4 @@
-create table public.rdm_service (
+create table rdm_service (
     id bigserial not null,
     name varchar(64) not null,
     host varchar(255) not null,
@@ -6,7 +6,7 @@ create table public.rdm_service (
     primary key (id)
 );
 
-create table public.property (
+create table property (
     id bigserial not null primary key,
     dmp_identifier varchar(256) not null,
     class_type varchar(64) not null,
@@ -14,22 +14,29 @@ create table public.property (
     property_name varchar(64) not null,
     value varchar(4096) not null,
     reference varchar(256),
-    sys_start_time DATETIME2 NOT NULL,
-    sys_end_time DATETIME2 NOT NULL,
     rdm_service_id bigserial not null,
-    CONSTRAINT fk_rdm_service FOREIGN KEY(rdm_service_id) REFERENCES public.rdm_service(id) MATCH SIMPLE
+    CONSTRAINT fk_rdm_service FOREIGN KEY(rdm_service_id) REFERENCES rdm_service(id) MATCH SIMPLE
         ON UPDATE NO ACTION
-        ON DELETE NO ACTION,
-    PERIOD FOR SYSTEM_TIME (sys_start_time, sys_end_time)
-) WITH (SYSTEM_VERSIONING = ON (HISTORY_TABLE = property_history));
+        ON DELETE NO ACTION
+);
 
-create table public.permission (
+ALTER TABLE property ADD COLUMN sys_period tstzrange NOT NULL;
+
+CREATE TABLE property_history (LIKE property);
+
+CREATE TRIGGER versioning_trigger
+BEFORE INSERT OR UPDATE OR DELETE ON property
+FOR EACH ROW EXECUTE PROCEDURE versioning('sys_period',
+                                          'property_history',
+                                          true);
+
+create table permission (
     id bigserial not null,
     class_type varchar(64) not null,
     allowed boolean not null,
     rdm_service_id bigserial not null,
     primary key (id),
-    CONSTRAINT fk_rdm_service FOREIGN KEY(rdm_service_id) REFERENCES public.rdm_service(id) MATCH SIMPLE
+    CONSTRAINT fk_rdm_service FOREIGN KEY(rdm_service_id) REFERENCES rdm_service(id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
 );

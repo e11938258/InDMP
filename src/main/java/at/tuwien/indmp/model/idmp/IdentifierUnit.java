@@ -13,6 +13,7 @@ public class IdentifierUnit {
     private String type;
 
     /* Nested data structure */
+    @NotNull
     private Identifier id;
 
     private Identifier new_id;

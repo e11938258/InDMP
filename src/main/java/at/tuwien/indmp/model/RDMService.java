@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -16,6 +17,7 @@ import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonView;
+
 import at.tuwien.indmp.util.ModelConstants;
 import at.tuwien.indmp.util.Views;
 
@@ -43,10 +45,12 @@ public class RDMService extends AbstractEntity {
     private URI DMPEndpoint;
 
     /* Nested data structure */
-    @OneToMany(mappedBy = "rdmService", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "rdmService", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private final List<Property> properties = new ArrayList<>();
 
-    @OneToMany(mappedBy = "rdmService", fetch = FetchType.EAGER)
+    @OneToMany(mappedBy = "rdmService", fetch = FetchType.EAGER, cascade = { CascadeType.MERGE,
+            CascadeType.REMOVE })
+    @JsonView(Views.RDMService.class)
     private final List<Permission> permissions = new ArrayList<>();
 
     public RDMService() {

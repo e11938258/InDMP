@@ -60,11 +60,9 @@ public class TechnicalResource extends ClassEntity {
     public List<Property> getPropertiesFromIdentifier(DMP dmp, String reference, RDMService rdmService) {
         final List<Property> properties = new ArrayList<>();
 
-        if (hasRightsToUpdate(rdmService)) {
-            final Property property = new Property(dmp.getClassIdentifier(), getClassType(), getClassIdentifier(),
-                    "name", getClassIdentifier(), reference);
-            properties.add(property);
-        }
+        final Property property = new Property(dmp.getClassIdentifier(), getClassType(), getClassIdentifier(),
+                "name", getClassIdentifier(), reference);
+        properties.add(property);
 
         return properties;
     }

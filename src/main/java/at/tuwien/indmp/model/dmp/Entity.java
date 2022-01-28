@@ -48,26 +48,23 @@ public abstract class Entity {
     public List<Property> getProperties(DMP dmp, String reference, RDMService rdmService) {
         final List<Property> properties = new ArrayList<>();
 
-        // Has service rights to update the class?
-        if (hasRightsToUpdate(rdmService)) {
-            // Get current values and their names
-            final Object[] values = getValues();
-            final String[] propertyNames = getValueNames();
+        // Get current values and their names
+        final Object[] values = getValues();
+        final String[] propertyNames = getValueNames();
 
-            // Same length of arrays?
-            if (values.length != propertyNames.length) {
-                throw new ForbiddenException("Lengths are not same!");
-            }
+        // Same length of arrays?
+        if (values.length != propertyNames.length) {
+            throw new ForbiddenException("Lengths are not same!");
+        }
 
-            // For each value
-            for (int i = 0; i < values.length; i++) {
-                // If value is not null
-                if (values[i] != null) {
-                    // Add a new property
-                    final Property property = new Property(dmp.getClassIdentifier(), getClassType(),
-                            getClassIdentifier(), propertyNames[i], values[i].toString(), reference);
-                    properties.add(property);
-                }
+        // For each value
+        for (int i = 0; i < values.length; i++) {
+            // If value is not null
+            if (values[i] != null) {
+                // Add a new property
+                final Property property = new Property(dmp.getClassIdentifier(), getClassType(),
+                        getClassIdentifier(), propertyNames[i], values[i].toString(), reference);
+                properties.add(property);
             }
         }
 

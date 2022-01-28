@@ -24,11 +24,16 @@ public abstract class ClassEntity extends Entity {
     @JsonIgnore
     @Override
     public List<Property> getProperties(DMP dmp, String reference, RDMService rdmService) {
-        final List<Property> properties = super.getProperties(dmp, reference, rdmService);
+        // Has service rights to update the class?
+        if (hasRightsToUpdate(rdmService)) {
+            final List<Property> properties = super.getProperties(dmp, reference, rdmService);
 
-        // Add identifier
-        properties.addAll(getPropertiesFromIdentifier(dmp, reference, rdmService));
+            // Add identifier
+            properties.addAll(getPropertiesFromIdentifier(dmp, reference, rdmService));
 
-        return properties;
+            return properties;
+        } else {
+            return new ArrayList<>();
+        }
     }
 }

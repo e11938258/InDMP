@@ -46,7 +46,7 @@ public class PropertyDao extends AbstractDao<Property> {
             predicate = criteriaBuilder.and(predicate,
                     criteriaBuilder.equal(root.get("dmpIdentifier"), dmpIdentifier));
         }
-        
+
         // Class name
         if (classType != null) {
             predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(root.get("classType"), classType));
@@ -72,7 +72,7 @@ public class PropertyDao extends AbstractDao<Property> {
         if (reference != null) {
             predicate = criteriaBuilder.and(predicate, criteriaBuilder.equal(root.get("reference"), reference));
         }
-        
+
         criteriaQuery.where(predicate);
 
         return entityManager.createQuery(criteriaQuery).getResultList();

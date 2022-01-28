@@ -145,9 +145,9 @@ public class PropertyService {
         Objects.requireNonNull(property, "Property is null.");
 
         // Set new RDM service
-        if (!property.getRDMService().equals(rdmService)) {
+        if (!property.getRdmService().equals(rdmService)) {
             // Get old RDM system
-            final RDMService currentRDMService = property.getRDMService();
+            final RDMService currentRDMService = property.getRdmService();
 
             // Set new system
             currentRDMService.remove(property);

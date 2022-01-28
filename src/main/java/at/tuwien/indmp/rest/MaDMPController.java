@@ -118,7 +118,7 @@ public class MaDMPController {
      * @param idmpScheme
      * @throws URISyntaxException
      */
-    @RequestMapping(value = Endpoints.DELETE_INSTANCE, method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = Endpoints.DELETE_INSTANCE, method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
     public void deleteInstance(HttpServletRequest request, final @Valid @RequestBody IDMPScheme idmpScheme)
             throws URISyntaxException {
 
@@ -184,7 +184,7 @@ public class MaDMPController {
 
     /**
      *
-     * Get all history of identifiers by minimal DMP
+     * Get history of identifiers by minimal DMP
      * 
      * @param dmpScheme
      */

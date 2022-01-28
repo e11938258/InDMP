@@ -1,6 +1,6 @@
 package at.tuwien.indmp.model;
 
-import java.time.LocalDateTime;
+import java.sql.Timestamp;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -53,11 +53,8 @@ public class Property extends AbstractEntity {
     @Pattern(regexp = ModelConstants.PROPERTY_CLASS_IDENTIFIER_REGEX)
     private String reference;
 
-    @Column(insertable = false, updatable = false, name = "sys_start_time")
-    private LocalDateTime sysStartTime;
-
-    @Column(insertable = false, updatable = false, name = "sys_end_time")
-    private LocalDateTime sysEndTime;
+    @Column(name = "sys_period")
+    private Timestamp systemPeriod;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "rdm_service_id")
@@ -125,15 +122,11 @@ public class Property extends AbstractEntity {
         this.reference = reference;
     }
 
-    public LocalDateTime getSysStartTime() {
-        return this.sysStartTime;
+    public Timestamp getSystemPeriod() {
+        return this.systemPeriod;
     }
 
-    public LocalDateTime getSysEndTime() {
-        return this.sysEndTime;
-    }
-
-    public RDMService getRDMService() {
+    public RDMService getRdmService() {
         return this.rdmService;
     }
 
