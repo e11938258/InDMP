@@ -5,12 +5,13 @@ import at.tuwien.indmp.exception.NotFoundException;
 import at.tuwien.indmp.model.Permission;
 import at.tuwien.indmp.model.RDMService;
 
-import java.net.URI;
 import java.util.List;
 import java.util.Objects;
 
 import javax.persistence.NoResultException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,8 @@ public class RDMServiceLayer {
 
     @Autowired
     private PermissionService permissionService;
+
+    private final Logger log = LoggerFactory.getLogger(DMPService.class);
 
     /**
      * 
@@ -45,30 +48,29 @@ public class RDMServiceLayer {
 
     /**
      * 
-     * Find the RDM service by id
+     * Find the RDM service by client id
      * 
-     * @param id
+     * @param clientId
      * @return
      */
     @Transactional(readOnly = true)
-    public RDMService find(Long id) {
+    public RDMService findByClientId(String clientId) {
         try {
-            return rdmServiceDao.find(id);
+            return rdmServiceDao.findByClientId(clientId);
         } catch (NoResultException | EmptyResultDataAccessException ex) {
-            throw new NotFoundException(" not found");
+            log.error("RDM service not found by client id");
+            throw new NotFoundException("RDM service not found by client id");
         }
     }
 
-    /**
-     * 
-     * Find the RDM service by host
-     * 
-     * @param host
-     * @return
-     */
     @Transactional(readOnly = true)
-    public RDMService findByHost(URI host) {
-        return rdmServiceDao.findByHost(host);
+    private RDMService find(Long id) {
+        try {
+            return rdmServiceDao.find(id);
+        } catch (NoResultException | EmptyResultDataAccessException ex) {
+            log.error("RDM service not found by id");
+            throw new NotFoundException("RDM service not found by id");
+        }
     }
 
     /**

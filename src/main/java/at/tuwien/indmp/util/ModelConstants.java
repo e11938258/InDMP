@@ -12,6 +12,10 @@ public class ModelConstants {
     public static final int RDM_SERVICE_NAME_MAX = 64;
     public static final String RDM_SERVICE_NAME_REGEX = REGEX_STRING;
 
+    public static final int RDM_SERVICE_CLIENT_ID_MIN = 1;
+    public static final int RDM_SERVICE_CLIENT_ID_MAX = 64;
+    public static final String RDM_SERVICE_CLIENT_ID_REGEX = "^[\\p{IsAlphabetic}\\p{Digit}-]+$";
+
     public static final int PROPERTY_DMP_IDENTIFIER_MIN = 1;
     public static final int PROPERTY_DMP_IDENTIFIER_MAX = 256;
     public static final String PROPERTY_DMP_IDENTIFIER_REGEX = REGEX_STRING;

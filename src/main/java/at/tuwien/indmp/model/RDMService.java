@@ -33,6 +33,14 @@ public class RDMService extends AbstractEntity {
     @JsonView(Views.RDMService.class)
     private String name;
 
+    @Column(name = "client_id", nullable = false)
+    @NotNull
+    @Size(min = ModelConstants.RDM_SERVICE_CLIENT_ID_MIN, max = ModelConstants.RDM_SERVICE_CLIENT_ID_MAX)
+    @Pattern(regexp = ModelConstants.RDM_SERVICE_CLIENT_ID_REGEX)
+    @JsonView(Views.RDMService.class)
+    @JsonProperty("client_id")
+    private String clientId;
+
     @Column(nullable = false)
     @NotNull
     @JsonView(Views.RDMService.class)

@@ -39,7 +39,7 @@ public class PropertyDao extends AbstractDao<Property> {
         criteriaQuery.select(root).distinct(true);
 
         // Conditions
-        Predicate predicate = null;
+        Predicate predicate = criteriaBuilder.isNotNull(root.get("value"));
 
         // DMP identifier
         if (dmpIdentifier != null) {

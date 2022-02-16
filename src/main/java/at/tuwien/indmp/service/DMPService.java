@@ -6,6 +6,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+import at.tuwien.indmp.exception.BadRequestException;
 import at.tuwien.indmp.exception.NotFoundException;
 import at.tuwien.indmp.model.Property;
 import at.tuwien.indmp.model.RDMService;
@@ -53,7 +54,7 @@ public class DMPService {
         // Get properties from new DMP
         final List<Property> properties = dmp.getProperties(dmp, null, rdmService);
         properties.addAll(dmp.getPropertiesFromNestedClasses(dmp, rdmService));
-        
+
         // Persist the properties
         propertyService.persist(properties, rdmService);
     }
@@ -67,13 +68,10 @@ public class DMPService {
      * @return minimum of DMP
      */
     public DMP identifyDMP(DMP dmp, RDMService system) {
-        Objects.requireNonNull(dmp.getCreated(), "Creation date is null.");
-        Objects.requireNonNull(dmp.getModified(), "Modification date is null.");
-        Objects.requireNonNull(dmp.getDmp_id(), "DMP ID is null.");
-        Objects.requireNonNull(dmp.getDmp_id().getClassIdentifier(), "DMP identifier is null.");
-
-        DMP currentDMP = null;
+        // Check minimal DMP
+        checkMinimalDMP(dmp);
         // Is creation date same as modification date?
+        DMP currentDMP = null;
         if (dmp.getCreated().equals(dmp.getModified())) {
             return null; // New DMP
         } else {
@@ -100,8 +98,7 @@ public class DMPService {
                     if (byCreationOnly) {
                         return currentDMP;
                     } else {
-                        log.error(
-                                "Cannot find dmp by identifier, creation date: " + currentDMP.getCreated().toString());
+                        log.error("DMP not found by identifier, creation date: " + currentDMP.getCreated().toString());
                         throw new NotFoundException("DMP not found by identifier.");
                     }
                 }
@@ -125,14 +122,15 @@ public class DMPService {
         }
     }
 
-    /**
-     * 
-     * Find dmp by creation date
-     * 
-     * @param creationDate
-     * @return
-     */
-    public DMP findByCreationDate(String creationDate) {
+    private void checkMinimalDMP(DMP dmp) {
+        if (dmp.getCreated() == null || dmp.getModified() == null || dmp.getDmp_id() == null
+                || dmp.getDmp_id().getClassIdentifier() == null) {
+            log.error("Missing minimum maDMP.");
+            throw new BadRequestException("Missing minimum maDMP.");
+        }
+    }
+
+    private DMP findByCreationDate(String creationDate) {
         Property property = propertyService.find(null, "dmp", null, "created", creationDate, null);
         if (property != null) {
             return loadMinimalDMP(property.getDmpIdentifier());
@@ -141,13 +139,6 @@ public class DMPService {
         }
     }
 
-    /**
-     * 
-     * Find dmp by identifier
-     * 
-     * @param identifier
-     * @return
-     */
     private DMP findByIdentifier(String identifier) {
         Property property = propertyService.find(null, "dmp_id", null, "identifier", identifier, null);
         if (property != null) {
@@ -294,7 +285,7 @@ public class DMPService {
         // Build DMP
         final DMP wholeDMP = new DMP();
         wholeDMP.build(propertyService, dmp.getClassIdentifier(), null);
-        
+
         // Return in the right format
         final DMPScheme dmpScheme = new DMPScheme();
         dmpScheme.setDmp(wholeDMP);

@@ -2,7 +2,6 @@ package at.tuwien.indmp.dao;
 
 import at.tuwien.indmp.model.RDMService;
 
-import java.net.URI;
 import java.util.List;
 import java.util.Objects;
 
@@ -36,13 +35,13 @@ public class RDMServiceDao extends AbstractDao<RDMService> {
 
     /**
      * 
-     * Find the system by host
+     * Find the system by client id
      * 
-     * @param host
+     * @param clientId
      * @return
      */
-    public RDMService findByHost(URI host) {
-        Objects.requireNonNull(host);
+    public RDMService findByClientId(String clientId) {
+        Objects.requireNonNull(clientId);
 
         final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         final CriteriaQuery<RDMService> criteriaQuery = criteriaBuilder.createQuery(RDMService.class);
@@ -50,7 +49,7 @@ public class RDMServiceDao extends AbstractDao<RDMService> {
         criteriaQuery.select(root).distinct(true);
 
         // Conditions
-        Predicate predicate = criteriaBuilder.equal(root.get("host"), host.toString());
+        Predicate predicate = criteriaBuilder.equal(root.get("clientId"), clientId);
         criteriaQuery.where(predicate);
 
         return entityManager.createQuery(criteriaQuery).getSingleResult();

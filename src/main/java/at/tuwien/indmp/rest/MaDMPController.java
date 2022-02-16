@@ -1,10 +1,8 @@
 package at.tuwien.indmp.rest;
 
-import java.net.URI;
-import java.net.URISyntaxException;
+import java.security.Principal;
 import java.util.List;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import at.tuwien.indmp.exception.NotFoundException;
@@ -24,10 +22,12 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
@@ -50,19 +50,20 @@ public class MaDMPController {
      * Update maDMP
      *
      * @param dmp
-     * @throws URISyntaxException
      */
+    @ResponseStatus(HttpStatus.OK)
     @RequestMapping(value = Endpoints.UPDATE_MADMP, method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
-    public void updateMaDMP(HttpServletRequest request, final @Valid @RequestBody DMPScheme dmpScheme)
-            throws URISyntaxException {
+    public void updateMaDMP(final Principal principal, final @Valid @RequestBody DMPScheme dmpScheme) {
 
         // Get current RDM Service
-        final RDMService rdmService = rdmServiceLayer.findByHost(new URI(request.getRemoteHost()));
+        final RDMService rdmService = rdmServiceLayer.findByClientId(principal.getName());
 
         // Identify maDMP
         DMP currentDMP = DMPService.identifyDMP(dmpScheme.getDmp(), rdmService);
+
+        // Was the DMP found?
         if (currentDMP != null) {
-            log.info("DMP was found, identifier: " + currentDMP.getClassIdentifier());
+            log.info("DMP was found, identifier: " + currentDMP.getClassIdentifier() + ". Updating...");
             // Update DMP
             DMPService.update(currentDMP, dmpScheme.getDmp(), rdmService);
         } else {
@@ -81,14 +82,13 @@ public class MaDMPController {
      * Change identifier
      *
      * @param idmpScheme
-     * @throws URISyntaxException
      */
+    @ResponseStatus(HttpStatus.OK)
     @RequestMapping(value = Endpoints.IDENTIFIER_CHANGE, method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
-    public void changeIdentifier(HttpServletRequest request, final @Valid @RequestBody IDMPScheme idmpScheme)
-            throws URISyntaxException {
+    public void changeIdentifier(final Principal principal, final @Valid @RequestBody IDMPScheme idmpScheme) {
 
         // Get current RDM Service
-        final RDMService rdmService = rdmServiceLayer.findByHost(new URI(request.getRemoteHost()));
+        final RDMService rdmService = rdmServiceLayer.findByClientId(principal.getName());
 
         // Identify maDMP
         final DMP currentDMP = DMPService.identifyDMP(new DMP(idmpScheme.getIdmp().getCreated(),
@@ -116,14 +116,13 @@ public class MaDMPController {
      * Delete instance
      *
      * @param idmpScheme
-     * @throws URISyntaxException
      */
+    @ResponseStatus(HttpStatus.OK)
     @RequestMapping(value = Endpoints.DELETE_INSTANCE, method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
-    public void deleteInstance(HttpServletRequest request, final @Valid @RequestBody IDMPScheme idmpScheme)
-            throws URISyntaxException {
+    public void deleteInstance(final Principal principal, final @Valid @RequestBody IDMPScheme idmpScheme) {
 
         // Get current RDM Service
-        final RDMService rdmService = rdmServiceLayer.findByHost(new URI(request.getRemoteHost()));
+        final RDMService rdmService = rdmServiceLayer.findByClientId(principal.getName());
 
         // Identify maDMP
         final DMP currentDMP = DMPService.identifyDMP(new DMP(idmpScheme.getIdmp().getCreated(),
@@ -167,32 +166,41 @@ public class MaDMPController {
 
     /**
      *
-     * Get maDMP by minimal DMP
+     * Get history of identifiers by minimal DMP
      * 
      * @param dmpScheme
      */
-    @RequestMapping(value = Endpoints.GET_MADMP, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public DMPScheme getMaDMP(final @Valid @RequestBody DMPScheme dmpScheme) {
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(value = Endpoints.GET_MADMP_IDENTIFIERS, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<Property> getIdentifierHistory(final Principal principal, final @Valid @RequestBody DMPScheme dmpScheme) {
+
+        // Check RDM Service
+        rdmServiceLayer.findByClientId(principal.getName());
+
+        // Identify maDMP
         final DMP dmpMinimum = DMPService.identifyDMP(dmpScheme.getDmp(), null);
+
+        // Was the DMP found?
         if (dmpMinimum != null) {
-            // TODO: Load older version of DMP based on the modified property
-            return DMPService.loadWholeDMP(dmpMinimum);
+            return DMPService.loadDMPIdentifiers(dmpMinimum);
         } else {
-            return null;
+            throw new NotFoundException(
+                    "DMP not found, identifier: " + dmpScheme.getDmp().getClassIdentifier());
         }
     }
 
     /**
      *
-     * Get history of identifiers by minimal DMP
+     * Get maDMP by minimal DMP
      * 
      * @param dmpScheme
      */
-    @RequestMapping(value = Endpoints.GET_MADMP_IDENTIFIERS, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Property> getIdentifierHistory(final @Valid @RequestBody DMPScheme dmpScheme) {
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(value = Endpoints.GET_MADMP, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public DMPScheme getMaDMP(final @Valid @RequestBody DMPScheme dmpScheme) {
         final DMP dmpMinimum = DMPService.identifyDMP(dmpScheme.getDmp(), null);
         if (dmpMinimum != null) {
-            return DMPService.loadDMPIdentifiers(dmpMinimum);
+            return DMPService.loadWholeDMP(dmpMinimum);
         } else {
             return null;
         }

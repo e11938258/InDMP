@@ -12,11 +12,13 @@ import at.tuwien.indmp.util.Endpoints;
 import at.tuwien.indmp.util.Views;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -34,6 +36,7 @@ public class RDMServiceController {
      *
      * @param rdmService
      */
+    @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(value = Endpoints.CREATE_NEW_RDM_SERVICE, method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public void createNewRDMService(final @Valid @RequestBody RDMService rdmService) {
         rdmServiceLayer.create(rdmService);
@@ -45,6 +48,7 @@ public class RDMServiceController {
      * 
      * @param rdmService
      */
+    @ResponseStatus(HttpStatus.OK)
     @RequestMapping(value = Endpoints.UPDATE_RDM_SERVICE, method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
     public void updateRDMService(final @Valid @RequestBody RDMService rdmService) {
         rdmServiceLayer.update(rdmService);
@@ -65,6 +69,7 @@ public class RDMServiceController {
      * Get all services
      *
      */
+    @ResponseStatus(HttpStatus.OK)
     @JsonView(Views.RDMService.class)
     @RequestMapping(value = Endpoints.GET_ALL_RDM_SERVICES, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<RDMService> getAllRDMServices() {
