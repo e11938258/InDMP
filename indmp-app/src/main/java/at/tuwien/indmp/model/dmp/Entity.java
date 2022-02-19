@@ -7,7 +7,6 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import at.tuwien.indmp.exception.ForbiddenException;
-import at.tuwien.indmp.model.Permission;
 import at.tuwien.indmp.model.Property;
 import at.tuwien.indmp.model.RDMService;
 
@@ -31,17 +30,6 @@ public abstract class Entity {
     @JsonIgnore
     public boolean areSame(String identifier) {
         return getClassIdentifier().equals(identifier);
-    }
-
-    @JsonIgnore
-    public boolean hasRightsToUpdate(RDMService rdmService) {
-        final List<Permission> permissions = rdmService.getPermissions();
-        for (Permission permission : permissions) {
-            if (permission.getAllowed() && permission.getClassType().equals(getClassType())) {
-                return true;
-            }
-        }
-        return false;
     }
 
     @JsonIgnore

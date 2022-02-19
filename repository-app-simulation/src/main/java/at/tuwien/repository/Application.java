@@ -17,14 +17,11 @@ public class Application {
     @Value("${application.timezone}")
     private String timeZone;
 
-    @Value("${application.name}")
-    private static String applicationName;
-
     private static final Logger log = LoggerFactory.getLogger(Application.class);
 
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
-        log.info("The application " + applicationName + " has started successfully!");
+        log.info("The application has started successfully!");
     }
 
     @PostConstruct

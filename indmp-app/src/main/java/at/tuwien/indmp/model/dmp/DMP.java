@@ -191,6 +191,10 @@ public class DMP extends ClassEntity {
         this.project = project;
     }
 
+    public boolean isNew() {
+        return getCreated().equals(getModified());
+    }
+
     @Override
     public Object[] getValues() {
         return new Object[] {
@@ -200,7 +204,6 @@ public class DMP extends ClassEntity {
                 getEthical_issues_exist(),
                 getEthical_issues_report(),
                 getLanguage(),
-                DMPConstants.DATE_TIME_FORMATTER_ISO_8601.format(getModified()),
                 getTitle(),
         };
     }
@@ -214,7 +217,6 @@ public class DMP extends ClassEntity {
                 "ethical_issues_exist",
                 "ethical_issues_report",
                 "language",
-                "modified",
                 "title",
         };
     }
@@ -256,6 +258,17 @@ public class DMP extends ClassEntity {
             properties.addAll(i.getPropertiesFromNestedClasses(dmp, system));
         }
 
+        return properties;
+    }
+
+    @JsonIgnore
+    @Override
+    public List<Property> getProperties(DMP dmp, String reference, RDMService rdmService) {
+        // Add modified date every time
+        final List<Property> properties = super.getProperties(dmp, reference, rdmService);
+        properties.add(new Property(dmp.getClassIdentifier(), getClassType(), getClassIdentifier(), "modified",
+                DMPConstants.DATE_TIME_FORMATTER_ISO_8601.format(getModified()), reference));
+        properties.addAll(super.getProperties(dmp, reference, rdmService));
         return properties;
     }
 

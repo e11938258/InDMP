@@ -11,5 +11,7 @@ public class Endpoints {
     public static final String MADMP = "/madmp"; // PUT
 
     // Test cases
-
+    public static final String TEST_CASE_3 = "/ftc3";
+    public static final String TEST_CASE_5 = "/ftc5";
+    public static final String TEST_CASE_6 = "/ftc6";
 }

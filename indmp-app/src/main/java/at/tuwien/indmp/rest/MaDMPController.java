@@ -189,4 +189,21 @@ public class MaDMPController {
                     "DMP not found, identifier: " + dmpScheme.getDmp().getClassIdentifier());
         }
     }
+
+    /**
+     *
+     * Get maDMP by minimal DMP - just for test cases
+     * 
+     * @param dmpScheme
+     */
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(value = Endpoints.GET_MADMP, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public DMPScheme getMaDMP(final @Valid @RequestBody DMPScheme dmpScheme) {
+        final DMP dmpMinimum = DMPService.identifyDMP(dmpScheme.getDmp(), null);
+        if (dmpMinimum != null) {
+            return DMPService.loadWholeDMP(dmpMinimum);
+        } else {
+            return null;
+        }
+    }
 }

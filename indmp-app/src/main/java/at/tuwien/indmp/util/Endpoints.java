@@ -12,6 +12,8 @@ public class Endpoints {
     public static final String DELETE_INSTANCE = "/madmp/instance"; // PUT
     public static final String GET_MADMP_IDENTIFIERS = "/madmp/identifiers"; // GET
 
+    public static final String GET_MADMP = "/madmp"; // GET - just test cases
+
     // System
     public static final String CREATE_NEW_RDM_SERVICE = "/system"; // POST
 }
