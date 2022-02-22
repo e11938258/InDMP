@@ -11,35 +11,35 @@ import javax.validation.constraints.Pattern;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-import at.tuwien.indmp.model.Property;
-import at.tuwien.indmp.model.RDMService;
-import at.tuwien.indmp.service.PropertyService;
-import at.tuwien.indmp.util.DMPConstants;
+import at.tuwien.indmp.model.DataService;
+import at.tuwien.indmp.model.Entity;
+import at.tuwien.indmp.service.EntityService;
+import at.tuwien.indmp.util.ModelConstants;
 import at.tuwien.indmp.util.Functions;
 
-public class Dataset extends ClassEntity {
+public class Dataset extends AbstractClassEntity {
 
     /* Properties */
     private List<String> data_quality_assurance = new ArrayList<>();
 
     private String description;
 
-    @JsonFormat(pattern = DMPConstants.DATE_FORMAT_ISO_8601)
+    @JsonFormat(pattern = ModelConstants.DATE_FORMAT_ISO_8601)
     private Date issued;
 
     private List<String> keyword = new ArrayList<>();
 
-    @Pattern(regexp = DMPConstants.REGEX_ISO_639_3)
+    @Pattern(regexp = ModelConstants.REGEX_ISO_639_3)
     private String language;
 
     @NotNull
-    @Pattern(regexp = DMPConstants.REGEX_YES_NO_UNKNOWN)
+    @Pattern(regexp = ModelConstants.REGEX_YES_NO_UNKNOWN)
     private String personal_data;
 
     private String preservation_statement;
 
     @NotNull
-    @Pattern(regexp = DMPConstants.REGEX_YES_NO_UNKNOWN)
+    @Pattern(regexp = ModelConstants.REGEX_YES_NO_UNKNOWN)
     private String sensitive_data;
 
     @NotNull
@@ -187,7 +187,7 @@ public class Dataset extends ClassEntity {
         return new Object[] {
                 getData_quality_assurance().toString(),
                 getDescription(),
-                getIssued() != null ? DMPConstants.DATE_FORMATTER_ISO_8601.format(getIssued()) : null,
+                getIssued() != null ? ModelConstants.DATE_FORMATTER_ISO_8601.format(getIssued()) : null,
                 getKeyword().toString(),
                 getLanguage(),
                 getPersonal_data(),
@@ -220,118 +220,111 @@ public class Dataset extends ClassEntity {
     }
 
     @Override
-    public List<Property> getPropertiesFromIdentifier(DMP dmp, String reference, RDMService system) {
-        return getDataset_id().getProperties(dmp, reference, system);
+    public List<Entity> getPropertiesFromIdentifier(DMP dmp, String location, DataService dataService) {
+        return getDataset_id().getProperties(dmp, location, dataService);
     }
 
     @Override
-    public List<Property> getPropertiesFromNestedClasses(DMP dmp, RDMService system) {
-        final List<Property> properties = new ArrayList<>();
+    public List<Entity> getPropertiesFromNestedClasses(DMP dmp, String location, DataService dataService) {
+        final List<Entity> properties = new ArrayList<>();
 
         // Distribution
         for (Distribution i : getDistribution()) {
-            properties.addAll(i.getProperties(dmp, getClassIdentifier(), system));
-            properties.addAll(i.getPropertiesFromNestedClasses(dmp, system));
+            properties.addAll(i.getProperties(dmp, getLocation(location), dataService));
+            properties.addAll(i.getPropertiesFromNestedClasses(dmp, getLocation(location), dataService));
         }
         // Metadata
         for (Metadata i : getMetadata()) {
-            properties.addAll(i.getProperties(dmp, getClassIdentifier(), system));
+            properties.addAll(i.getProperties(dmp, getLocation(location), dataService));
         }
         // Security and privacy
         for (SecurityAndPrivacy i : getSecurity_and_privacy()) {
-            properties.addAll(i.getProperties(dmp, getClassIdentifier(), system));
+            properties.addAll(i.getProperties(dmp, getLocation(location), dataService));
         }
         // Technical resource
         for (TechnicalResource i : getTechnical_resource()) {
-            properties.addAll(i.getProperties(dmp, getClassIdentifier(), system));
+            properties.addAll(i.getProperties(dmp, getLocation(location), dataService));
         }
 
         return properties;
     }
 
     @Override
-    public void build(PropertyService propertyService, String dmpIdentifier, String classIdentifier) {
-        // Nested classes
-        // Distribution
-        for (Property property : propertyService.findProperties(dmpIdentifier, "distribution", null, "access_url", null,
-                classIdentifier)) {
-            final Distribution i = new Distribution();
-            i.build(propertyService, dmpIdentifier, property.getValue());
-            distribution.add(i);
-        }
-
-        // Metadata
-        for (Property property : propertyService.findProperties(dmpIdentifier, "metadata_standard_id", null,
-                "identifier", null, classIdentifier)) {
-            final Metadata i = new Metadata();
-            i.build(propertyService, dmpIdentifier, property.getValue());
-            metadata.add(i);
-        }
-
-        // Security and privacy
-        for (Property property : propertyService.findProperties(dmpIdentifier, "securityandprivacy", null, "title",
-                null, classIdentifier)) {
-            final SecurityAndPrivacy i = new SecurityAndPrivacy();
-            i.build(propertyService, dmpIdentifier, property.getValue());
-            security_and_privacy.add(i);
-        }
-
-        // Technical resource
-        for (Property property : propertyService.findProperties(dmpIdentifier, "techicalresource", null, "name", null,
-                classIdentifier)) {
-            final TechnicalResource i = new TechnicalResource();
-            i.build(propertyService, dmpIdentifier, property.getValue());
-            technical_resource.add(i);
-        }
-
+    public void build(EntityService entityService, String location) {
         // Set properties
-        final List<Property> properties = propertyService.findProperties(dmpIdentifier, getClassType(), classIdentifier,
-                null, null, null);
+        final List<Entity> properties = entityService.findEntities(location, null);
 
-        Property p = Functions.findPropertyInList("data_quality_assurance", properties);
+        Entity p = Functions.findPropertyInList(getClassType(), "data_quality_assurance", properties);
         setData_quality_assurance(p != null
                 ? Arrays.asList(p.getValue().replace("[", "").replace("]", "").replace(" ", "").split(",", -1))
                 : null);
 
-        p = Functions.findPropertyInList("description", properties);
+        p = Functions.findPropertyInList(getClassType(), "description", properties);
         setDescription(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList("issued", properties);
+        p = Functions.findPropertyInList(getClassType(), "issued", properties);
         try {
-            setIssued(p != null ? DMPConstants.DATE_FORMATTER_ISO_8601.parse(p.getValue()) : null);
+            setIssued(p != null ? ModelConstants.DATE_FORMATTER_ISO_8601.parse(p.getValue()) : null);
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
-        p = Functions.findPropertyInList("keyword", properties);
+        p = Functions.findPropertyInList(getClassType(), "keyword", properties);
         setKeyword(p != null
                 ? Arrays.asList(p.getValue().replace("[", "").replace("]", "").replace(" ", "").split(",", -1))
                 : null);
 
-        p = Functions.findPropertyInList("language", properties);
+        p = Functions.findPropertyInList(getClassType(), "language", properties);
         setLanguage(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList("personal_data", properties);
+        p = Functions.findPropertyInList(getClassType(), "personal_data", properties);
         setPersonal_data(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList("preservation_statement", properties);
+        p = Functions.findPropertyInList(getClassType(), "preservation_statement", properties);
         setPreservation_statement(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList("sensitive_data", properties);
+        p = Functions.findPropertyInList(getClassType(), "sensitive_data", properties);
         setSensitive_data(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList("title", properties);
+        p = Functions.findPropertyInList(getClassType(), "title", properties);
         setTitle(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList("type", properties);
+        p = Functions.findPropertyInList(getClassType(), "type", properties);
         setType(p != null ? p.getValue() : null);
 
         // Set identifier
-        final List<Property> identifierProperties = propertyService.findProperties(dmpIdentifier, "dataset_id",
-                classIdentifier, null, null, null);
-        final Property identifier = Functions.findPropertyInList("identifier", identifierProperties);
-        final Property type = Functions.findPropertyInList("type", identifierProperties);
+        final Entity identifier = Functions.findPropertyInList(getClassType(), "identifier", properties);
+        final Entity type = Functions.findPropertyInList(getClassType(), "type", properties);
         dataset_id = new Dataset_id(identifier.getValue(), type.getValue());
+
+        // Nested classes
+        // Distribution
+        for (Entity property : entityService.findAllEntities(getLocation(location), "distribution:access_url")) {
+            final Distribution i = new Distribution();
+            i.build(entityService, getLocation(location) + "/" + property.getValue());
+            distribution.add(i);
+        }
+
+        // Metadata
+        for (Entity property : entityService.findAllEntities(getLocation(location), "metadata:metadata_standard_id")) {
+            final Metadata i = new Metadata();
+            i.build(entityService, getLocation(location) + "/" + property.getValue());
+            metadata.add(i);
+        }
+
+        // Security and privacy
+        for (Entity property : entityService.findAllEntities(getLocation(location), "securityandprivacy:title")) {
+            final SecurityAndPrivacy i = new SecurityAndPrivacy();
+            i.build(entityService, getLocation(location) + "/" + property.getValue());
+            security_and_privacy.add(i);
+        }
+
+        // Technical resource
+        for (Entity property : entityService.findAllEntities(getLocation(location), "techicalresource:name")) {
+            final TechnicalResource i = new TechnicalResource();
+            i.build(entityService, getLocation(location) + "/" + property.getValue());
+            technical_resource.add(i);
+        }
 
     }
 }

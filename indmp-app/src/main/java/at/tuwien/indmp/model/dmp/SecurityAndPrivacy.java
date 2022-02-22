@@ -1,16 +1,14 @@
 package at.tuwien.indmp.model.dmp;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
-import at.tuwien.indmp.model.Property;
-import at.tuwien.indmp.model.RDMService;
-import at.tuwien.indmp.service.PropertyService;
+import at.tuwien.indmp.model.Entity;
+import at.tuwien.indmp.service.EntityService;
 import at.tuwien.indmp.util.Functions;
 
-public class SecurityAndPrivacy extends ClassEntity {
+public class SecurityAndPrivacy extends AbstractClassEntity {
 
     /* Properties */
     private String description;
@@ -41,6 +39,7 @@ public class SecurityAndPrivacy extends ClassEntity {
     public Object[] getValues() {
         return new Object[] {
                 getDescription(),
+                getTitle()
         };
     }
 
@@ -48,6 +47,7 @@ public class SecurityAndPrivacy extends ClassEntity {
     public String[] getValueNames() {
         return new String[] {
                 "description",
+                "title"
         };
     }
 
@@ -57,27 +57,15 @@ public class SecurityAndPrivacy extends ClassEntity {
     }
 
     @Override
-    public List<Property> getPropertiesFromIdentifier(DMP dmp, String reference, RDMService rdmService) {
-        final List<Property> properties = new ArrayList<>();
-
-        final Property property = new Property(dmp.getClassIdentifier(), getClassType(), getClassIdentifier(),
-                "title", getClassIdentifier(), reference);
-        properties.add(property);
-
-        return properties;
-    }
-
-    @Override
-    public void build(PropertyService propertyService, String dmpIdentifier, String classIdentifier) {
+    public void build(EntityService entityService, String location) {
         // Set properties
-        final List<Property> properties = propertyService.findProperties(dmpIdentifier, getClassType(),
-                classIdentifier, null, null, null);
+        final List<Entity> properties = entityService.findEntities(location, null);
 
-        Property p = Functions.findPropertyInList("description", properties);
+        Entity p = Functions.findPropertyInList(getClassType(),"description", properties);
         setDescription(p != null ? p.getValue() : null);
 
         // Set identifier
-        p = Functions.findPropertyInList("title", properties);
+        p = Functions.findPropertyInList(getClassType(),"title", properties);
         setTitle(p.getValue());
     }
 }

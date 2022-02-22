@@ -1,7 +1,5 @@
 package at.tuwien.indmp.dao;
 
-import at.tuwien.indmp.model.RDMService;
-
 import java.util.List;
 import java.util.Objects;
 
@@ -12,44 +10,46 @@ import javax.persistence.criteria.Root;
 
 import org.springframework.stereotype.Repository;
 
-@Repository
-public class RDMServiceDao extends AbstractDao<RDMService> {
+import at.tuwien.indmp.model.DataService;
 
-    public RDMServiceDao() {
-        super(RDMService.class);
+@Repository
+public class DataServiceDao extends AbstractDao<DataService> {
+
+    public DataServiceDao() {
+        super(DataService.class);
     }
 
     /**
      * 
-     * Find all systems
+     * Find all services
      * 
      * @return
      */
-    public List<RDMService> findAll() {
+    public List<DataService> findAll() {
         final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        final CriteriaQuery<RDMService> criteriaQuery = criteriaBuilder.createQuery(RDMService.class);
-        final Root<RDMService> root = criteriaQuery.from(RDMService.class);
+        final CriteriaQuery<DataService> criteriaQuery = criteriaBuilder.createQuery(DataService.class);
+        final Root<DataService> root = criteriaQuery.from(DataService.class);
         criteriaQuery.select(root).distinct(true);
         return entityManager.createQuery(criteriaQuery).getResultList();
     }
 
     /**
      * 
-     * Find the system by client id
+     * Find the service by access rights
      * 
-     * @param clientId
+     * @param accessRights
      * @return
      */
-    public RDMService findByClientId(String clientId) {
-        Objects.requireNonNull(clientId);
+    public DataService findByAccessRights(String accessRights) {
+        Objects.requireNonNull(accessRights);
 
         final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        final CriteriaQuery<RDMService> criteriaQuery = criteriaBuilder.createQuery(RDMService.class);
-        final Root<RDMService> root = criteriaQuery.from(RDMService.class);
+        final CriteriaQuery<DataService> criteriaQuery = criteriaBuilder.createQuery(DataService.class);
+        final Root<DataService> root = criteriaQuery.from(DataService.class);
         criteriaQuery.select(root).distinct(true);
 
         // Conditions
-        Predicate predicate = criteriaBuilder.equal(root.get("clientId"), clientId);
+        Predicate predicate = criteriaBuilder.equal(root.get("accessRights"), accessRights);
         criteriaQuery.where(predicate);
 
         return entityManager.createQuery(criteriaQuery).getSingleResult();

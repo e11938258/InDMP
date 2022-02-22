@@ -6,12 +6,12 @@ import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
-import at.tuwien.indmp.model.Property;
-import at.tuwien.indmp.model.RDMService;
-import at.tuwien.indmp.service.PropertyService;
+import at.tuwien.indmp.model.DataService;
+import at.tuwien.indmp.model.Entity;
+import at.tuwien.indmp.service.EntityService;
 import at.tuwien.indmp.util.Functions;
 
-public class Contributor extends ClassEntity {
+public class Contributor extends AbstractClassEntity {
 
     /* Properties */
     private String mbox;
@@ -84,32 +84,29 @@ public class Contributor extends ClassEntity {
     }
 
     @Override
-    public List<Property> getPropertiesFromIdentifier(DMP dmp, String reference, RDMService system) {
-        return getContributor_id().getProperties(dmp, reference, system);
+    public List<Entity> getPropertiesFromIdentifier(DMP dmp, String location, DataService dataService) {
+        return getContributor_id().getProperties(dmp, getLocation(location), dataService);
     }
 
     @Override
-    public void build(PropertyService propertyService, String dmpIdentifier, String classIdentifier) {
+    public void build(EntityService entityService, String location) {
         // Set properties
-        final List<Property> properties = propertyService.findProperties(dmpIdentifier, getClassType(), classIdentifier,
-                null, null, null);
+        final List<Entity> properties = entityService.findEntities(location, null);
 
-        Property p = Functions.findPropertyInList("mbox", properties);
+        Entity p = Functions.findPropertyInList(getClassType(), "mbox", properties);
         setMbox(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList("name", properties);
+        p = Functions.findPropertyInList(getClassType(), "name", properties);
         setName(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList("role", properties);
+        p = Functions.findPropertyInList(getClassType(), "role", properties);
         setRole(p != null
                 ? Arrays.asList(p.getValue().replace("[", "").replace("]", "").replace(" ", "").split(",", -1))
                 : null);
 
         // Set identifier
-        final List<Property> identifierProperties = propertyService.findProperties(dmpIdentifier, "contributor_id",
-                classIdentifier, null, null, null);
-        final Property identifier = Functions.findPropertyInList("identifier", identifierProperties);
-        final Property type = Functions.findPropertyInList("type", identifierProperties);
-        contributor_id = new Contributor_id(identifier.getValue(), type.getValue());
+        final Entity identifier = Functions.findPropertyInList(getClassType(), "identifier", properties);
+        final Entity type = Functions.findPropertyInList(getClassType(), "type", properties);
+        setContributor_id(new Contributor_id(identifier.getValue(), type.getValue()));
     }
 }

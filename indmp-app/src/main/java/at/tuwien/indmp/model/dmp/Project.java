@@ -9,21 +9,21 @@ import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-import at.tuwien.indmp.model.Property;
-import at.tuwien.indmp.model.RDMService;
-import at.tuwien.indmp.service.PropertyService;
-import at.tuwien.indmp.util.DMPConstants;
+import at.tuwien.indmp.model.DataService;
+import at.tuwien.indmp.model.Entity;
+import at.tuwien.indmp.service.EntityService;
+import at.tuwien.indmp.util.ModelConstants;
 import at.tuwien.indmp.util.Functions;
 
-public class Project extends ClassEntity {
+public class Project extends AbstractClassEntity {
 
     /* Properties */
     private String description;
 
-    @JsonFormat(pattern = DMPConstants.DATE_FORMAT_ISO_8601)
+    @JsonFormat(pattern = ModelConstants.DATE_FORMAT_ISO_8601)
     private Date end;
 
-    @JsonFormat(pattern = DMPConstants.DATE_FORMAT_ISO_8601)
+    @JsonFormat(pattern = ModelConstants.DATE_FORMAT_ISO_8601)
     private Date start;
 
     @NotNull
@@ -79,8 +79,9 @@ public class Project extends ClassEntity {
     public Object[] getValues() {
         return new Object[] {
                 getDescription(),
-                getEnd() != null ? DMPConstants.DATE_FORMATTER_ISO_8601.format(getEnd()) : null,
-                getStart() != null ? DMPConstants.DATE_FORMATTER_ISO_8601.format(getStart()) : null
+                getEnd() != null ? ModelConstants.DATE_FORMATTER_ISO_8601.format(getEnd()) : null,
+                getStart() != null ? ModelConstants.DATE_FORMATTER_ISO_8601.format(getStart()) : null,
+                getTitle()
         };
     }
 
@@ -90,6 +91,7 @@ public class Project extends ClassEntity {
                 "description",
                 "end",
                 "start",
+                "title",
         };
     }
 
@@ -99,63 +101,50 @@ public class Project extends ClassEntity {
     }
 
     @Override
-    public List<Property> getPropertiesFromIdentifier(DMP dmp, String reference, RDMService rdmService) {
-        final List<Property> properties = new ArrayList<>();
-
-        final Property property = new Property(dmp.getClassIdentifier(), getClassType(), getClassIdentifier(),
-                "title", getClassIdentifier(), reference);
-        properties.add(property);
-
-        return properties;
-    }
-
-    @Override
-    public List<Property> getPropertiesFromNestedClasses(DMP dmp, RDMService system) {
-        final List<Property> properties = new ArrayList<>();
+    public List<Entity> getPropertiesFromNestedClasses(DMP dmp, String location, DataService dataService) {
+        final List<Entity> properties = new ArrayList<>();
 
         // Funding
         for (Funding i : getFunding()) {
-            properties.addAll(i.getProperties(dmp, getClassIdentifier(), system));
-            properties.addAll(i.getPropertiesFromNestedClasses(dmp, system));
+            properties.addAll(i.getProperties(dmp, getLocation(location), dataService));
+            properties.addAll(i.getPropertiesFromNestedClasses(dmp, getLocation(location), dataService));
         }
 
         return properties;
     }
 
     @Override
-    public void build(PropertyService propertyService, String dmpIdentifier, String classIdentifier) {
-        // Nested classes
-        // Funding
-        for (Property property : propertyService.findProperties(dmpIdentifier, "funder_id", null, "identifier", null,
-                classIdentifier)) {
-            final Funding i = new Funding();
-            i.build(propertyService, dmpIdentifier, property.getValue());
-            funding.add(i);
-        }
-
+    public void build(EntityService entityService, String location) {
         // Set properties
-        final List<Property> properties = propertyService.findProperties(dmpIdentifier, getClassType(), classIdentifier,
-                null, null, null);
+        final List<Entity> properties = entityService.findEntities(location, null);
 
-        Property p = Functions.findPropertyInList("description", properties);
+        Entity p = Functions.findPropertyInList(getClassType(), "description", properties);
         setDescription(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList("end", properties);
+        p = Functions.findPropertyInList(getClassType(), "end", properties);
         try {
-            setEnd(p != null ? DMPConstants.DATE_FORMATTER_ISO_8601.parse(p.getValue()) : null);
+            setEnd(p != null ? ModelConstants.DATE_FORMATTER_ISO_8601.parse(p.getValue()) : null);
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
-        p = Functions.findPropertyInList("start", properties);
+        p = Functions.findPropertyInList(getClassType(), "start", properties);
         try {
-            setStart(p != null ? DMPConstants.DATE_FORMATTER_ISO_8601.parse(p.getValue()) : null);
+            setStart(p != null ? ModelConstants.DATE_FORMATTER_ISO_8601.parse(p.getValue()) : null);
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
         // Set identifier
-        p = Functions.findPropertyInList("title", properties);
+        p = Functions.findPropertyInList(getClassType(), "title", properties);
         setTitle(p.getValue());
+
+        // Nested classes
+        // Funding
+        for (Entity property : entityService.findAllEntities(getLocation(location), "funding:identifier")) {
+            final Funding i = new Funding();
+            i.build(entityService, getLocation(location) + "/" + property.getValue());
+            funding.add(i);
+        }
     }
 }

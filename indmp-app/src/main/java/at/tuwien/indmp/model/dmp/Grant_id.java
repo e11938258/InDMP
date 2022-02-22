@@ -3,13 +3,13 @@ package at.tuwien.indmp.model.dmp;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
-import at.tuwien.indmp.util.DMPConstants;
+import at.tuwien.indmp.util.ModelConstants;
 
 public class Grant_id extends Identifier {
 
     /* Properties */
     @NotNull
-    @Pattern(regexp = DMPConstants.REGEX_GRANT_IDENTIFIER_TYPE)
+    @Pattern(regexp = ModelConstants.REGEX_GRANT_IDENTIFIER_TYPE)
     private String type;
 
     public Grant_id() {

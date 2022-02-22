@@ -5,19 +5,19 @@ import java.util.List;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
-import at.tuwien.indmp.model.Property;
-import at.tuwien.indmp.model.RDMService;
-import at.tuwien.indmp.service.PropertyService;
-import at.tuwien.indmp.util.DMPConstants;
+import at.tuwien.indmp.model.DataService;
+import at.tuwien.indmp.model.Entity;
+import at.tuwien.indmp.service.EntityService;
+import at.tuwien.indmp.util.ModelConstants;
 import at.tuwien.indmp.util.Functions;
 
-public class Metadata extends ClassEntity {
+public class Metadata extends AbstractClassEntity {
 
     /* Properties */
     private String description;
 
     @NotNull
-    @Pattern(regexp = DMPConstants.REGEX_ISO_639_3)
+    @Pattern(regexp = ModelConstants.REGEX_ISO_639_3)
     private String language;
 
     /* Nested data structure */
@@ -73,27 +73,24 @@ public class Metadata extends ClassEntity {
     }
 
     @Override
-    public List<Property> getPropertiesFromIdentifier(DMP dmp, String reference, RDMService rdmService) {
-        return getMetadata_standard_id().getProperties(dmp, reference, rdmService);
+    public List<Entity> getPropertiesFromIdentifier(DMP dmp, String location, DataService dataService) {
+        return getMetadata_standard_id().getProperties(dmp, location, dataService);
     }
 
     @Override
-    public void build(PropertyService propertyService, String dmpIdentifier, String classIdentifier) {
+    public void build(EntityService entityService, String location) {
         // Set properties
-        final List<Property> properties = propertyService.findProperties(dmpIdentifier, getClassType(), classIdentifier,
-                null, null, null);
+        final List<Entity> properties = entityService.findEntities(location, null);
 
-        Property p = Functions.findPropertyInList("description", properties);
+        Entity p = Functions.findPropertyInList(getClassType(), "description", properties);
         setDescription(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList("language", properties);
+        p = Functions.findPropertyInList(getClassType(), "language", properties);
         setLanguage(p != null ? p.getValue() : null);
 
         // Set identifier
-        final List<Property> identifierProperties = propertyService.findProperties(dmpIdentifier,
-                "metadata_standard_id", classIdentifier, null, null, null);
-        final Property identifier = Functions.findPropertyInList("identifier", identifierProperties);
-        final Property type = Functions.findPropertyInList("type", identifierProperties);
+        final Entity identifier = Functions.findPropertyInList(getClassType(), "identifier", properties);
+        final Entity type = Functions.findPropertyInList(getClassType(), "type", properties);
         metadata_standard_id = new Metadata_standard_id(identifier.getValue(), type.getValue());
     }
 }

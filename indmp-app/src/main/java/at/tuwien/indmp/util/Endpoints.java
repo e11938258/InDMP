@@ -15,5 +15,5 @@ public class Endpoints {
     public static final String GET_MADMP = "/madmp"; // GET - just test cases
 
     // System
-    public static final String CREATE_NEW_RDM_SERVICE = "/system"; // POST
+    public static final String CREATE_NEW_DATA_SERVICE = "/system"; // POST
 }

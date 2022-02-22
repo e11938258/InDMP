@@ -2,23 +2,23 @@ package at.tuwien.indmp.service.impl;
 
 import java.text.ParseException;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
+import javax.validation.Valid;
+
 import at.tuwien.indmp.exception.BadRequestException;
+import at.tuwien.indmp.exception.ForbiddenException;
 import at.tuwien.indmp.exception.NotFoundException;
-import at.tuwien.indmp.model.Property;
-import at.tuwien.indmp.model.RDMService;
+import at.tuwien.indmp.model.DataService;
+import at.tuwien.indmp.model.Entity;
 import at.tuwien.indmp.model.dmp.DMP;
 import at.tuwien.indmp.model.dmp.DMPScheme;
 import at.tuwien.indmp.model.dmp.DMP_id;
-import at.tuwien.indmp.model.idmp.Identifier;
-import at.tuwien.indmp.model.idmp.IdentifierUnit;
 import at.tuwien.indmp.service.DMPService;
-import at.tuwien.indmp.service.PropertyService;
-import at.tuwien.indmp.service.RDMServiceLayer;
-import at.tuwien.indmp.util.DMPConstants;
+import at.tuwien.indmp.service.EntityService;
+import at.tuwien.indmp.util.ModelConstants;
+import at.tuwien.indmp.util.Functions;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,10 +39,7 @@ public class DMPServiceImpl implements DMPService {
     private boolean byIdentifierOnly;
 
     @Autowired
-    PropertyService propertyService;
-
-    @Autowired
-    RDMServiceLayer rdmServiceLayer;
+    EntityService entityService;
 
     private final Logger log = LoggerFactory.getLogger(DMPServiceImpl.class);
 
@@ -51,15 +48,15 @@ public class DMPServiceImpl implements DMPService {
      * Create a new DMP
      * 
      * @param dmp
-     * @param rdmService
+     * @param dataService
      */
-    public void create(DMP dmp, RDMService rdmService) {
+    public void create(DMP dmp, DataService dataService) {
         // Get properties from new DMP
-        final List<Property> properties = dmp.getProperties(dmp, null, rdmService);
-        properties.addAll(dmp.getPropertiesFromNestedClasses(dmp, rdmService));
+        final List<Entity> properties = dmp.getProperties(dmp, "", dataService);
+        properties.addAll(dmp.getPropertiesFromNestedClasses(dmp, "", dataService));
 
         // Persist the properties
-        propertyService.persist(properties, rdmService);
+        entityService.persist(properties, dataService);
     }
 
     /**
@@ -67,10 +64,10 @@ public class DMPServiceImpl implements DMPService {
      * Identify DMP by creation date and identifier
      * 
      * @param dmp
-     * @param system
+     * @param dataService
      * @return minimum of DMP
      */
-    public DMP identifyDMP(DMP dmp, RDMService system) {
+    public DMP identifyDMP(@Valid DMP dmp, DataService dataService) {
         // Check minimal DMP
         checkMinimalDMP(dmp);
         // Is creation date same as modification date?
@@ -87,14 +84,14 @@ public class DMPServiceImpl implements DMPService {
                     return currentDMP;
                 } else {
                     // Auto correction enabled?
-                    if (autoCorrection && system != null) {
-                        List<IdentifierUnit> identifier = new ArrayList<>();
-                        identifier.add(new IdentifierUnit("dmp",
-                                new Identifier(currentDMP.getDmp_id().getIdentifier(),
-                                        currentDMP.getDmp_id().getType().toString()),
-                                new Identifier(dmp.getDmp_id().getIdentifier(),
-                                        dmp.getDmp_id().getType().toString())));
-                        changeIdentifiers(currentDMP, identifier, dmp.getModified(), system);
+                    if (autoCorrection && dataService != null) {
+                        // List<IdentifierUnit> identifier = new ArrayList<>();
+                        // identifier.add(new IdentifierUnit("dmp",
+                        // new Identifier(currentDMP.getDmp_id().getIdentifier(),
+                        // currentDMP.getDmp_id().getType().toString()),
+                        // new Identifier(dmp.getDmp_id().getIdentifier(),
+                        // dmp.getDmp_id().getType().toString())));
+                        // changeIdentifiers(currentDMP, identifier, dmp.getModified(), dataService);
                     }
 
                     // Identification by creation only?
@@ -134,146 +131,38 @@ public class DMPServiceImpl implements DMPService {
     }
 
     private DMP findByCreationDate(String creationDate) {
-        Property property = propertyService.find(null, "dmp", null, "created", creationDate, null);
-        if (property != null) {
-            return loadMinimalDMP(property.getDmpIdentifier());
+        final Entity entity = entityService.findEntity(null, "dmp:created", creationDate);
+        if (entity != null) {
+            return loadMinimalDMP(entity.getAtLocation());
         } else {
             return null;
         }
     }
 
     private DMP findByIdentifier(String identifier) {
-        Property property = propertyService.find(null, "dmp_id", null, "identifier", identifier, null);
-        if (property != null) {
-            return loadMinimalDMP(identifier);
+        final Entity entity = entityService.findEntity(null, "dmp:identifier", identifier);
+        if (entity != null) {
+            return loadMinimalDMP(entity.getAtLocation());
         } else {
             return null;
         }
     }
 
-    private DMP loadMinimalDMP(String dmpIdentifier) {
-        final String created = propertyService.find(dmpIdentifier, "dmp", null, "created", null, null)
-                .getValue();
-        final String modified = propertyService.find(dmpIdentifier, "dmp", null, "modified", null, null)
-                .getValue();
-        final String identifier = propertyService.find(dmpIdentifier, "dmp_id", null, "identifier", null, null)
-                .getValue();
-        final String type = propertyService.find(dmpIdentifier, "dmp_id", null, "type", null, null).getValue();
+    private DMP loadMinimalDMP(String atLocation) {
+        // Find mandatory properties
+        final List<Entity> properties = entityService.findEntities(atLocation, null);
+        final String created = Functions.findPropertyInList("dmp", "created", properties).getValue();
+        final String modified = Functions.findPropertyInList("dmp", "modified", properties).getValue();
+        final String identifier = Functions.findPropertyInList("dmp", "identifier", properties).getValue();
+        final String type = Functions.findPropertyInList("dmp", "type", properties).getValue();
+
+        // Create a new minimal DMP
         final DMP_id dmp_id = new DMP_id(identifier, type);
         try {
-            return new DMP(DMPConstants.DATE_TIME_FORMATTER_ISO_8601.parse(created),
-                    DMPConstants.DATE_TIME_FORMATTER_ISO_8601.parse(modified), dmp_id);
+            return new DMP(ModelConstants.DATE_TIME_FORMATTER_ISO_8601.parse(created),
+                    ModelConstants.DATE_TIME_FORMATTER_ISO_8601.parse(modified), dmp_id);
         } catch (ParseException e) {
             return null;
-        }
-    }
-
-    /**
-     * Update dmp
-     * 
-     * @param currentDMP
-     * @param dmp
-     */
-    public void update(DMP currentDMP, DMP dmp, RDMService rdmService) {
-        // Get properties from new DMP
-        final List<Property> properties = dmp.getProperties(dmp, null, rdmService);
-        properties.addAll(dmp.getPropertiesFromNestedClasses(dmp, rdmService));
-
-        // Set new properties
-        propertyService.updateOrCreateProperties(properties, rdmService);
-    }
-
-    /**
-     * 
-     * Update the property modified
-     * 
-     * @param currentDMP
-     * @param modified
-     * @param system
-     */
-    public void updateModified(DMP currentDMP, Date modified, RDMService system) {
-        // Update the property
-        propertyService.loadAndUpdate(currentDMP.getClassIdentifier(), "dmp", null, "modified",
-                DMPConstants.DATE_TIME_FORMATTER_ISO_8601.format(modified), null, system);
-    }
-
-    /**
-     * 
-     * Change identifiers
-     * 
-     * @param currentDMP
-     * @param identifiers
-     * @param modified
-     * @param rdmService
-     */
-    public void changeIdentifiers(DMP currentDMP, List<IdentifierUnit> identifiers, Date modified,
-            RDMService rdmService) {
-        Objects.requireNonNull(currentDMP, "DMP is null.");
-        Objects.requireNonNull(identifiers, "Identifier array is null.");
-        Objects.requireNonNull(rdmService, "RDM service is null.");
-
-        // For each identifier
-        for (IdentifierUnit identifier : identifiers) {
-
-            // Is the identifier changeable for the this class?
-            if (DMPConstants.identifierChangeableClasses.containsKey(identifier.getType())) {
-
-                // Get data about identifier
-                final String[] identifierData = DMPConstants.identifierChangeableClasses.get(identifier.getType());
-
-                // Find property
-                final Property currentIdentifier = propertyService.find(currentDMP.getClassIdentifier(),
-                        identifierData[0], identifier.getId().getIdentifier(), identifierData[1],
-                        identifier.getId().getIdentifier(), null);
-                Property currentType = null;
-
-                // Has identifier type?
-                if (identifierData.length > 2) {
-                    currentType = propertyService.find(currentDMP.getClassIdentifier(),
-                            identifierData[0], identifier.getId().getIdentifier(), identifierData[2],
-                            identifier.getId().getType(), null);
-                }
-
-                // Found?
-                if (currentIdentifier != null && (identifierData.length == 2 || currentType != null)) {
-                    // Set new properties
-                    currentIdentifier.setValue(identifier.getNew_id().getIdentifier());
-                    propertyService.update(currentIdentifier, rdmService);
-
-                    if (currentType != null) {
-                        currentType.setValue(identifier.getNew_id().getType());
-                        propertyService.update(currentType, rdmService);
-                    }
-
-                    // Change class identifiers and references
-                    propertyService.changeNestedIdentifiers(currentDMP.getClassIdentifier(),
-                            identifier.getId().getIdentifier(),
-                            identifier.getNew_id().getIdentifier());
-                } else {
-                    log.error("Cannot find identifier " + identifier.getId().getIdentifier() + " or its type.");
-                }
-            } else {
-                log.warn("Cannot change identifier for type " + identifier.getType());
-            }
-        }
-    }
-
-    /**
-     * 
-     * Delete instances
-     * 
-     * @param currentDMP
-     * @param identifiers
-     * @param system
-     */
-    public void deleteInstances(DMP currentDMP, List<IdentifierUnit> identifiers) {
-        Objects.requireNonNull(currentDMP, "DMP is null.");
-        Objects.requireNonNull(identifiers, "Identifier array is null.");
-
-        // For each identifier find instance and end properties
-        for (IdentifierUnit identifier : identifiers) {
-            propertyService.removeAllNestedProperties(currentDMP.getClassIdentifier(),
-                    identifier.getId().getIdentifier());
         }
     }
 
@@ -287,9 +176,9 @@ public class DMPServiceImpl implements DMPService {
     public DMPScheme loadWholeDMP(DMP dmp) {
         // Build DMP
         final DMP wholeDMP = new DMP();
-        wholeDMP.build(propertyService, dmp.getClassIdentifier(), null);
+        wholeDMP.build(entityService, dmp.getLocation(""));
 
-        // Return in the right format
+        // Return in the DMP scheme
         final DMPScheme dmpScheme = new DMPScheme();
         dmpScheme.setDmp(wholeDMP);
         return dmpScheme;
@@ -297,34 +186,124 @@ public class DMPServiceImpl implements DMPService {
 
     /**
      * 
-     * Load all DMP identifiers with history
+     * Update dmp
      * 
+     * @param currentDMP
+     * @param dmp
+     * @param dataService
+     */
+    public void update(DMP dmp, DataService dataService) {
+        // Get properties from new DMP
+        final List<Entity> properties = dmp.getProperties(dmp, "", dataService);
+        properties.addAll(dmp.getPropertiesFromNestedClasses(dmp, "", dataService));
+
+        // Set new properties
+        entityService.updateOrCreateEntities(properties, dataService);
+    }
+
+    /**
+     *
+     * Change identifier
+     *
+     * @param dmp
+     * @param identifiers
+     * @param dataService
+     */
+    public void changeIdentifiers(DMP dmp, Entity identifier, DataService dataService) {
+        Objects.requireNonNull(dmp, "DMP is null.");
+        Objects.requireNonNull(identifier, "Identifier is null.");
+        Objects.requireNonNull(dataService, "Service is null.");
+
+        // Is the identifier changeable for the this class?
+        if (ModelConstants.IDENTIFIER_CHANGEABLE_CLASSES.contains(identifier.getSpecializationOf())) {
+
+            // Find identifier
+            final Entity currentIdentifier = entityService.findEntity(identifier.getAtLocation(),
+                    identifier.getSpecializationOf(), null);
+
+            // Found?
+            if (currentIdentifier != null) {
+                // Change modified
+                updateModified(dmp, dataService);
+
+                // Create a new location
+                final String oldLocation = currentIdentifier.getAtLocation();
+                final String location = oldLocation.replace(currentIdentifier.getValue(), identifier.getValue());
+                // Create a new entity
+                entityService.update(
+                        Functions.createEntity(dmp, oldLocation, currentIdentifier.getSpecializationOf(),
+                                identifier.getValue()),
+                        currentIdentifier, dataService);
+
+                // Change nested locations
+                entityService.changeNestedEntities(oldLocation, location);
+            } else {
+                log.error("Cannot find identifier at location " + identifier.getAtLocation());
+                throw new NotFoundException("Cannot find identifier at location " + identifier.getAtLocation());
+            }
+        } else {
+            log.error("Cannot change " + identifier.getSpecializationOf());
+            throw new ForbiddenException("Cannot change " + identifier.getSpecializationOf());
+        }
+    }
+
+    private void updateModified(DMP dmp, DataService dataService) {
+        entityService.update(Functions.findPropertyInList("dmp", "modified", dmp.getProperties(dmp, "", dataService)),
+                null, dataService);
+    }
+
+    /**
+     *
+     * Delete instance
+     *
+     * @param dmp
+     * @param identifiers
+     * @param system
+     */
+    public void deleteInstance(Entity entity) {
+        Objects.requireNonNull(entity, "Entity is null.");
+        entityService.removeAllNestedEntities(entity.getAtLocation());
+    }
+
+    /**
+     *
+     * Load DMP identifiers with history
+     *
      * @param dmp
      * @return
      */
-    public List<Property> loadDMPIdentifiers(DMP dmp) {
-        final List<Property> properties = new ArrayList<>();
+    public List<Entity> loadIdentifierHistory(DMP dmp) {
+        final List<Entity> entities = new ArrayList<>();
 
-        // DMP
-        properties.addAll(propertyService.loadAllIdentifiers(dmp.getClassIdentifier(), "dmp_id", null));
-        // Project
-        properties.addAll(propertyService.loadAllIdentifiers(dmp.getClassIdentifier(), "project", "title"));
-        // Funding
-        properties.addAll(propertyService.loadAllIdentifiers(dmp.getClassIdentifier(), "funder_id", null));
-        // Grant id
-        properties.addAll(propertyService.loadAllIdentifiers(dmp.getClassIdentifier(), "grant_id", null));
-        // Contact
-        properties.addAll(propertyService.loadAllIdentifiers(dmp.getClassIdentifier(), "contact_id", null));
-        // Contributor
-        properties.addAll(propertyService.loadAllIdentifiers(dmp.getClassIdentifier(), "contributor_id", null));
-        // Cost
-        properties.addAll(propertyService.loadAllIdentifiers(dmp.getClassIdentifier(), "cost", "title"));
-        // Dataset
-        properties.addAll(propertyService.loadAllIdentifiers(dmp.getClassIdentifier(), "dataset_id", null));
-        // Distribution
-        properties.addAll(propertyService.loadAllIdentifiers(dmp.getClassIdentifier(), "distribution", "access_url"));
+        // // DMP
+        // properties.addAll(propertyService.loadAllIdentifiers(dmp.getClassIdentifier(),
+        //         "dmp_id", null));
+        // // Project
+        // properties.addAll(propertyService.loadAllIdentifiers(dmp.getClassIdentifier(),
+        //         "project", "title"));
+        // // Funding
+        // properties.addAll(propertyService.loadAllIdentifiers(dmp.getClassIdentifier(),
+        //         "funder_id", null));
+        // // Grant id
+        // properties.addAll(propertyService.loadAllIdentifiers(dmp.getClassIdentifier(),
+        //         "grant_id", null));
+        // // Contact
+        // properties.addAll(propertyService.loadAllIdentifiers(dmp.getClassIdentifier(),
+        //         "contact_id", null));
+        // // Contributor
+        // properties.addAll(propertyService.loadAllIdentifiers(dmp.getClassIdentifier(),
+        //         "contributor_id", null));
+        // // Cost
+        // properties.addAll(propertyService.loadAllIdentifiers(dmp.getClassIdentifier(),
+        //         "cost", "title"));
+        // // Dataset
+        // properties.addAll(propertyService.loadAllIdentifiers(dmp.getClassIdentifier(),
+        //         "dataset_id", null));
+        // // Distribution
+        // properties.addAll(propertyService.loadAllIdentifiers(dmp.getClassIdentifier(),
+        //         "distribution", "access_url"));
 
-        return properties;
+        return entities;
     }
 
 }

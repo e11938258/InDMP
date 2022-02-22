@@ -8,13 +8,12 @@ import java.util.List;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
-import at.tuwien.indmp.model.Property;
-import at.tuwien.indmp.model.RDMService;
-import at.tuwien.indmp.service.PropertyService;
-import at.tuwien.indmp.util.DMPConstants;
+import at.tuwien.indmp.model.Entity;
+import at.tuwien.indmp.service.EntityService;
+import at.tuwien.indmp.util.ModelConstants;
 import at.tuwien.indmp.util.Functions;
 
-public class Host extends ClassEntity {
+public class Host extends AbstractClassEntity {
 
     /* Properties */
     private String availability;
@@ -23,20 +22,20 @@ public class Host extends ClassEntity {
 
     private String backup_type;
 
-    @Pattern(regexp = DMPConstants.REGEX_REPOSITORY_CERTIFIED)
+    @Pattern(regexp = ModelConstants.REGEX_REPOSITORY_CERTIFIED)
     private String certified_with;
 
     private String description;
 
-    @Pattern(regexp = DMPConstants.REGEX_ISO_3166_1)
+    @Pattern(regexp = ModelConstants.REGEX_ISO_3166_1)
     private String geo_location;
 
-    @Pattern(regexp = DMPConstants.REGEX_PID_SYSTEM)
+    @Pattern(regexp = ModelConstants.REGEX_PID_SYSTEM)
     private List<String> pid_system = new ArrayList<>();
 
     private String storage_type;
 
-    @Pattern(regexp = DMPConstants.REGEX_YES_NO_UNKNOWN)
+    @Pattern(regexp = ModelConstants.REGEX_YES_NO_UNKNOWN)
     private String support_versioning;
 
     @NotNull
@@ -149,6 +148,7 @@ public class Host extends ClassEntity {
                 getStorage_type(),
                 getSupport_versioning(),
                 getTitle(),
+                getUrl().toString()
         };
     }
 
@@ -165,6 +165,7 @@ public class Host extends ClassEntity {
                 "storage_type",
                 "support_versioning",
                 "title",
+                "url"
         };
     }
 
@@ -174,56 +175,44 @@ public class Host extends ClassEntity {
     }
 
     @Override
-    public List<Property> getPropertiesFromIdentifier(DMP dmp, String reference, RDMService rdmService) {
-        final List<Property> properties = new ArrayList<>();
-
-        final Property property = new Property(dmp.getClassIdentifier(), getClassType(), getClassIdentifier(),
-                "url", getClassIdentifier(), reference);
-        properties.add(property);
-
-        return properties;
-    }
-
-    @Override
-    public void build(PropertyService propertyService, String dmpIdentifier, String classIdentifier) {
+    public void build(EntityService entityService, String location) {
         // Set properties
-        final List<Property> properties = propertyService.findProperties(dmpIdentifier, getClassType(), classIdentifier,
-                null, null, null);
+        final List<Entity> properties = entityService.findEntities(location, null);
 
-        Property p = Functions.findPropertyInList("availability", properties);
+        Entity p = Functions.findPropertyInList(getClassType(), "availability", properties);
         setAvailability(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList("backup_frequency", properties);
+        p = Functions.findPropertyInList(getClassType(), "backup_frequency", properties);
         setBackup_frequency(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList("backup_type", properties);
+        p = Functions.findPropertyInList(getClassType(), "backup_type", properties);
         setBackup_type(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList("certified_with", properties);
+        p = Functions.findPropertyInList(getClassType(), "certified_with", properties);
         setCertified_with(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList("description", properties);
+        p = Functions.findPropertyInList(getClassType(), "description", properties);
         setDescription(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList("geo_location", properties);
+        p = Functions.findPropertyInList(getClassType(), "geo_location", properties);
         setGeo_location(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList("pid_system", properties);
+        p = Functions.findPropertyInList(getClassType(), "pid_system", properties);
         setPid_system(p != null
                 ? Arrays.asList(p.getValue().replace("[", "").replace("]", "").replace(" ", "").split(",", -1))
                 : null);
 
-        p = Functions.findPropertyInList("storage_type", properties);
+        p = Functions.findPropertyInList(getClassType(), "storage_type", properties);
         setStorage_type(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList("support_versioning", properties);
+        p = Functions.findPropertyInList(getClassType(), "support_versioning", properties);
         setSupport_versioning(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList("title", properties);
+        p = Functions.findPropertyInList(getClassType(), "title", properties);
         setTitle(p != null ? p.getValue() : null);
 
         // Set identifier
-        p = Functions.findPropertyInList("url", properties);
+        p = Functions.findPropertyInList(getClassType(), "url", properties);
         setUrl(URI.create(p.getValue()));
     }
 }

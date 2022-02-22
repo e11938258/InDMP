@@ -1,50 +1,59 @@
 --Delete old tables if exists
-DROP TABLE IF EXISTS property_history;
-DROP TABLE IF EXISTS property;
-DROP TABLE IF EXISTS permission;
-DROP TABLE IF EXISTS rdm_service;
+DROP TABLE IF EXISTS entity_history;
+DROP TABLE IF EXISTS entity;
+DROP TABLE IF EXISTS activity;
+DROP TABLE IF EXISTS data_service_rights;
+DROP TABLE IF EXISTS data_service;
 
 --Create new tables
-create table rdm_service (
-    id bigserial not null,
-    name varchar(64) not null,
-    client_id varchar(64) not null,
-    dmp_endpoint varchar(255) not null,
-    primary key (id)
+create table data_service (
+    identifier bigserial NOT NULL,
+    title varchar(64) NOT NULL,
+    access_rights varchar(64) NOT NULL,
+    endpoint_url varchar(255) NOT NULL,
+    endpoint_description varchar(512) NOT NULL,
+    PRIMARY KEY (identifier)
 );
 
-create table permission (
-    id bigserial not null,
-    class_type varchar(64) not null,
-    allowed boolean not null,
-    rdm_service_id bigserial not null,
-    primary key (id),
-    CONSTRAINT fk_rdm_service FOREIGN KEY(rdm_service_id) REFERENCES rdm_service(id) MATCH SIMPLE
+create table data_service_rights (
+    data_service_identifier bigserial NOT NULL,
+    rights varchar(255),
+    CONSTRAINT fk_data_service FOREIGN KEY (data_service_identifier)
+        REFERENCES data_service (identifier) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
 );
 
-create table property (
-    id bigserial not null primary key,
-    dmp_identifier varchar(256) not null,
-    class_type varchar(64) not null,
-    class_identifier varchar(256) not null,
-    property_name varchar(64) not null,
-    value varchar(4096) not null,
-    reference varchar(256),
-    rdm_service_id bigserial not null,
-    CONSTRAINT fk_rdm_service FOREIGN KEY(rdm_service_id) REFERENCES rdm_service(id) MATCH SIMPLE
+create table activity (
+    id bigserial NOT NULL,
+    started_at_time timestamp without time zone NOT NULL,
+    ended_at_time timestamp without time zone,
+    was_associated_with bigserial NOT NULL,
+    PRIMARY KEY (id),
+    CONSTRAINT fk_data_service_ac FOREIGN KEY (was_associated_with)
+        REFERENCES data_service (identifier) MATCH SIMPLE
+        ON UPDATE NO ACTION
+        ON DELETE NO ACTION
+);
+
+create table entity (
+    id bigserial NOT NULL,
+    at_location varchar(256) NOT NULL,
+    specialization_of varchar(256) NOT NULL,
+    value varchar(4096) NOT NULL,
+    was_generated_by bigserial,
+    PRIMARY KEY (id),
+    CONSTRAINT fk_activity FOREIGN KEY (was_generated_by)
+        REFERENCES activity (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
 );
 
 --Activate temporal tables
-ALTER TABLE property ADD COLUMN sys_period tstzrange NOT NULL;
+ALTER TABLE entity ADD COLUMN generated_at_time tstzrange NOT NULL;
 
-CREATE TABLE property_history (LIKE property);
+CREATE TABLE entity_history (LIKE entity);
 
 CREATE TRIGGER versioning_trigger
-BEFORE INSERT OR UPDATE OR DELETE ON property
-FOR EACH ROW EXECUTE PROCEDURE versioning('sys_period',
-                                          'property_history',
-                                          true);
+BEFORE INSERT OR UPDATE OR DELETE ON entity
+FOR EACH ROW EXECUTE PROCEDURE versioning('generated_at_time', 'entity_history', true);

@@ -3,13 +3,13 @@ package at.tuwien.indmp.model.dmp;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
-import at.tuwien.indmp.util.DMPConstants;
+import at.tuwien.indmp.util.ModelConstants;
 
 public class Dataset_id extends Identifier {
 
     /* Properties */
     @NotNull
-    @Pattern(regexp = DMPConstants.REGEX_DATA_IDENTIFIER_TYPE)
+    @Pattern(regexp = ModelConstants.REGEX_DATA_IDENTIFIER_TYPE)
     private String type;
 
     public Dataset_id() {

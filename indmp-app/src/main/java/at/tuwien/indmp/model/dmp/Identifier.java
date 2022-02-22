@@ -2,7 +2,7 @@ package at.tuwien.indmp.model.dmp;
 
 import javax.validation.constraints.NotNull;
 
-public abstract class Identifier extends Entity {
+public abstract class Identifier extends AbstractEntity {
 
     @NotNull
     private String identifier;
@@ -24,6 +24,11 @@ public abstract class Identifier extends Entity {
     @Override
     public String getClassIdentifier() {
         return this.identifier;
+    }
+
+    @Override
+    public String getLocation(String location) {
+        return location;
     }
 
     @Override

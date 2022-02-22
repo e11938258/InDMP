@@ -2,8 +2,8 @@ package at.tuwien.indmp.rest;
 
 import javax.validation.Valid;
 
-import at.tuwien.indmp.model.RDMService;
-import at.tuwien.indmp.service.RDMServiceLayer;
+import at.tuwien.indmp.model.DataService;
+import at.tuwien.indmp.service.DataServiceService;
 import at.tuwien.indmp.util.Endpoints;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,12 +16,12 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-public class RDMServiceController {
+public class DataServiceController {
 
     @Autowired
-    private RDMServiceLayer rdmServiceLayer;
+    private DataServiceService dataServiceService;
 
-    public RDMServiceController() {
+    public DataServiceController() {
     }
 
     /**
@@ -31,8 +31,8 @@ public class RDMServiceController {
      * @param rdmService
      */
     @ResponseStatus(HttpStatus.CREATED)
-    @RequestMapping(value = Endpoints.CREATE_NEW_RDM_SERVICE, method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public void createNewRDMService(final @Valid @RequestBody RDMService rdmService) {
-        rdmServiceLayer.create(rdmService);
+    @RequestMapping(value = Endpoints.CREATE_NEW_DATA_SERVICE, method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public void createNewRDMService(final @Valid @RequestBody DataService rdmService) {
+        dataServiceService.persist(rdmService);
     }
 }

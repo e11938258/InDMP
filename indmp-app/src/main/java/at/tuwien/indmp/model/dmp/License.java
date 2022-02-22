@@ -2,7 +2,6 @@ package at.tuwien.indmp.model.dmp;
 
 import java.net.URI;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -10,20 +9,19 @@ import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-import at.tuwien.indmp.model.Property;
-import at.tuwien.indmp.model.RDMService;
-import at.tuwien.indmp.service.PropertyService;
-import at.tuwien.indmp.util.DMPConstants;
+import at.tuwien.indmp.model.Entity;
+import at.tuwien.indmp.service.EntityService;
+import at.tuwien.indmp.util.ModelConstants;
 import at.tuwien.indmp.util.Functions;
 
-public class License extends ClassEntity {
+public class License extends AbstractClassEntity {
 
     /* Properties */
     @NotNull
     private URI license_ref;
 
     @NotNull
-    @JsonFormat(pattern = DMPConstants.DATE_FORMAT_ISO_8601)
+    @JsonFormat(pattern = ModelConstants.DATE_FORMAT_ISO_8601)
     private Date start_date;
 
     public License() {
@@ -48,7 +46,8 @@ public class License extends ClassEntity {
     @Override
     public Object[] getValues() {
         return new Object[] {
-                getStart_date() != null ? DMPConstants.DATE_FORMATTER_ISO_8601.format(getStart_date()) : null,
+                getStart_date() != null ? ModelConstants.DATE_FORMATTER_ISO_8601.format(getStart_date()) : null,
+                getLicense_ref().toString()
         };
     }
 
@@ -56,6 +55,7 @@ public class License extends ClassEntity {
     public String[] getValueNames() {
         return new String[] {
                 "start_date",
+                "license_ref"
         };
     }
 
@@ -65,31 +65,19 @@ public class License extends ClassEntity {
     }
 
     @Override
-    public List<Property> getPropertiesFromIdentifier(DMP dmp, String reference, RDMService rdmService) {
-        final List<Property> properties = new ArrayList<>();
-
-        final Property property = new Property(dmp.getClassIdentifier(), getClassType(), getClassIdentifier(),
-                "license_ref", getClassIdentifier(), reference);
-        properties.add(property);
-
-        return properties;
-    }
-
-    @Override
-    public void build(PropertyService propertyService, String dmpIdentifier, String classIdentifier) {
+    public void build(EntityService entityService, String location) {
         // Set properties
-        final List<Property> properties = propertyService.findProperties(dmpIdentifier, getClassType(), classIdentifier,
-                null, null, null);
+        final List<Entity> properties = entityService.findEntities(location, null);
 
-        Property p = Functions.findPropertyInList("start_date", properties);
+        Entity p = Functions.findPropertyInList(getClassType(), "start_date", properties);
         try {
-            setStart_date(p != null ? DMPConstants.DATE_FORMATTER_ISO_8601.parse(p.getValue()) : null);
+            setStart_date(p != null ? ModelConstants.DATE_FORMATTER_ISO_8601.parse(p.getValue()) : null);
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
         // Set identifier
-        p = Functions.findPropertyInList("license_ref", properties);
+        p = Functions.findPropertyInList(getClassType(), "license_ref", properties);
         setLicense_ref(URI.create(p.getValue()));
     }
 }

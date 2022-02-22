@@ -1,21 +1,19 @@
 package at.tuwien.indmp.model.dmp;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
-import at.tuwien.indmp.model.Property;
-import at.tuwien.indmp.model.RDMService;
-import at.tuwien.indmp.service.PropertyService;
-import at.tuwien.indmp.util.DMPConstants;
+import at.tuwien.indmp.model.Entity;
+import at.tuwien.indmp.service.EntityService;
+import at.tuwien.indmp.util.ModelConstants;
 import at.tuwien.indmp.util.Functions;
 
-public class Cost extends ClassEntity {
+public class Cost extends AbstractClassEntity {
 
     /* Properties */
-    @Pattern(regexp = DMPConstants.REGEX_ISO_4212)
+    @Pattern(regexp = ModelConstants.REGEX_ISO_4212)
     private String currency_code;
 
     private String description;
@@ -66,6 +64,7 @@ public class Cost extends ClassEntity {
                 getCurrency_code(),
                 getDescription(),
                 getValue(),
+                getTitle()
         };
     }
 
@@ -75,6 +74,7 @@ public class Cost extends ClassEntity {
                 "currency_code",
                 "description",
                 "value",
+                "title"
         };
     }
 
@@ -84,31 +84,21 @@ public class Cost extends ClassEntity {
     }
 
     @Override
-    public List<Property> getPropertiesFromIdentifier(DMP dmp, String reference, RDMService rdmService) {
-        final List<Property> properties = new ArrayList<>();
-
-        final Property property = new Property(dmp.getClassIdentifier(), getClassType(), getClassIdentifier(),
-                "title", getTitle(), reference);
-        properties.add(property);
-
-        return properties;
-    }
-
-    @Override
-    public void build(PropertyService propertyService, String dmpIdentifier, String classIdentifier) {
+    public void build(EntityService entityService, String location) {
         // Set properties
-        final List<Property> properties = propertyService.findProperties(dmpIdentifier, getClassType(), classIdentifier,
-                null,
-                null, null);
+        final List<Entity> properties = entityService.findEntities(location, null);
 
-        Property p = Functions.findPropertyInList("currency_code", properties);
+        Entity p = Functions.findPropertyInList(getClassType(), "currency_code", properties);
         setCurrency_code(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList("description", properties);
+        p = Functions.findPropertyInList(getClassType(), "description", properties);
         setDescription(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList("value", properties);
+        p = Functions.findPropertyInList(getClassType(), "value", properties);
         setValue(p != null ? Double.parseDouble(p.getValue()) : null);
 
+        // Set identifier
+        p = Functions.findPropertyInList(getClassType(), "title", properties);
+        setTitle(p != null ? p.getValue() : null);
     }
 }
