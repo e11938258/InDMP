@@ -3,12 +3,12 @@ package at.tuwien.repository.model.dmp;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
-import at.tuwien.repository.util.DMPConstants;
+import at.tuwien.repository.util.ModelConstants;
 
 public class Funding {
 
     /* Properties */
-    @Pattern(regexp = DMPConstants.REGEX_FUNDING_STATUS)
+    @Pattern(regexp = ModelConstants.REGEX_FUNDING_STATUS)
     private String funding_status;
 
     /* Nested data structure */

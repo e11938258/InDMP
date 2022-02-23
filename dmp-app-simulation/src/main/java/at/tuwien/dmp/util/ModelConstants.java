@@ -1,14 +1,42 @@
 package at.tuwien.dmp.util;
 
 import java.text.SimpleDateFormat;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.Arrays;
+import java.util.List;
 
-public class DMPConstants {
+public class ModelConstants {
 
-    private DMPConstants() {
+    private ModelConstants() {
         throw new AssertionError();
     }
+
+    private static final String REGEX_STRING = "^$|^[\\p{IsAlphabetic}\\p{Punct}\\p{Digit}\\p{Blank}\\n]+$";
+
+    // Software agent constants
+    public static final int SOFTWARE_AGENT_TITLE_MIN = 1;
+    public static final int SOFTWARE_AGENT_TITLE_MAX = 64;
+    public static final String SOFTWARE_AGENT_TITLE_REGEX = REGEX_STRING;
+
+    public static final int SOFTWARE_AGENT_ACCESS_RIGHTS_MIN = 1;
+    public static final int RDM_SERVICE_ACESS_RIGHTS_MAX = 64;
+    public static final String RDM_SERVICE_ACCESS_RIGHTS_REGEX = "^[\\p{IsAlphabetic}\\p{Digit}-]+$";
+
+    public static final int SOFTWARE_AGENT_ENDPOINT_DESCRIPTION_MIN = 0;
+    public static final int SOFTWARE_AGENT_ENDPOINT_DESCRIPTION_MAX = 512;
+    public static final String SOFTWARE_AGENT_ENDPOINT_DESCRIPTION_REGEX = REGEX_STRING;
+
+    // Entity constants
+    public static final int ENTITY_CLASS_IDENTIFIER_MIN = 1;
+    public static final int ENTITY_CLASS_IDENTIFIER_MAX = 256;
+    public static final String ENTITY_CLASS_IDENTIFIER_REGEX = REGEX_STRING;
+
+    public static final int ENTITY_SPECIALIZATION_OF_MIN = 1;
+    public static final int ENTITY_SPECIALIZATION_OF_MAX = 256;
+    public static final String ENTITY_SPECIALIZATION_OF_REGEX = "^[\\p{IsAlphabetic}:]+$";
+
+    public static final int ENTITY_VALUE_MIN = 0;
+    public static final int ENTITY_VALUE_MAX = 4096;
+    public static final String ENTITY_VALUE_REGEX = REGEX_STRING;
 
     // ISO 8601 Date and Time compliant string
     public final static String DATE_FORMAT_ISO_8601 = "yyyy-MM-dd";
@@ -17,7 +45,7 @@ public class DMPConstants {
     public final static SimpleDateFormat DATE_TIME_FORMATTER_ISO_8601 = new SimpleDateFormat(
             DATE_TIME_FORMAT_ISO_8601);
 
-    // Controlled vocabularies
+    // Controlled vocabularies for maDMP
     public static final String REGEX_GRANT_IDENTIFIER_TYPE = "^(url|other)$";
     public static final String REGEX_METADATA_IDENTIFIER_TYPE = REGEX_GRANT_IDENTIFIER_TYPE;
     public static final String REGEX_DATA_IDENTIFIER_TYPE = "^(handle|doi|ark|url|other)$";
@@ -30,32 +58,9 @@ public class DMPConstants {
     public static final String REGEX_DATA_ACCESS = "^(open|shared|closed)$";
     public static final String REGEX_YES_NO_UNKNOWN = "^(yes|no|unknown)$";
 
-    // DMP Class types
+    // DMP class types
     public static final String REGEX_DMP_CLASS_TYPE = "^("
             + "contact|"
-            + "contact_id|"
-            + "contributor|"
-            + "contributor_id|"
-            + "cost|"
-            + "dmp|"
-            + "dataset|"
-            + "dataset_id|"
-            + "distribution|"
-            + "dmp_id|"
-            + "funder_id|"
-            + "funding|"
-            + "grant_id|"
-            + "host|"
-            + "license|"
-            + "metadata_standard_id|"
-            + "metadata|"
-            + "project|"
-            + "securityandprivacy|"
-            + "technicalresource)$";
-
-    // DMP Class types without identifiers
-    public static final String REGEX_DMP_CLASS_TYPE_WITHOUT_ID = "^("
-            + "contact|"
             + "contributor|"
             + "cost|"
             + "dmp|"
@@ -70,19 +75,17 @@ public class DMPConstants {
             + "securityandprivacy|"
             + "technicalresource)$";
 
-    // For which classes can be identifier changed?
-    public static Map<String, String[]> identifierChangeableClasses;
-    static {
-        identifierChangeableClasses = new HashMap<>();
-        identifierChangeableClasses.put("dmp", new String[] { "dmp_id", "identifier", "type" });
-        identifierChangeableClasses.put("contributor", new String[] { "contributor_id", "identifier", "type" });
-        identifierChangeableClasses.put("cost", new String[] { "cost", "title" });
-        identifierChangeableClasses.put("project", new String[] { "project", "title" });
-        identifierChangeableClasses.put("funding", new String[] { "funder_id", "identifier", "type" });
-        identifierChangeableClasses.put("dataset", new String[] { "dataset_id", "identifier", "type" });
-        identifierChangeableClasses.put("distribution", new String[] { "distribution", "access_url" });
-        identifierChangeableClasses.put("grant_id", new String[] { "grant_id", "identifier", "type" });
-    }
+    // Which parameters can be changed?
+    public static final List<String> IDENTIFIER_CHANGEABLE_CLASSES = Arrays.asList(new String[] {
+            "dmp:identifier",
+            "contributor:identifier",
+            "cost:title",
+            "project:title",
+            "funding:identifier",
+            "dataset:identifier",
+            "distribution:access_url",
+            "grant_id:identifier",
+    });
 
     // Repository certified
     public static final String REGEX_REPOSITORY_CERTIFIED = "^(din31644|dini-zertifikat|dsa|iso16363|iso16919|trac|wds|coretrustseal)$";

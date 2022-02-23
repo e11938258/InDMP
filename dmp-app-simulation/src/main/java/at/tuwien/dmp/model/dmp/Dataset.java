@@ -9,7 +9,7 @@ import javax.validation.constraints.Pattern;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-import at.tuwien.dmp.util.DMPConstants;
+import at.tuwien.dmp.util.ModelConstants;
 
 public class Dataset {
 
@@ -18,22 +18,22 @@ public class Dataset {
 
     private String description;
 
-    @JsonFormat(pattern = DMPConstants.DATE_FORMAT_ISO_8601)
+    @JsonFormat(pattern = ModelConstants.DATE_FORMAT_ISO_8601)
     private Date issued;
 
     private List<String> keyword = new ArrayList<>();
 
-    @Pattern(regexp = DMPConstants.REGEX_ISO_639_3)
+    @Pattern(regexp = ModelConstants.REGEX_ISO_639_3)
     private String language;
 
     @NotNull
-    @Pattern(regexp = DMPConstants.REGEX_YES_NO_UNKNOWN)
+    @Pattern(regexp = ModelConstants.REGEX_YES_NO_UNKNOWN)
     private String personal_data;
 
     private String preservation_statement;
 
     @NotNull
-    @Pattern(regexp = DMPConstants.REGEX_YES_NO_UNKNOWN)
+    @Pattern(regexp = ModelConstants.REGEX_YES_NO_UNKNOWN)
     private String sensitive_data;
 
     @NotNull

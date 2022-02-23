@@ -10,7 +10,7 @@ import javax.validation.constraints.Pattern;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-import at.tuwien.repository.util.DMPConstants;
+import at.tuwien.repository.util.ModelConstants;
 
 public class Distribution {
 
@@ -18,12 +18,12 @@ public class Distribution {
     @NotNull
     private URI access_url;
 
-    @JsonFormat(pattern = DMPConstants.DATE_FORMAT_ISO_8601)
+    @JsonFormat(pattern = ModelConstants.DATE_FORMAT_ISO_8601)
     private Date available_until;
 
     private Long byte_size;
 
-    @Pattern(regexp = DMPConstants.REGEX_DATA_ACCESS)
+    @Pattern(regexp = ModelConstants.REGEX_DATA_ACCESS)
     private String data_access;
 
     private String description;

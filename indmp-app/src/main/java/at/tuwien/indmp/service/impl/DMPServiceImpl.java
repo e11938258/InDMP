@@ -85,13 +85,8 @@ public class DMPServiceImpl implements DMPService {
                 } else {
                     // Auto correction enabled?
                     if (autoCorrection && dataService != null) {
-                        // List<IdentifierUnit> identifier = new ArrayList<>();
-                        // identifier.add(new IdentifierUnit("dmp",
-                        // new Identifier(currentDMP.getDmp_id().getIdentifier(),
-                        // currentDMP.getDmp_id().getType().toString()),
-                        // new Identifier(dmp.getDmp_id().getIdentifier(),
-                        // dmp.getDmp_id().getType().toString())));
-                        // changeIdentifiers(currentDMP, identifier, dmp.getModified(), dataService);
+                        changeIdentifiers(dmp, Functions.createEntity(currentDMP, currentDMP.getLocation(""),
+                                "dmp:identifier", dmp.getClassIdentifier()), dataService);
                     }
 
                     // Identification by creation only?
@@ -205,8 +200,8 @@ public class DMPServiceImpl implements DMPService {
      *
      * Change identifier
      *
-     * @param dmp
-     * @param identifiers
+     * @param dmp is the new DMP
+     * @param identifier
      * @param dataService
      */
     public void changeIdentifiers(DMP dmp, Entity identifier, DataService dataService) {
@@ -256,9 +251,7 @@ public class DMPServiceImpl implements DMPService {
      *
      * Delete instance
      *
-     * @param dmp
-     * @param identifiers
-     * @param system
+     * @param entity
      */
     public void deleteInstance(Entity entity) {
         Objects.requireNonNull(entity, "Entity is null.");
@@ -277,31 +270,31 @@ public class DMPServiceImpl implements DMPService {
 
         // // DMP
         // properties.addAll(propertyService.loadAllIdentifiers(dmp.getClassIdentifier(),
-        //         "dmp_id", null));
+        // "dmp_id", null));
         // // Project
         // properties.addAll(propertyService.loadAllIdentifiers(dmp.getClassIdentifier(),
-        //         "project", "title"));
+        // "project", "title"));
         // // Funding
         // properties.addAll(propertyService.loadAllIdentifiers(dmp.getClassIdentifier(),
-        //         "funder_id", null));
+        // "funder_id", null));
         // // Grant id
         // properties.addAll(propertyService.loadAllIdentifiers(dmp.getClassIdentifier(),
-        //         "grant_id", null));
+        // "grant_id", null));
         // // Contact
         // properties.addAll(propertyService.loadAllIdentifiers(dmp.getClassIdentifier(),
-        //         "contact_id", null));
+        // "contact_id", null));
         // // Contributor
         // properties.addAll(propertyService.loadAllIdentifiers(dmp.getClassIdentifier(),
-        //         "contributor_id", null));
+        // "contributor_id", null));
         // // Cost
         // properties.addAll(propertyService.loadAllIdentifiers(dmp.getClassIdentifier(),
-        //         "cost", "title"));
+        // "cost", "title"));
         // // Dataset
         // properties.addAll(propertyService.loadAllIdentifiers(dmp.getClassIdentifier(),
-        //         "dataset_id", null));
+        // "dataset_id", null));
         // // Distribution
         // properties.addAll(propertyService.loadAllIdentifiers(dmp.getClassIdentifier(),
-        //         "distribution", "access_url"));
+        // "distribution", "access_url"));
 
         return entities;
     }

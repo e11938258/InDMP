@@ -7,7 +7,7 @@ import java.util.List;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
-import at.tuwien.dmp.util.DMPConstants;
+import at.tuwien.dmp.util.ModelConstants;
 
 public class Host {
 
@@ -18,20 +18,20 @@ public class Host {
 
     private String backup_type;
 
-    @Pattern(regexp = DMPConstants.REGEX_REPOSITORY_CERTIFIED)
+    @Pattern(regexp = ModelConstants.REGEX_REPOSITORY_CERTIFIED)
     private String certified_with;
 
     private String description;
 
-    @Pattern(regexp = DMPConstants.REGEX_ISO_3166_1)
+    @Pattern(regexp = ModelConstants.REGEX_ISO_3166_1)
     private String geo_location;
 
-    @Pattern(regexp = DMPConstants.REGEX_PID_SYSTEM)
+    @Pattern(regexp = ModelConstants.REGEX_PID_SYSTEM)
     private List<String> pid_system = new ArrayList<>();
 
     private String storage_type;
 
-    @Pattern(regexp = DMPConstants.REGEX_YES_NO_UNKNOWN)
+    @Pattern(regexp = ModelConstants.REGEX_YES_NO_UNKNOWN)
     private String support_versioning;
 
     @NotNull

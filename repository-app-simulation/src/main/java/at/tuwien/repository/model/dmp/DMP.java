@@ -11,29 +11,29 @@ import javax.validation.constraints.Pattern;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import at.tuwien.repository.util.DMPConstants;
+import at.tuwien.repository.util.ModelConstants;
 
 public class DMP {
 
     /* Properties */
     @NotNull
-    @JsonFormat(pattern = DMPConstants.DATE_TIME_FORMAT_ISO_8601)
+    @JsonFormat(pattern = ModelConstants.DATE_TIME_FORMAT_ISO_8601)
     private Date created;
 
     private String description;
 
     private String ethical_issues_description;
 
-    @Pattern(regexp = DMPConstants.REGEX_YES_NO_UNKNOWN)
+    @Pattern(regexp = ModelConstants.REGEX_YES_NO_UNKNOWN)
     private String ethical_issues_exist;
 
     private URI ethical_issues_report;
 
-    @Pattern(regexp = DMPConstants.REGEX_ISO_639_3)
+    @Pattern(regexp = ModelConstants.REGEX_ISO_639_3)
     private String language;
 
     @NotNull
-    @JsonFormat(pattern = DMPConstants.DATE_TIME_FORMAT_ISO_8601)
+    @JsonFormat(pattern = ModelConstants.DATE_TIME_FORMAT_ISO_8601)
     private Date modified;
 
     private String title;
@@ -79,7 +79,7 @@ public class DMP {
 
     @JsonIgnore
     public String getCreatedInString() {
-        return DMPConstants.DATE_TIME_FORMATTER_ISO_8601.format(this.created);
+        return ModelConstants.DATE_TIME_FORMATTER_ISO_8601.format(this.created);
     }
 
     public String getDescription() {

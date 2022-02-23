@@ -1,15 +1,13 @@
 package at.tuwien.repository.model.dmp;
 
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
-import at.tuwien.repository.util.DMPConstants;
+import at.tuwien.repository.util.ModelConstants;
 
 public class DMP_id extends Identifier {
 
     /* Properties */
-    @NotNull
-    @Pattern(regexp = DMPConstants.REGEX_DATA_IDENTIFIER_TYPE)
+    @Pattern(regexp = ModelConstants.REGEX_DATA_IDENTIFIER_TYPE)
     private String type;
 
     public DMP_id() {

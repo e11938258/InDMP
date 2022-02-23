@@ -3,7 +3,7 @@ package at.tuwien.dmp.model.dmp;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
-import at.tuwien.dmp.util.DMPConstants;
+import at.tuwien.dmp.util.ModelConstants;
 
 public class Metadata {
 
@@ -11,7 +11,7 @@ public class Metadata {
     private String description;
 
     @NotNull
-    @Pattern(regexp = DMPConstants.REGEX_ISO_639_3)
+    @Pattern(regexp = ModelConstants.REGEX_ISO_639_3)
     private String language;
 
     /* Nested data structure */

@@ -88,7 +88,7 @@ public class MaDMPController {
      * @param idmpScheme
      */
     @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(value = Endpoints.IDENTIFIER_CHANGE, method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = Endpoints.UPDATE_MADMP_IDENTIFIER, method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
     public void changeIdentifier(final Principal principal,
             @RequestParam(required = true) String identifier,
             @RequestParam(required = true) Date created,
@@ -120,7 +120,7 @@ public class MaDMPController {
      * @param idmpScheme
      */
     @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(value = Endpoints.DELETE_INSTANCE, method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = Endpoints.DELETE_MADMP_INSTANCE, method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
     public void deleteInstance(Principal principal,
             @RequestParam(required = true) String identifier,
             @RequestParam(required = true) Date created,

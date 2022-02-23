@@ -31,7 +31,7 @@ public class DataServiceController {
      * @param rdmService
      */
     @ResponseStatus(HttpStatus.CREATED)
-    @RequestMapping(value = Endpoints.CREATE_NEW_DATA_SERVICE, method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = Endpoints.CREATE_DATA_SERVICE, method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
     public void createNewRDMService(final @Valid @RequestBody DataService rdmService) {
         dataServiceService.persist(rdmService);
     }

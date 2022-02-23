@@ -21,8 +21,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.HttpClientErrorException;
 
-import at.tuwien.repository.model.Permission;
-import at.tuwien.repository.model.RDMService;
+import at.tuwien.repository.model.DataService;
 import at.tuwien.repository.util.Endpoints;
 import at.tuwien.repository.util.Functions;
 
@@ -60,10 +59,10 @@ public class CommonController {
             throws URISyntaxException {
 
         // Set request with body
-        final RDMService rdmService = new RDMService(applicationName, authorizedClient.getPrincipalName(),
-                new URI("http://" + serverAddress + ":" + serverPort + Endpoints.MADMP));
-        setPermissions(rdmService);
-        final HttpEntity<RDMService> request = new HttpEntity<>(rdmService, Functions.getHeaders(authorizedClient));
+        final DataService dataService = new DataService(applicationName, authorizedClient.getPrincipalName(),
+                new URI("http://" + serverAddress + ":" + serverPort + Endpoints.MADMP), "");
+        setPermissions(dataService);
+        final HttpEntity<DataService> request = new HttpEntity<>(dataService, Functions.getHeaders(authorizedClient));
 
         // Register a new service
         try {
@@ -74,21 +73,15 @@ public class CommonController {
         }
     }
 
-    private void setPermissions(RDMService rdmService) {
-        rdmService.add(new Permission("contact", true));
-        rdmService.add(new Permission("contributor", true));
-        rdmService.add(new Permission("cost", false));
-        rdmService.add(new Permission("dataset", true));
-        rdmService.add(new Permission("distribution", true));
-        rdmService.add(new Permission("dmp", false));
-        rdmService.add(new Permission("funding", false));
-        rdmService.add(new Permission("grant_id", false));
-        rdmService.add(new Permission("host", true));
-        rdmService.add(new Permission("license", true));
-        rdmService.add(new Permission("metadata", true));
-        rdmService.add(new Permission("project", false));
-        rdmService.add(new Permission("securityandprivacy", true));
-        rdmService.add(new Permission("technicalresource", false));
+    private void setPermissions(DataService dataService) {
+        dataService.add("contact");
+        dataService.add("contributor");
+        dataService.add("dataset");
+        dataService.add("distribution");
+        dataService.add("host");
+        dataService.add("license");
+        dataService.add("metadata");
+        dataService.add("securityandprivacy");
     }
 
     /**

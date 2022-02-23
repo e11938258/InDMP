@@ -17,6 +17,8 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import at.tuwien.indmp.util.ModelConstants;
 
 /**
@@ -43,6 +45,7 @@ public class DataService implements Serializable {
     @NotNull
     @Size(min = ModelConstants.SOFTWARE_AGENT_ACCESS_RIGHTS_MIN, max = ModelConstants.RDM_SERVICE_ACESS_RIGHTS_MAX)
     @Pattern(regexp = ModelConstants.RDM_SERVICE_ACCESS_RIGHTS_REGEX)
+    @JsonIgnore
     private String accessRights; // https://www.w3.org/TR/vocab-dcat-3/#Property:resource_access_rights
 
     @Column(name = "endpoint_url", nullable = false)
@@ -53,12 +56,15 @@ public class DataService implements Serializable {
     @NotNull
     @Size(min = ModelConstants.SOFTWARE_AGENT_ENDPOINT_DESCRIPTION_MIN, max = ModelConstants.SOFTWARE_AGENT_ENDPOINT_DESCRIPTION_MAX)
     @Pattern(regexp = ModelConstants.SOFTWARE_AGENT_ENDPOINT_DESCRIPTION_REGEX)
+    @JsonIgnore
     private String endpointDescription; // https://www.w3.org/TR/vocab-dcat-3/#Property:data_service_endpoint_description
 
     @ElementCollection
+    @JsonIgnore
     private final List<String> rights = new ArrayList<>(); // https://www.w3.org/TR/vocab-dcat-3/#Property:resource_rights
 
     @OneToMany(mappedBy = "wasAssociatedWith", fetch = FetchType.LAZY)
+    @JsonIgnore
     private final List<Activity> relation = new ArrayList<>(); // https://www.w3.org/TR/vocab-dcat-3/#Property:resource_relation
 
 
@@ -78,6 +84,7 @@ public class DataService implements Serializable {
         this.title = title;
     }
 
+    @JsonIgnore
     public String getAccessRights() {
         return this.accessRights;
     }
@@ -94,6 +101,7 @@ public class DataService implements Serializable {
         this.endpointURL = endpointURL;
     }
 
+    @JsonIgnore
     public String getEndpointDescription() {
         return this.endpointDescription;
     }
@@ -102,10 +110,12 @@ public class DataService implements Serializable {
         this.endpointDescription = endpointDescription;
     }
 
+    @JsonIgnore
     public List<String> getRights() {
         return this.rights;
     }
 
+    @JsonIgnore
     public List<Activity> getRelation() {
         return this.relation;
     }

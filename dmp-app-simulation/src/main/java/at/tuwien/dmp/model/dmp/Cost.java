@@ -3,12 +3,12 @@ package at.tuwien.dmp.model.dmp;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
-import at.tuwien.dmp.util.DMPConstants;
+import at.tuwien.dmp.util.ModelConstants;
 
 public class Cost {
 
     /* Properties */
-    @Pattern(regexp = DMPConstants.REGEX_ISO_4212)
+    @Pattern(regexp = ModelConstants.REGEX_ISO_4212)
     private String currency_code;
 
     private String description;

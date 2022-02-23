@@ -8,17 +8,17 @@ import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-import at.tuwien.repository.util.DMPConstants;
+import at.tuwien.repository.util.ModelConstants;
 
 public class Project {
 
     /* Properties */
     private String description;
 
-    @JsonFormat(pattern = DMPConstants.DATE_FORMAT_ISO_8601)
+    @JsonFormat(pattern = ModelConstants.DATE_FORMAT_ISO_8601)
     private Date end;
 
-    @JsonFormat(pattern = DMPConstants.DATE_FORMAT_ISO_8601)
+    @JsonFormat(pattern = ModelConstants.DATE_FORMAT_ISO_8601)
     private Date start;
 
     @NotNull

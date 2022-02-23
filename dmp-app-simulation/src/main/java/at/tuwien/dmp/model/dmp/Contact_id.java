@@ -3,13 +3,13 @@ package at.tuwien.dmp.model.dmp;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
-import at.tuwien.dmp.util.DMPConstants;
+import at.tuwien.dmp.util.ModelConstants;
 
 public class Contact_id extends Identifier {
 
     /* Properties */
     @NotNull
-    @Pattern(regexp = DMPConstants.REGEX_CONTACT_IDENTIFIER_TYPE)
+    @Pattern(regexp = ModelConstants.REGEX_CONTACT_IDENTIFIER_TYPE)
     private String type;
 
     public Contact_id() {

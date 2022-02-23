@@ -21,7 +21,7 @@ public class ModelConstants {
     public static final int RDM_SERVICE_ACESS_RIGHTS_MAX = 64;
     public static final String RDM_SERVICE_ACCESS_RIGHTS_REGEX = "^[\\p{IsAlphabetic}\\p{Digit}-]+$";
 
-    public static final int SOFTWARE_AGENT_ENDPOINT_DESCRIPTION_MIN = 1;
+    public static final int SOFTWARE_AGENT_ENDPOINT_DESCRIPTION_MIN = 0;
     public static final int SOFTWARE_AGENT_ENDPOINT_DESCRIPTION_MAX = 512;
     public static final String SOFTWARE_AGENT_ENDPOINT_DESCRIPTION_REGEX = REGEX_STRING;
 
