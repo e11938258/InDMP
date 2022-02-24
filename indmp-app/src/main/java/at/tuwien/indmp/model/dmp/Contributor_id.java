@@ -28,4 +28,9 @@ public class Contributor_id extends Identifier {
     public void setType(String type) {
         this.type = type;
     }
+
+    @Override
+    public String getClassType() {
+        return "contributor";
+    }
 }

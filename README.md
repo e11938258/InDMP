@@ -204,8 +204,8 @@ In the following table you can see the individual non-functional cases with a sh
 
 | Test case | Service scope | URL | Description |
 | - | - | - | - |
-| NFTC1 | DMP app | http://localhost:8081/nftc8 | Examine response time of updating minimal maDMP  |
-| NFTC2 | DMP app | http://localhost:8081/nftc9 | Examine response time of updating long maDMP |
+| NFTC1 | DMP app | http://localhost:8081/nftc1 | Examine response time of updating minimal maDMP  |
+| NFTC2 | DMP app | http://localhost:8081/nftc2 | Examine response time of updating long maDMP |
 
 ## Limitations
 

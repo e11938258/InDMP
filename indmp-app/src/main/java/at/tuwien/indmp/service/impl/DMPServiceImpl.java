@@ -93,7 +93,8 @@ public class DMPServiceImpl implements DMPService {
                     if (byCreationOnly) {
                         return currentDMP;
                     } else {
-                        log.error("DMP not found by identifier, creation date: " + currentDMP.getCreated().toString());
+                        log.error("DMP not found by identifier " + dmp.getClassIdentifier() + ", creation date: "
+                                + currentDMP.getCreated().toString());
                         throw new NotFoundException("DMP not found by identifier.");
                     }
                 }
@@ -149,10 +150,9 @@ public class DMPServiceImpl implements DMPService {
         final String created = Functions.findPropertyInList("dmp", "created", properties).getValue();
         final String modified = Functions.findPropertyInList("dmp", "modified", properties).getValue();
         final String identifier = Functions.findPropertyInList("dmp", "identifier", properties).getValue();
-        final String type = Functions.findPropertyInList("dmp", "type", properties).getValue();
 
         // Create a new minimal DMP
-        final DMP_id dmp_id = new DMP_id(identifier, type);
+        final DMP_id dmp_id = new DMP_id(identifier);
         try {
             return new DMP(ModelConstants.DATE_TIME_FORMATTER_ISO_8601.parse(created),
                     ModelConstants.DATE_TIME_FORMATTER_ISO_8601.parse(modified), dmp_id);
@@ -200,7 +200,7 @@ public class DMPServiceImpl implements DMPService {
      *
      * Change identifier
      *
-     * @param dmp is the new DMP
+     * @param dmp         is the new DMP
      * @param identifier
      * @param dataService
      */

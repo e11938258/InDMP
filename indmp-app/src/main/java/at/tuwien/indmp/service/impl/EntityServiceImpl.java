@@ -58,14 +58,14 @@ public class EntityServiceImpl implements EntityService {
         entity.getWasGeneratedBy().setWasAssociatedWith(dataService);
         dataService.add(entity.getWasGeneratedBy());
 
-        // Persist the new entity
-        entityDao.persist(entity);
+        log.info("Persisting a new entity: " + entity.toString());
+
         // Persist the new activity
         activityDao.persist(entity.getWasGeneratedBy());
+        // Persist the new entity
+        entityDao.persist(entity);
         // Update the RDM service
         dataServiceService.update(dataService);
-
-        log.info("Persisting a new entity: " + entity.toString());
     }
 
     /**

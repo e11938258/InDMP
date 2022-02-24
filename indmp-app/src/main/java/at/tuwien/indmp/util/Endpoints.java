@@ -16,4 +16,5 @@ public class Endpoints {
 
     // Data service
     public static final String CREATE_DATA_SERVICE = "/service"; // POST
+    public static final String EXISTS_DATA_SERVICE = "/service/exists"; // GET
 }

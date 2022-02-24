@@ -12,6 +12,7 @@ import javax.validation.constraints.Pattern;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import at.tuwien.indmp.exception.BadRequestException;
 import at.tuwien.indmp.model.DataService;
 import at.tuwien.indmp.model.Entity;
 import at.tuwien.indmp.service.EntityService;
@@ -71,6 +72,24 @@ public class DMP extends AbstractClassEntity {
     public DMP(Date created, Date modified, DMP_id dmp_id) {
         this.created = created;
         this.modified = modified;
+        this.dmp_id = dmp_id;
+    }
+
+    /**
+     * 
+     * Minimal maDMP
+     * 
+     * @param created
+     * @param modified
+     * @param dmp_id
+     */
+    public DMP(String created, String modified, DMP_id dmp_id) {
+        try {
+            this.created = ModelConstants.DATE_TIME_FORMATTER_ISO_8601.parse(created);
+            this.modified = ModelConstants.DATE_TIME_FORMATTER_ISO_8601.parse(modified);
+        } catch (ParseException e) {
+            throw new BadRequestException("Wrong date format");
+        }
         this.dmp_id = dmp_id;
     }
 
@@ -311,7 +330,10 @@ public class DMP extends AbstractClassEntity {
         // Set identifier
         final Entity identifier = Functions.findPropertyInList(getClassType(), "identifier", properties);
         final Entity type = Functions.findPropertyInList(getClassType(), "type", properties);
-        dmp_id = new DMP_id(identifier.getValue(), type.getValue());
+        dmp_id = new DMP_id(identifier.getValue());
+        if(type != null) {
+            dmp_id.setType(type.getValue());
+        }
 
         // Nested classes
         // Contact

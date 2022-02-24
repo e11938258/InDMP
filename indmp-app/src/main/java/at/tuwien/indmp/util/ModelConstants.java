@@ -26,13 +26,13 @@ public class ModelConstants {
     public static final String SOFTWARE_AGENT_ENDPOINT_DESCRIPTION_REGEX = REGEX_STRING;
 
     // Entity constants
-    public static final int ENTITY_CLASS_IDENTIFIER_MIN = 1;
-    public static final int ENTITY_CLASS_IDENTIFIER_MAX = 256;
-    public static final String ENTITY_CLASS_IDENTIFIER_REGEX = REGEX_STRING;
+    public static final int ENTITY_AT_LOCATION_MIN = 1;
+    public static final int ENTITY_AT_LOCATION_MAX = 256;
+    public static final String ENTITY_AT_LOCATION_REGEX = REGEX_STRING;
 
     public static final int ENTITY_SPECIALIZATION_OF_MIN = 1;
     public static final int ENTITY_SPECIALIZATION_OF_MAX = 256;
-    public static final String ENTITY_SPECIALIZATION_OF_REGEX = "^[\\p{IsAlphabetic}:]+$";
+    public static final String ENTITY_SPECIALIZATION_OF_REGEX = "^[\\p{IsAlphabetic}:_]+$";
 
     public static final int ENTITY_VALUE_MIN = 0;
     public static final int ENTITY_VALUE_MAX = 4096;

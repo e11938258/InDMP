@@ -17,6 +17,7 @@ import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 import at.tuwien.indmp.util.ModelConstants;
 
@@ -50,7 +51,7 @@ public class Activity implements Serializable {
     private DataService wasAssociatedWith; // https://www.w3.org/TR/2013/REC-prov-o-20130430/#wasAssociatedWith
 
     @OneToOne(mappedBy = "wasGeneratedBy")
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private Entity generated; // https://www.w3.org/TR/2013/REC-prov-o-20130430/#generated
 
     public Activity() {
@@ -65,6 +66,7 @@ public class Activity implements Serializable {
         return this.id;
     }
 
+    @JsonIgnore
     public void setId(Long id) {
         this.id = id;
     }
@@ -93,7 +95,7 @@ public class Activity implements Serializable {
         this.wasAssociatedWith = wasAssociatedWith;
     }
 
-    @JsonIgnore
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     public Entity getGenerated() {
         return this.generated;
     }

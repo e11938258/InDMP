@@ -9,9 +9,9 @@ DROP TABLE IF EXISTS data_service;
 create table data_service (
     identifier bigserial NOT NULL,
     title varchar(64) NOT NULL,
-    access_rights varchar(64) NOT NULL,
-    endpoint_url varchar(255) NOT NULL,
-    endpoint_description varchar(512) NOT NULL,
+    access_rights varchar(64) NOT NULL UNIQUE,
+    endpoint_url varchar(255) NOT NULL UNIQUE,
+    endpoint_description varchar(512),
     PRIMARY KEY (identifier)
 );
 
@@ -43,6 +43,7 @@ create table entity (
     value varchar(4096) NOT NULL,
     was_generated_by bigserial,
     PRIMARY KEY (id),
+    UNIQUE (at_location, specialization_of),
     CONSTRAINT fk_activity FOREIGN KEY (was_generated_by)
         REFERENCES activity (id) MATCH SIMPLE
         ON UPDATE NO ACTION

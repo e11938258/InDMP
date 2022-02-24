@@ -27,6 +27,9 @@ public abstract class Identifier extends AbstractEntity {
     }
 
     @Override
+    public abstract String getClassType();
+
+    @Override
     public String getLocation(String location) {
         return location;
     }

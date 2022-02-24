@@ -1,7 +1,10 @@
 package at.tuwien.indmp.rest;
 
+import java.security.Principal;
+
 import javax.validation.Valid;
 
+import at.tuwien.indmp.exception.NotFoundException;
 import at.tuwien.indmp.model.DataService;
 import at.tuwien.indmp.service.DataServiceService;
 import at.tuwien.indmp.util.Endpoints;
@@ -28,11 +31,30 @@ public class DataServiceController {
      *
      * Create a new service
      *
-     * @param rdmService
+     * @param dataService
      */
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(value = Endpoints.CREATE_DATA_SERVICE, method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public void createNewRDMService(final @Valid @RequestBody DataService rdmService) {
-        dataServiceService.persist(rdmService);
+    public void createNewRDMService(@Valid @RequestBody DataService dataService) {
+        dataServiceService.persist(dataService);
+    }
+
+    /**
+     *
+     * Exists service by client id - used only for testing
+     *
+     */
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(value = Endpoints.EXISTS_DATA_SERVICE, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public boolean existsByClientId(Principal principal) {
+        try {
+            if (dataServiceService.findByClientId(principal.getName()) != null) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (NotFoundException ex) {
+            return false;
+        }
     }
 }

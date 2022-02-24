@@ -1,7 +1,6 @@
 package at.tuwien.indmp.rest;
 
 import java.security.Principal;
-import java.sql.Date;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -91,8 +90,8 @@ public class MaDMPController {
     @RequestMapping(value = Endpoints.UPDATE_MADMP_IDENTIFIER, method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
     public void changeIdentifier(final Principal principal,
             @RequestParam(required = true) String identifier,
-            @RequestParam(required = true) Date created,
-            @RequestParam(required = true) Date modified,
+            @RequestParam(required = true) String created,
+            @RequestParam(required = true) String modified,
             @Valid @RequestBody Entity entity) {
 
         // Get current RDM Service
@@ -123,8 +122,8 @@ public class MaDMPController {
     @RequestMapping(value = Endpoints.DELETE_MADMP_INSTANCE, method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
     public void deleteInstance(Principal principal,
             @RequestParam(required = true) String identifier,
-            @RequestParam(required = true) Date created,
-            @RequestParam(required = true) Date modified,
+            @RequestParam(required = true) String created,
+            @RequestParam(required = true) String modified,
             @Valid @RequestBody Entity entity) {
 
         // Get current RDM Service
@@ -177,8 +176,8 @@ public class MaDMPController {
     @RequestMapping(value = Endpoints.GET_MADMP_IDENTIFIERS, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Entity> getIdentifierHistory(Principal principal,
             @RequestParam(required = true) String identifier,
-            @RequestParam(required = true) Date created,
-            @RequestParam(required = true) Date modified) {
+            @RequestParam(required = true) String created,
+            @RequestParam(required = true) String modified) {
 
         // Get current RDM Service
         final DataService dataService = dataServiceService.findByClientId(principal.getName());
@@ -202,12 +201,14 @@ public class MaDMPController {
      */
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(value = Endpoints.GET_MADMP, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public DMPScheme getMaDMP(@Valid @RequestBody DMPScheme dmpScheme) {
-        final DMP dmpMinimum = DMPService.identifyDMP(dmpScheme.getDmp(), null);
+    public DMPScheme getMaDMP(@RequestParam(required = true) String identifier,
+            @RequestParam(required = true) String created,
+            @RequestParam(required = true) String modified) {
+        final DMP dmpMinimum = DMPService.identifyDMP(new DMP(created, modified, new DMP_id(identifier)), null);
         if (dmpMinimum != null) {
             return DMPService.loadWholeDMP(dmpMinimum);
         } else {
-            return null;
+            throw new NotFoundException("DMP not found, identifier: " + identifier);
         }
     }
 }
