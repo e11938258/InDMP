@@ -17,6 +17,9 @@ public class Application {
     @Value("${application.timezone}")
     private String timeZone;
 
+    @Value("${application.name}")
+    private String name;
+
     private static final Logger log = LoggerFactory.getLogger(Application.class);
 
     public static void main(String[] args) {
@@ -26,6 +29,7 @@ public class Application {
 
     @PostConstruct
     void started() {
+        log.info("Starting application " + name + "...");
         // Set JVM timezone as UTC
         TimeZone.setDefault(TimeZone.getTimeZone(timeZone));
     }

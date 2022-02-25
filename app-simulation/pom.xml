@@ -2,10 +2,10 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>at.tuwien.dmp</groupId>
-    <artifactId>DMP-app-simulation</artifactId>
+    <groupId>at.tuwien.simulation</groupId>
+    <artifactId>app-simulation</artifactId>
     <version>1.0.0</version>
-    <name>DMP app simulation</name>
+    <name>App simulation</name>
 
     <developers>
         <developer>

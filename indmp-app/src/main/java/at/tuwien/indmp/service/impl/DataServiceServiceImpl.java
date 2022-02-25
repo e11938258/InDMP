@@ -1,6 +1,7 @@
 package at.tuwien.indmp.service.impl;
 
 import at.tuwien.indmp.dao.DataServiceDao;
+import at.tuwien.indmp.exception.ForbiddenException;
 import at.tuwien.indmp.exception.NotFoundException;
 import at.tuwien.indmp.model.DataService;
 import at.tuwien.indmp.service.DataServiceService;
@@ -34,7 +35,11 @@ public class DataServiceServiceImpl implements DataServiceService {
     @Transactional
     public void persist(DataService dataService) {
         Objects.requireNonNull(dataService);
-        dataServiceDao.persist(dataService);
+        if (!existsByAccessRights(dataService.getAccessRights())) {
+            dataServiceDao.persist(dataService);
+        } else {
+            throw new ForbiddenException("This client id is already registered.");
+        }
     }
 
     /**
@@ -45,12 +50,32 @@ public class DataServiceServiceImpl implements DataServiceService {
      * @return
      */
     @Transactional(readOnly = true)
-    public DataService findByClientId(String accessRights) {
+    public DataService findByAccessRights(String accessRights) {
         try {
             return dataServiceDao.findByAccessRights(accessRights);
         } catch (NoResultException | EmptyResultDataAccessException ex) {
             log.error("Service not found by client id");
             throw new NotFoundException("Service not found by client id");
+        }
+    }
+
+    /**
+     * 
+     * Exists by access rights
+     * 
+     * @param accessRights
+     * @return
+     */
+    @Transactional(readOnly = true)
+    public boolean existsByAccessRights(String accessRights) {
+        try {
+            if (dataServiceDao.findByAccessRights(accessRights) != null) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (NoResultException | EmptyResultDataAccessException ex) {
+            return false;
         }
     }
 

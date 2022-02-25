@@ -131,10 +131,10 @@ public class Functions {
      * @param e
      * @return
      */
-    public static String processError(Logger log, Throwable e) {
-        if (e != null) {
-            log.error("Failed! Message: " + e.getMessage());
-            return "Failed! Message: " + e.getMessage();
+    public static String processError(Logger log, String message) {
+        if (message != null) {
+            log.error("Failed! Message: " + message);
+            return "Failed! Message: " + message;
         } else {
             log.error("Failed! Unknown error");
             return "Failed! Unknown error";

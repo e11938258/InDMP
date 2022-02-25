@@ -68,7 +68,7 @@ public class TestCaseController {
             // Validate
             return testCase1.validate(authorizedClient, testCaseEntity);
         } catch (Throwable e) {
-            return Functions.processError(log, e);
+            return Functions.processError(log, e.getMessage());
         }
     }
 
@@ -92,7 +92,7 @@ public class TestCaseController {
             // Validate
             return testCase2.validate(authorizedClient, testCaseEntity);
         } catch (Throwable e) {
-            return Functions.processError(log, e);
+            return Functions.processError(log, e.getMessage());
         }
     }
 
@@ -116,7 +116,7 @@ public class TestCaseController {
             // Validate
             return testCase3.validate(authorizedClient, testCaseEntity);
         } catch (Throwable e) {
-            return Functions.processError(log, e);
+            return Functions.processError(log, e.getMessage());
         }
     }
 
@@ -140,7 +140,7 @@ public class TestCaseController {
             // Validate
             return testCase4.validate(authorizedClient, testCaseEntity);
         } catch (Throwable e) {
-            return Functions.processError(log, e);
+            return Functions.processError(log, e.getMessage());
         }
     }
 
@@ -164,7 +164,7 @@ public class TestCaseController {
             // Validate
             return testCase5.validate(authorizedClient, testCaseEntity);
         } catch (Throwable e) {
-            return Functions.processError(log, e);
+            return Functions.processError(log, e.getMessage());
         }
     }
 
@@ -188,7 +188,7 @@ public class TestCaseController {
             // Validate
             return testCase5.validate(authorizedClient, testCaseEntity);
         } catch (Throwable e) {
-            return Functions.processError(log, e);
+            return Functions.processError(log, e.getMessage());
         }
     }
 
@@ -212,7 +212,7 @@ public class TestCaseController {
             // Validate
             return testCase7.validate(authorizedClient, testCaseEntity);
         } catch (Throwable e) {
-            return Functions.processError(log, e);
+            return Functions.processError(log, e.getMessage());
         }
     }
 
@@ -236,7 +236,7 @@ public class TestCaseController {
             // Validate
             return testCaseNF1.validate(authorizedClient, testCaseEntity);
         } catch (Throwable e) {
-            return Functions.processError(log, e);
+            return Functions.processError(log, e.getMessage());
         }
     }
 
@@ -260,7 +260,7 @@ public class TestCaseController {
             // Validate
             return testCaseNF2.validate(authorizedClient, testCaseEntity);
         } catch (Throwable e) {
-            return Functions.processError(log, e);
+            return Functions.processError(log, e.getMessage());
         }
     }
 

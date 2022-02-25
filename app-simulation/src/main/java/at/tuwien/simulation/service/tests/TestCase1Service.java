@@ -31,7 +31,10 @@ public class TestCase1Service extends AbstractTestCaseService {
         final HttpEntity<DMPScheme> request = new HttpEntity<>(dmpScheme, Functions.getHeaders(authorizedClient));
 
         // Send request
-        Functions.sendHTTPRequest(indmpHost + indmpUpdateMaDMP, HttpMethod.PUT, request, String.class);
+        final ResponseEntity<String> responseEntity = Functions.sendHTTPRequest(indmpHost + indmpUpdateMaDMP,
+                HttpMethod.PUT, request, String.class);
+        testCaseEntity.setStatusCode(responseEntity.getStatusCode().toString());
+        testCaseEntity.setBody(responseEntity.getBody().toString());
 
         return testCaseEntity;
     }
@@ -46,7 +49,7 @@ public class TestCase1Service extends AbstractTestCaseService {
                 HttpMethod.GET, request, DMPScheme.class);
 
         // Are same?
-        validate(testCaseEntity.getDmpScheme(), reponse.getBody());
+        validateDMPScheme(testCaseEntity.getDmpScheme(), reponse.getBody());
 
         return Functions.processSuccess(log, "maDMP was created");
     }

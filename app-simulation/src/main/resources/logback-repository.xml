@@ -3,8 +3,8 @@
 
     <property name="logs" value="./logs" />
 
-    <appender name="app" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${logs}/indmp-application.log</file>
+    <appender name="repository" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${logs}/repository-application.log</file>
 
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <Pattern>%d{dd-MM-yyyy HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n</Pattern>
@@ -12,7 +12,7 @@
 
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>
-                ${logs}/history/indmp-application.%d{yyyy-MM-dd}.%i.log
+                ${logs}/history/repository-application.%d{yyyy-MM-dd}.%i.log
             </fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <maxFileSize>10MB</maxFileSize>
@@ -21,7 +21,6 @@
     </appender>
 
     <root level="INFO">
-        <appender-ref ref="app" />
+        <appender-ref ref="repository" />
     </root>
-
 </configuration>

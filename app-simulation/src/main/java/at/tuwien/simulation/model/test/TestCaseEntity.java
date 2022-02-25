@@ -8,6 +8,8 @@ public class TestCaseEntity {
 
     private DMPScheme dmpScheme;
 
+    private String statusCode, body;
+
     private final Date startDate;
 
     private Date endDate;
@@ -22,6 +24,22 @@ public class TestCaseEntity {
 
     public void setDmpScheme(DMPScheme dmpScheme) {
         this.dmpScheme = dmpScheme;
+    }
+
+    public String getStatusCode() {
+        return this.statusCode;
+    }
+
+    public void setStatusCode(String statusCode) {
+        this.statusCode = statusCode;
+    }
+
+    public String getBody() {
+        return this.body;
+    }
+
+    public void setBody(String body) {
+        this.body = body;
     }
 
     public Date getStartDate() {

@@ -8,7 +8,7 @@ public interface DataServiceService {
 
     public void persist(DataService dataService);
 
-    public DataService findByClientId(String accessRights);
+    public DataService findByAccessRights(String accessRights);
 
     public List<DataService> getAllDataServices();
 

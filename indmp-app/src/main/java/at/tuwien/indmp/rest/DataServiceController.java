@@ -48,7 +48,7 @@ public class DataServiceController {
     @RequestMapping(value = Endpoints.EXISTS_DATA_SERVICE, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public boolean existsByClientId(Principal principal) {
         try {
-            if (dataServiceService.findByClientId(principal.getName()) != null) {
+            if (dataServiceService.findByAccessRights(principal.getName()) != null) {
                 return true;
             } else {
                 return false;

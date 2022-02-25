@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
 
-    <property name="LOGS" value="./logs" />
+    <property name="logs" value="./logs" />
 
-    <appender name="APP" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${LOGS}/simulation-application.log</file>
+    <appender name="dmp" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${logs}/dmp-application.log</file>
 
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <Pattern>%d{dd-MM-yyyy HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n</Pattern>
@@ -12,7 +12,7 @@
 
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <fileNamePattern>
-                ${LOGS}/history/simulation-application.%d{yyyy-MM-dd}.%i.log
+                ${logs}/history/dmp-application.%d{yyyy-MM-dd}.%i.log
             </fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <maxFileSize>10MB</maxFileSize>
@@ -21,7 +21,7 @@
     </appender>
 
     <root level="INFO">
-        <appender-ref ref="APP" />
+        <appender-ref ref="dmp" />
     </root>
 
 </configuration>

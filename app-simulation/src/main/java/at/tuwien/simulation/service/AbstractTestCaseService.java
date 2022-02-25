@@ -109,7 +109,7 @@ public abstract class AbstractTestCaseService {
      * @param dmpScheme1
      * @param dmpScheme2
      */
-    public void validate(DMPScheme dmpScheme1, DMPScheme dmpScheme2) {
+    public void validateDMPScheme(DMPScheme dmpScheme1, DMPScheme dmpScheme2) {
         Objects.requireNonNull(dmpScheme1, "DMP Scheme 1 is null");
         Objects.requireNonNull(dmpScheme2, "DMP Scheme 2 is null");
         Objects.requireNonNull(dmpScheme1.getDmp(), "DMP in scheme 1 is null");

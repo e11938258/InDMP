@@ -120,7 +120,8 @@ public class DMPServiceImpl implements DMPService {
 
     private void checkMinimalDMP(DMP dmp) {
         if (dmp.getCreated() == null || dmp.getModified() == null || dmp.getDmp_id() == null
-                || dmp.getDmp_id().getClassIdentifier() == null) {
+                || dmp.getDmp_id().getClassIdentifier() == null
+                || dmp.getDmp_id().getClassIdentifier().length() == 0) {
             log.error("Missing minimum maDMP.");
             throw new BadRequestException("Missing minimum maDMP.");
         }

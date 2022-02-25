@@ -17,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
-import at.tuwien.simulation.model.dmp.DMPScheme;
 import at.tuwien.simulation.service.CommonService;
 import at.tuwien.simulation.util.Endpoints;
 
@@ -51,7 +50,7 @@ public class CommonController {
      */
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(value = Endpoints.MADMP, method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
-    public void updateMaDMP(final @Valid @RequestBody DMPScheme dmpScheme) {
-        log.info("Receive a new madmp: " + dmpScheme.toString());
+    public void updateMaDMP(@Valid @RequestBody String dmpScheme) {
+        log.info("Receive a new madmp: " + dmpScheme);
     }
 }

@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
 @RestController
@@ -59,7 +60,7 @@ public class MaDMPController {
     public void updateMaDMP(Principal principal, @Valid @RequestBody DMPScheme dmpScheme) {
 
         // Get current RDM Service
-        final DataService dataService = dataServiceService.findByClientId(principal.getName());
+        final DataService dataService = dataServiceService.findByAccessRights(principal.getName());
 
         // Identify maDMP
         DMP currentDMP = DMPService.identifyDMP(dmpScheme.getDmp(), dataService);
@@ -95,7 +96,7 @@ public class MaDMPController {
             @Valid @RequestBody Entity entity) {
 
         // Get current RDM Service
-        final DataService dataService = dataServiceService.findByClientId(principal.getName());
+        final DataService dataService = dataServiceService.findByAccessRights(principal.getName());
 
         // Identify maDMP
         final DMP currentDMP = DMPService.identifyDMP(new DMP(created, modified, new DMP_id(identifier)), dataService);
@@ -103,6 +104,11 @@ public class MaDMPController {
         // Was the DMP found?
         if (currentDMP == null) {
             throw new NotFoundException("DMP not found, identifier: " + identifier);
+        }
+
+        // Checking location
+        if (!entity.getAtLocation().startsWith(currentDMP.getLocation(""))) {
+            throw new ForbiddenException("Cannot find location in dmp: " + entity.getAtLocation());
         }
 
         // Change identifier
@@ -127,7 +133,7 @@ public class MaDMPController {
             @Valid @RequestBody Entity entity) {
 
         // Get current RDM Service
-        final DataService dataService = dataServiceService.findByClientId(principal.getName());
+        final DataService dataService = dataServiceService.findByAccessRights(principal.getName());
 
         // Identify maDMP
         final DMP currentDMP = DMPService.identifyDMP(new DMP(created, modified, new DMP_id(identifier)), dataService);
@@ -157,10 +163,14 @@ public class MaDMPController {
         for (DataService service : dataServiceService.getAllDataServices()) {
             // Except from which information received
             if (!service.equals(dataService)) {
-                final RestTemplate restTemplate = new RestTemplate();
-                final HttpEntity<DMPScheme> request = new HttpEntity<>(dmpScheme, headers);
-                log.info("Sending a new version of maDMP to " + service.getEndpointURL());
-                restTemplate.exchange(service.getEndpointURL(), HttpMethod.PUT, request, Void.class);
+                try {
+                    log.info("Sending a new version of maDMP to " + service.getEndpointURL());
+                    final HttpEntity<DMPScheme> request = new HttpEntity<>(dmpScheme, headers);
+                    final RestTemplate restTemplate = new RestTemplate();
+                    restTemplate.exchange(service.getEndpointURL(), HttpMethod.PUT, request, String.class);
+                } catch (RestClientException ex) {
+                    log.error("Error when sending maDMP to service: " + ex.getMessage());
+                }
             }
         }
     }
@@ -180,7 +190,7 @@ public class MaDMPController {
             @RequestParam(required = true) String modified) {
 
         // Get current RDM Service
-        final DataService dataService = dataServiceService.findByClientId(principal.getName());
+        final DataService dataService = dataServiceService.findByAccessRights(principal.getName());
 
         // Identify maDMP
         final DMP currentDMP = DMPService.identifyDMP(new DMP(created, modified, new DMP_id(identifier)), dataService);
