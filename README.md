@@ -187,10 +187,9 @@ In the following table you can see the individual functional test cases with a s
 
 | Test case | Name | Service scope | URL | Description |
 | - | - | - | - | - |
-| FTC1 | Send minimal maDMP | DMP app | http://localhost:8081/ftc1 | Send maDMP with mandatory minimum properties |
-| FTC2 | Send incomplete maDMP | DMP app | http://localhost:8081/ftc2 | Send maDMP with incomplete mandatory minimum |
-| FTC3 | Send maDMP out of modification scope | DMP app | http://localhost:8082/ftc3 | Send maDMP with mandatory minimum properties |
-| | | Repository app  | http://localhost:8082/ftc3 | Send maDMP with properties outside the modification scope of the repository |
+| FTC1 | Send minimal maDMP | Both | http://localhost:8081/ftc1 or http://localhost:8082/ftc1 | Send maDMP with mandatory minimum properties |
+| FTC2 | Send incomplete maDMP | Both | http://localhost:8081/ftc2 or http://localhost:8082/ftc2 | Send maDMP with incomplete mandatory minimum |
+| FTC3 | Send maDMP out of modification scope | Repository app (only) | http://localhost:8082/ftc3 | Send maDMP with properties outside the modification scope of the repository |
 | FTC4 | Send long maDMP | DMP app | http://localhost:8081/ftc4 | Send maDMP with lots of property information |
 | FTC5 | Change identifier of dataset | DMP app | http://localhost:8081/ftc5 | Send maDMP with dataset information |
 |  |  | Repository app | http://localhost:8082/ftc5 | Send request to change identifier of the dataset |

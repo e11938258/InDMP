@@ -340,7 +340,7 @@ public class DMP extends AbstractClassEntity {
         final Entity contactIdentifier = entityService.findEntity(getLocation(location), "contact:identifier", null);
         if (contactIdentifier != null) {
             contact = new Contact();
-            contact.build(entityService, getLocation(location) + "/" + contactIdentifier.getValue());
+            contact.build(entityService, "/" + contactIdentifier.getValue());
         }
 
         // Contributor

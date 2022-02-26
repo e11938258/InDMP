@@ -7,6 +7,8 @@ import java.util.Objects;
 
 import javax.validation.ValidationException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
@@ -47,7 +49,10 @@ public abstract class AbstractTestCaseService {
     @Autowired
     protected CommonService commonService;
 
+    private final Logger log = LoggerFactory.getLogger(AbstractTestCaseService.class);
+
     public void checkEntryConditions(OAuth2AuthorizedClient authorizedClient) {
+        log.info("Checking entry conditions...");
 
         // Check if the client is successfully logged
         if (authorizedClient == null || authorizedClient.getAccessToken() == null
@@ -58,7 +63,7 @@ public abstract class AbstractTestCaseService {
 
         // Check if service is registered
         final HttpEntity<String> request = new HttpEntity<>("", Functions.getHeaders(authorizedClient));
-        final ResponseEntity<String> restTemplate = Functions.sendHTTPRequest(indmpHost + indmpExistsService,
+        final ResponseEntity<String> restTemplate = Functions.sendHTTPRequest(log, indmpHost + indmpExistsService,
                 HttpMethod.GET, request, String.class);
         // If not registered, register
         if (!Boolean.parseBoolean(restTemplate.getBody())) {
@@ -83,6 +88,7 @@ public abstract class AbstractTestCaseService {
      * @return
      */
     public DMPScheme createMinimalDMPScheme(boolean sameDate) {
+        log.info("Creating minimal DMP scheme...");
 
         // Get create, modified, identifier
         Date modified = new Date();
@@ -114,6 +120,8 @@ public abstract class AbstractTestCaseService {
         Objects.requireNonNull(dmpScheme2, "DMP Scheme 2 is null");
         Objects.requireNonNull(dmpScheme1.getDmp(), "DMP in scheme 1 is null");
         Objects.requireNonNull(dmpScheme2.getDmp(), "DMP in scheme 2 is null");
+
+        log.info("Validating DMP scheme...");
 
         // Get all properties
         final List<Entity> properties1 = dmpScheme1.getDmp().getProperties(dmpScheme1.getDmp(), "");

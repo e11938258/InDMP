@@ -101,7 +101,7 @@ public class EntityDao extends AbstractDao<Entity> {
         criteriaQuery.select(root).distinct(true);
 
         // Conditions
-        Predicate predicate = criteriaBuilder.like(root.get("atLocation"), atLocation);
+        Predicate predicate = criteriaBuilder.like(root.get("atLocation"), atLocation + "%");
 
         if (specializationOf != null) {
             predicate = criteriaBuilder.and(predicate,

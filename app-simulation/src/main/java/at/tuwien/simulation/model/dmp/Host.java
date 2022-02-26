@@ -43,6 +43,22 @@ public class Host extends AbstractClassEntity {
     public Host() {
     }
 
+    public Host(String availability, String backup_frequency, String backup_type, String certified_with,
+            String description, String geo_location, List<String> pid_system, String storage_type,
+            String support_versioning, String title, URI url) {
+        this.availability = availability;
+        this.backup_frequency = backup_frequency;
+        this.backup_type = backup_type;
+        this.certified_with = certified_with;
+        this.description = description;
+        this.geo_location = geo_location;
+        this.pid_system = pid_system;
+        this.storage_type = storage_type;
+        this.support_versioning = support_versioning;
+        this.title = title;
+        this.url = url;
+    }
+
     public String getAvailability() {
         return this.availability;
     }

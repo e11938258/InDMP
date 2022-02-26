@@ -31,6 +31,14 @@ public class Project extends AbstractClassEntity {
     public Project() {
     }
 
+    public Project(String description, Date end, Date start, String title, List<Funding> funding) {
+        this.description = description;
+        this.end = end;
+        this.start = start;
+        this.title = title;
+        this.funding = funding;
+    }
+
     public String getDescription() {
         return this.description;
     }

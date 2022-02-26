@@ -58,7 +58,7 @@ public class CommonService {
         // Register a new service
         try {
             return Functions.processSuccess(log,
-                    Functions.sendHTTPRequest(indmpHost + indmpPostService, HttpMethod.POST, request, String.class)
+                    Functions.sendHTTPRequest(log, indmpHost + indmpPostService, HttpMethod.POST, request, String.class)
                             .getStatusCode().toString());
         } catch (Throwable e) {
             return Functions.processError(log, e.getMessage());

@@ -21,6 +21,13 @@ public class Cost extends AbstractClassEntity {
     public Cost() {
     }
 
+    public Cost(String currency_code, String description, String title, Double value) {
+        this.currency_code = currency_code;
+        this.description = description;
+        this.title = title;
+        this.value = value;
+    }
+
     public String getCurrency_code() {
         return this.currency_code;
     }

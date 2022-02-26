@@ -95,10 +95,11 @@ public class Functions {
      * @return
      * @throws HttpClientErrorException
      */
-    public static <T> ResponseEntity<T> sendHTTPRequest(String endpoint, HttpMethod httpMethod, HttpEntity<?> request,
-            Class<T> clazz)
+    public static <T> ResponseEntity<T> sendHTTPRequest(Logger log, String endpoint, HttpMethod httpMethod,
+            HttpEntity<?> request, Class<T> clazz)
             throws HttpClientErrorException {
         final RestTemplate restTemplate = new RestTemplate();
+        log.info("Sending a http request " + httpMethod + " to " + endpoint + ".");
         return restTemplate.exchange(endpoint, httpMethod, request, clazz);
     }
 

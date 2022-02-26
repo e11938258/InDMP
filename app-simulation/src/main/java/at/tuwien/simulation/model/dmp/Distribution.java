@@ -44,6 +44,20 @@ public class Distribution extends AbstractClassEntity {
     public Distribution() {
     }
 
+    public Distribution(URI access_url, Date available_until, Long byte_size, String data_access, String description,
+            URI download_url, List<String> format, String title, Host host, List<License> license) {
+        this.access_url = access_url;
+        this.available_until = available_until;
+        this.byte_size = byte_size;
+        this.data_access = data_access;
+        this.description = description;
+        this.download_url = download_url;
+        this.format = format;
+        this.title = title;
+        this.host = host;
+        this.license = license;
+    }
+
     public URI getAccess_url() {
         return this.access_url;
     }
@@ -128,7 +142,8 @@ public class Distribution extends AbstractClassEntity {
     public Object[] getValues() {
         return new Object[] {
                 getData_access(),
-                getAvailable_until() != null ? ModelConstants.DATE_FORMATTER_ISO_8601.format(getAvailable_until()) : null,
+                getAvailable_until() != null ? ModelConstants.DATE_FORMATTER_ISO_8601.format(getAvailable_until())
+                        : null,
                 getByte_size(),
                 getDescription(),
                 getDownload_url(),

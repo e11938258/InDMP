@@ -57,6 +57,27 @@ public class Dataset extends AbstractClassEntity {
     public Dataset() {
     }
 
+    public Dataset(List<String> data_quality_assurance, String description, Date issued, List<String> keyword,
+            String language, String personal_data, String preservation_statement, String sensitive_data, String title,
+            String type, Dataset_id dataset_id, List<Distribution> distribution, List<Metadata> metadata,
+            List<SecurityAndPrivacy> security_and_privacy, List<TechnicalResource> technical_resource) {
+        this.data_quality_assurance = data_quality_assurance;
+        this.description = description;
+        this.issued = issued;
+        this.keyword = keyword;
+        this.language = language;
+        this.personal_data = personal_data;
+        this.preservation_statement = preservation_statement;
+        this.sensitive_data = sensitive_data;
+        this.title = title;
+        this.type = type;
+        this.dataset_id = dataset_id;
+        this.distribution = distribution;
+        this.metadata = metadata;
+        this.security_and_privacy = security_and_privacy;
+        this.technical_resource = technical_resource;
+    }
+
     public List<String> getData_quality_assurance() {
         return this.data_quality_assurance;
     }

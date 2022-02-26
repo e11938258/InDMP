@@ -24,6 +24,12 @@ public class Funding extends AbstractClassEntity {
     public Funding() {
     }
 
+    public Funding(String funding_status, Funder_id funder_id, Grant_id grant_id) {
+        this.funding_status = funding_status;
+        this.funder_id = funder_id;
+        this.grant_id = grant_id;
+    }
+
     public String getFunding_status() {
         return this.funding_status;
     }

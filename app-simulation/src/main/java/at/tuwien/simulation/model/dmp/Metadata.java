@@ -24,6 +24,12 @@ public class Metadata extends AbstractClassEntity {
     public Metadata() {
     }
 
+    public Metadata(String description, String language, Metadata_standard_id metadata_standard_id) {
+        this.description = description;
+        this.language = language;
+        this.metadata_standard_id = metadata_standard_id;
+    }
+
     public String getDescription() {
         return this.description;
     }

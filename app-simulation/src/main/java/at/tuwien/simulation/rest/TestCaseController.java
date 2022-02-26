@@ -5,6 +5,7 @@ import java.net.URISyntaxException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.env.Environment;
 import org.springframework.http.MediaType;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
@@ -46,6 +47,9 @@ public class TestCaseController {
     @Autowired
     private TestCaseNF2Service testCaseNF2;
 
+    @Autowired
+    private Environment environment;
+
     private final Logger log = LoggerFactory.getLogger(TestCaseController.class);
 
     /**
@@ -57,7 +61,8 @@ public class TestCaseController {
      */
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(value = Endpoints.TEST_CASE_1, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public String executeTestCase1(@RegisteredOAuth2AuthorizedClient("indmp-client") OAuth2AuthorizedClient authorizedClient) {
+    public String executeTestCase1(
+            @RegisteredOAuth2AuthorizedClient("indmp-client") OAuth2AuthorizedClient authorizedClient) {
         try {
             // Check entry conditions
             testCase1.checkEntryConditions(authorizedClient);
@@ -68,7 +73,7 @@ public class TestCaseController {
             // Validate
             return testCase1.validate(authorizedClient, testCaseEntity);
         } catch (Throwable e) {
-            return Functions.processError(log, e.getMessage());
+            return Functions.processError(log, e.toString());
         }
     }
 
@@ -81,7 +86,8 @@ public class TestCaseController {
      */
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(value = Endpoints.TEST_CASE_2, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public String executeTestCase2(@RegisteredOAuth2AuthorizedClient("indmp-client") OAuth2AuthorizedClient authorizedClient) {
+    public String executeTestCase2(
+            @RegisteredOAuth2AuthorizedClient("indmp-client") OAuth2AuthorizedClient authorizedClient) {
         try {
             // Check entry conditions
             testCase2.checkEntryConditions(authorizedClient);
@@ -92,7 +98,7 @@ public class TestCaseController {
             // Validate
             return testCase2.validate(authorizedClient, testCaseEntity);
         } catch (Throwable e) {
-            return Functions.processError(log, e.getMessage());
+            return Functions.processError(log, e.toString());
         }
     }
 
@@ -105,18 +111,24 @@ public class TestCaseController {
      */
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(value = Endpoints.TEST_CASE_3, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public String executeTestCase3(@RegisteredOAuth2AuthorizedClient("indmp-client") OAuth2AuthorizedClient authorizedClient) {
-        try {
-            // Check entry conditions
-            testCase3.checkEntryConditions(authorizedClient);
+    public String executeTestCase3(
+            @RegisteredOAuth2AuthorizedClient("indmp-client") OAuth2AuthorizedClient authorizedClient) {
+        // Repository app only
+        if (environment.getActiveProfiles().length > 0 && environment.getActiveProfiles()[0].equals("repository")) {
+            try {
+                // Check entry conditions
+                testCase3.checkEntryConditions(authorizedClient);
 
-            // Execute test steps
-            final TestCaseEntity testCaseEntity = testCase3.executeTestSteps(authorizedClient);
+                // Execute test steps
+                final TestCaseEntity testCaseEntity = testCase3.executeTestSteps(authorizedClient);
 
-            // Validate
-            return testCase3.validate(authorizedClient, testCaseEntity);
-        } catch (Throwable e) {
-            return Functions.processError(log, e.getMessage());
+                // Validate
+                return testCase3.validate(authorizedClient, testCaseEntity);
+            } catch (Throwable e) {
+                return Functions.processError(log, e.toString());
+            }
+        } else {
+            return Functions.processError(log, "Only repository app can execute the test case!");
         }
     }
 
@@ -129,18 +141,24 @@ public class TestCaseController {
      */
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(value = Endpoints.TEST_CASE_4, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public String executeTestCase4(@RegisteredOAuth2AuthorizedClient("indmp-client") OAuth2AuthorizedClient authorizedClient) {
-        try {
-            // Check entry conditions
-            testCase4.checkEntryConditions(authorizedClient);
+    public String executeTestCase4(
+            @RegisteredOAuth2AuthorizedClient("indmp-client") OAuth2AuthorizedClient authorizedClient) {
+        // DMP app only
+        if (environment.getActiveProfiles().length > 0 && environment.getActiveProfiles()[0].equals("repository")) {
+            return Functions.processError(log, "Only dmp app can execute the test case!");
+        } else {
+            // try {
+                // Check entry conditions
+                testCase4.checkEntryConditions(authorizedClient);
 
-            // Execute test steps
-            final TestCaseEntity testCaseEntity = testCase4.executeTestSteps(authorizedClient);
+                // Execute test steps
+                final TestCaseEntity testCaseEntity = testCase4.executeTestSteps(authorizedClient);
 
-            // Validate
-            return testCase4.validate(authorizedClient, testCaseEntity);
-        } catch (Throwable e) {
-            return Functions.processError(log, e.getMessage());
+                // Validate
+                return testCase4.validate(authorizedClient, testCaseEntity);
+            // } catch (Throwable e) {
+            //     return Functions.processError(log, e.toString());
+            // }
         }
     }
 
@@ -153,7 +171,8 @@ public class TestCaseController {
      */
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(value = Endpoints.TEST_CASE_5, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public String executeTestCase5(@RegisteredOAuth2AuthorizedClient("indmp-client") OAuth2AuthorizedClient authorizedClient) {
+    public String executeTestCase5(
+            @RegisteredOAuth2AuthorizedClient("indmp-client") OAuth2AuthorizedClient authorizedClient) {
         try {
             // Check entry conditions
             testCase5.checkEntryConditions(authorizedClient);
@@ -164,7 +183,7 @@ public class TestCaseController {
             // Validate
             return testCase5.validate(authorizedClient, testCaseEntity);
         } catch (Throwable e) {
-            return Functions.processError(log, e.getMessage());
+            return Functions.processError(log, e.toString());
         }
     }
 
@@ -177,7 +196,8 @@ public class TestCaseController {
      */
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(value = Endpoints.TEST_CASE_6, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public String executeTestCase6(@RegisteredOAuth2AuthorizedClient("indmp-client") OAuth2AuthorizedClient authorizedClient) {
+    public String executeTestCase6(
+            @RegisteredOAuth2AuthorizedClient("indmp-client") OAuth2AuthorizedClient authorizedClient) {
         try {
             // Check entry conditions
             testCase5.checkEntryConditions(authorizedClient);
@@ -188,7 +208,7 @@ public class TestCaseController {
             // Validate
             return testCase5.validate(authorizedClient, testCaseEntity);
         } catch (Throwable e) {
-            return Functions.processError(log, e.getMessage());
+            return Functions.processError(log, e.toString());
         }
     }
 
@@ -201,7 +221,8 @@ public class TestCaseController {
      */
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(value = Endpoints.TEST_CASE_7, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public String executeTestCase7(@RegisteredOAuth2AuthorizedClient("indmp-client") OAuth2AuthorizedClient authorizedClient) {
+    public String executeTestCase7(
+            @RegisteredOAuth2AuthorizedClient("indmp-client") OAuth2AuthorizedClient authorizedClient) {
         try {
             // Check entry conditions
             testCase7.checkEntryConditions(authorizedClient);
@@ -212,7 +233,7 @@ public class TestCaseController {
             // Validate
             return testCase7.validate(authorizedClient, testCaseEntity);
         } catch (Throwable e) {
-            return Functions.processError(log, e.getMessage());
+            return Functions.processError(log, e.toString());
         }
     }
 
@@ -225,7 +246,8 @@ public class TestCaseController {
      */
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(value = Endpoints.NF_TEST_CASE_1, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public String executeTestCaseNF1(@RegisteredOAuth2AuthorizedClient("indmp-client") OAuth2AuthorizedClient authorizedClient) {
+    public String executeTestCaseNF1(
+            @RegisteredOAuth2AuthorizedClient("indmp-client") OAuth2AuthorizedClient authorizedClient) {
         try {
             // Check entry conditions
             testCaseNF1.checkEntryConditions(authorizedClient);
@@ -236,7 +258,7 @@ public class TestCaseController {
             // Validate
             return testCaseNF1.validate(authorizedClient, testCaseEntity);
         } catch (Throwable e) {
-            return Functions.processError(log, e.getMessage());
+            return Functions.processError(log, e.toString());
         }
     }
 
@@ -249,7 +271,8 @@ public class TestCaseController {
      */
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(value = Endpoints.NF_TEST_CASE_2, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public String executeTestCaseNF2(@RegisteredOAuth2AuthorizedClient("indmp-client") OAuth2AuthorizedClient authorizedClient) {
+    public String executeTestCaseNF2(
+            @RegisteredOAuth2AuthorizedClient("indmp-client") OAuth2AuthorizedClient authorizedClient) {
         try {
             // Check entry conditions
             testCaseNF2.checkEntryConditions(authorizedClient);
@@ -260,7 +283,7 @@ public class TestCaseController {
             // Validate
             return testCaseNF2.validate(authorizedClient, testCaseEntity);
         } catch (Throwable e) {
-            return Functions.processError(log, e.getMessage());
+            return Functions.processError(log, e.toString());
         }
     }
 

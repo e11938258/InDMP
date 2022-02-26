@@ -51,6 +51,6 @@ public class CommonController {
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(value = Endpoints.MADMP, method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
     public void updateMaDMP(@Valid @RequestBody String dmpScheme) {
-        log.info("Receive a new madmp: " + dmpScheme);
+        log.info("Received a new madmp: " + dmpScheme);
     }
 }

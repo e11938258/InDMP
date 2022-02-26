@@ -2,7 +2,6 @@ package at.tuwien.indmp.model.dmp;
 
 import javax.validation.constraints.Pattern;
 
-import at.tuwien.indmp.exception.ForbiddenException;
 import at.tuwien.indmp.util.ModelConstants;
 
 public class DMP_id extends Identifier {
@@ -25,15 +24,6 @@ public class DMP_id extends Identifier {
 
     public void setType(String type) {
         this.type = type;
-    }
-
-    @Override
-    public String getLocation(String location) {
-        if (getClassIdentifier().equals(null)) {
-            throw new ForbiddenException("Null identifier!");
-        } else {
-            return location + "/" + getClassIdentifier();
-        }
     }
 
     @Override

@@ -22,6 +22,8 @@ public class TestCase1Service extends AbstractTestCaseService {
 
     @Override
     public TestCaseEntity executeTestSteps(OAuth2AuthorizedClient authorizedClient) {
+        log.info("Executing test steps...");
+
         // Create test case entity
         final TestCaseEntity testCaseEntity = new TestCaseEntity();
 
@@ -31,7 +33,7 @@ public class TestCase1Service extends AbstractTestCaseService {
         final HttpEntity<DMPScheme> request = new HttpEntity<>(dmpScheme, Functions.getHeaders(authorizedClient));
 
         // Send request
-        final ResponseEntity<String> responseEntity = Functions.sendHTTPRequest(indmpHost + indmpUpdateMaDMP,
+        final ResponseEntity<String> responseEntity = Functions.sendHTTPRequest(log, indmpHost + indmpUpdateMaDMP,
                 HttpMethod.PUT, request, String.class);
         testCaseEntity.setStatusCode(responseEntity.getStatusCode().toString());
         testCaseEntity.setBody(responseEntity.getBody().toString());
@@ -41,9 +43,11 @@ public class TestCase1Service extends AbstractTestCaseService {
 
     @Override
     public String validate(OAuth2AuthorizedClient authorizedClient, TestCaseEntity testCaseEntity) {
-        // Get current maDMP
+        log.info("Validating results..");
+
+        // Get current maDMP from InDMP
         final HttpEntity<String> request = new HttpEntity<>("", Functions.getHeaders(authorizedClient));
-        final ResponseEntity<DMPScheme> reponse = Functions.sendHTTPRequest(
+        final ResponseEntity<DMPScheme> reponse = Functions.sendHTTPRequest(log, 
                 indmpHost + indmpGetMaDMP
                         + Functions.getDMPParameters(testCaseEntity.getDmpScheme().getDmp(), new Date()),
                 HttpMethod.GET, request, DMPScheme.class);

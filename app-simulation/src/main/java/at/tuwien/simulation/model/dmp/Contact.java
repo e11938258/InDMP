@@ -22,6 +22,12 @@ public class Contact extends AbstractClassEntity {
     public Contact() {
     }
 
+    public Contact(String mbox, String name, Contact_id contact_id) {
+        this.mbox = mbox;
+        this.name = name;
+        this.contact_id = contact_id;
+    }
+
     public String getMbox() {
         return this.mbox;
     }

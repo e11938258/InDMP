@@ -52,8 +52,8 @@ public abstract class AbstractEntity {
 
         // For each value
         for (int i = 0; i < values.length; i++) {
-            // If value is not null
-            if (values[i] != null) {
+            // If value is not null or empty array
+            if (values[i] != null && !values[i].equals("[]")) {
                 properties.add(Functions.createEntity(getLocation(location), getClassType() + ":" + propertyNames[i],
                         values[i].toString()));
             }

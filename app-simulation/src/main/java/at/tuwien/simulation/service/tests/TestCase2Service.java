@@ -20,6 +20,8 @@ public class TestCase2Service extends AbstractTestCaseService {
 
     @Override
     public TestCaseEntity executeTestSteps(OAuth2AuthorizedClient authorizedClient) {
+        log.info("Executing test steps...");
+
         // Create test case entity
         final TestCaseEntity testCaseEntity = new TestCaseEntity();
 
@@ -32,7 +34,7 @@ public class TestCase2Service extends AbstractTestCaseService {
 
         // Send request
         try {
-            Functions.sendHTTPRequest(indmpHost + indmpUpdateMaDMP, HttpMethod.PUT, request, String.class);
+            Functions.sendHTTPRequest(log, indmpHost + indmpUpdateMaDMP, HttpMethod.PUT, request, String.class);
         } catch (HttpClientErrorException ex) {
             testCaseEntity.setStatusCode(ex.getStatusCode().toString());
             testCaseEntity.setBody(ex.getMessage());
@@ -43,10 +45,12 @@ public class TestCase2Service extends AbstractTestCaseService {
 
     @Override
     public String validate(OAuth2AuthorizedClient authorizedClient, TestCaseEntity testCaseEntity) {
+        log.info("Validating results..");
+
         // Return correct status code?
         if (!testCaseEntity.getStatusCode().equals("400 BAD_REQUEST")) {
             return Functions.processError(log,
-                    "InDMP returned wrong status code - " + testCaseEntity.getStatusCode() + "!");
+                    "InDMP returned wrong status code - " + testCaseEntity.getStatusCode());
         } else {
             return Functions.processSuccess(log, "InDMP returned status code 400.");
         }

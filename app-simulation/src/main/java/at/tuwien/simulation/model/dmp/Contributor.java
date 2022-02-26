@@ -24,6 +24,13 @@ public class Contributor extends AbstractClassEntity {
     public Contributor() {
     }
 
+    public Contributor(String mbox, String name, List<String> role, Contributor_id contributor_id) {
+        this.mbox = mbox;
+        this.name = name;
+        this.role = role;
+        this.contributor_id = contributor_id;
+    }
+
     public String getMbox() {
         return this.mbox;
     }

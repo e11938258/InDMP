@@ -22,6 +22,11 @@ public class License extends AbstractClassEntity {
     public License() {
     }
 
+    public License(URI license_ref, Date start_date) {
+        this.license_ref = license_ref;
+        this.start_date = start_date;
+    }
+
     public URI getLicense_ref() {
         return this.license_ref;
     }
