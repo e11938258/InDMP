@@ -19,7 +19,7 @@ Integrated The Machine-actionable Data Management planning application (InDMP) s
 indmp-app
 │   README.md
 │   LICENSE
-└───app-simulation
+└───simulation-app
 │   │   src
 │   │   pom.xml
 └───indmp-app
@@ -137,7 +137,7 @@ If PostgreSQL and Keycloak setup are running, you can run individual application
 2. Run app simulation with configuration for DMP (default)
 
 ```console
-> cd ./app-simulation
+> cd ./simulation-app
 > mvn clean package
 > java -jar target/app-simulation-1.0.0.jar
 ```
@@ -147,7 +147,7 @@ If PostgreSQL and Keycloak setup are running, you can run individual application
 4. Run app simulation with configuration for repository
 
 ```console
-> cd ./app-simulation
+> cd ./simulation-app
 > java -jar target/app-simulation-1.0.0.jar --spring.profiles.active=repository
 ```
 
