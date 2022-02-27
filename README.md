@@ -13,16 +13,16 @@ The software was developed by Filip Zoubek (https://orcid.org/0000-0003-1269-266
 
 ## General info
 
-Integrated The Machine-actionable Data Management planning application (InDMP) serves as a proof-of-concept for the thesis Framework for integration of RDM services using machine-actionable DMPs. The application allows to integrate RDM services using maDMPs to exchange information using a REST API, manage which services can modify what as well as to track the evolution of DMPs and provenance of information. The repository contains the mentioned application for integration (indmp-app) and an application (app-simulation) that simulates the behaviour of the DMP tool and the repository using test cases. You can see the structure of the repository in the following listing:
+Integrated The Machine-actionable Data Management planning application (InDMP) serves as a proof-of-concept for the thesis Framework for integration of RDM services using machine-actionable DMPs. The application allows to integrate RDM services using maDMPs to exchange information using a REST API, manage which services can modify what as well as to track the evolution of DMPs and provenance of information. The repository contains the mentioned application for integration (indmp-app) and an application (simulation-app) that simulates the behaviour of the DMP tool and the repository using test cases. You can see the structure of the repository in the following listing:
 
 ```
 indmp-app
 │   README.md
 │   LICENSE
-└───simulation-app
+└───indmp-app
 │   │   src
 │   │   pom.xml
-└───indmp-app
+└───simulation-app
 │   │   src
 │   │   pom.xml
 ```
