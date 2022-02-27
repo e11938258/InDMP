@@ -68,7 +68,7 @@ public class Contributor extends AbstractClassEntity {
         return new Object[] {
                 getMbox(),
                 getName(),
-                getRole().toString(),
+                getRole() != null ? getRole().toString() : null,
         };
     }
 

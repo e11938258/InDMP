@@ -1,19 +1,26 @@
 package at.tuwien.indmp.dao;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import at.tuwien.indmp.model.Activity;
 import at.tuwien.indmp.model.Entity;
 
 @Repository
 public class EntityDao extends AbstractDao<Entity> {
+
+    @Autowired
+    private ActivityDao activityDao;
 
     public EntityDao() {
         super(Entity.class);
@@ -113,43 +120,31 @@ public class EntityDao extends AbstractDao<Entity> {
         return entityManager.createQuery(criteriaQuery).getResultList();
     }
 
-    // /**
-    // *
-    // * Find identifiers
-    // *
-    // * @param dmpIdentifier
-    // * @param classType
-    // * @param propertyName
-    // * @return
-    // */
-    // public List<Property> findIdentifiers(String dmpIdentifier, String classType,
-    // String propertyName) {
-    // Objects.requireNonNull(dmpIdentifier);
+    /**
+     *
+     * Find identifiers in history table
+     *
+     * @param id
+     * @return
+     */
+    public List<Entity> findInHistory(Long id) {
+        Objects.requireNonNull(id);
+        final List<Entity> entities = new ArrayList<>();
 
-    // final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-    // final CriteriaQuery<Property> criteriaQuery =
-    // criteriaBuilder.createQuery(Property.class);
-    // final Root<Property> root = criteriaQuery.from(Property.class);
-    // criteriaQuery.select(root).distinct(true);
+        // Run query
+        final Query query = entityManager.createNativeQuery(
+                "SELECT e.at_location, e.specialization_of, e.value, e.was_generated_by from entity_history e WHERE ID = ?");
+        query.setParameter(1, id);
 
-    // // Conditions
-    // Predicate predicate = criteriaBuilder.equal(root.get("dmpIdentifier"),
-    // dmpIdentifier);
+        // Create a new entity for each instance
+        List<Object[]> returnList = query.getResultList();
+        for (Object[] entity : returnList) {
+            final Activity activity = activityDao.find(Long.valueOf(String.valueOf(entity[3])));
+            entities.add(new Entity(String.valueOf(entity[0]), String.valueOf(entity[1]), String.valueOf(entity[2]),
+                    activity));
+        }
 
-    // // Class type
-    // if (classType != null) {
-    // predicate = criteriaBuilder.and(predicate,
-    // criteriaBuilder.equal(root.get("classType"), classType));
-    // }
-
-    // // Property name
-    // if (propertyName != null) {
-    // predicate = criteriaBuilder.and(predicate,
-    // criteriaBuilder.equal(root.get("propertyName"), propertyName));
-    // }
-    // criteriaQuery.where(predicate);
-
-    // return entityManager.createQuery(criteriaQuery).getResultList();
-    // }
+        return entities;
+    }
 
 }

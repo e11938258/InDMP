@@ -43,6 +43,7 @@ create table entity (
     value varchar(4096) NOT NULL,
     was_generated_by bigserial,
     PRIMARY KEY (id),
+    UNIQUE (at_location, specialization_of),
     CONSTRAINT fk_activity FOREIGN KEY (was_generated_by)
         REFERENCES activity (id) MATCH SIMPLE
         ON UPDATE NO ACTION

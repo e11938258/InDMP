@@ -65,7 +65,7 @@ public class Contributor extends AbstractClassEntity {
         return new Object[] {
                 getMbox(),
                 getName(),
-                getRole().toString(),
+                getRole() != null ? getRole().toString() : null,
         };
     }
 
@@ -85,7 +85,7 @@ public class Contributor extends AbstractClassEntity {
 
     @Override
     public List<Entity> getPropertiesFromIdentifier(DMP dmp, String location, DataService dataService) {
-        return getContributor_id().getProperties(dmp, getLocation(location), dataService);
+        return getContributor_id().getProperties(dmp, location, dataService);
     }
 
     @Override

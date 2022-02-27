@@ -137,7 +137,7 @@ public class Distribution extends AbstractClassEntity {
                 getByte_size(),
                 getDescription(),
                 getDownload_url(),
-                getFormat().toString(),
+                getFormat() != null ? getFormat().toString() : null,
                 getTitle(),
                 getAccess_url().toString()
         };
@@ -217,16 +217,16 @@ public class Distribution extends AbstractClassEntity {
 
         // Nested classes
         // Host
-        final Entity hostIdentifier = entityService.findEntity(getLocation(location), "host:url", null);
-        if (hostIdentifier != null) {
+        for (Entity property : entityService.findAllEntities(location, "host:url")) {
             host = new Host();
-            host.build(entityService, getLocation(location) + "/" + hostIdentifier.getValue());
+            host.build(entityService, location + "/" + property.getValue());
+            setHost(host);
         }
 
         // License
-        for (Entity property : entityService.findAllEntities(getLocation(location), "license:license_ref")) {
+        for (Entity property : entityService.findAllEntities(location, "license:license_ref")) {
             final License i = new License();
-            i.build(entityService, getLocation(location) + "/" + property.getValue());
+            i.build(entityService, location + "/" + property.getValue());
             license.add(i);
         }
     }

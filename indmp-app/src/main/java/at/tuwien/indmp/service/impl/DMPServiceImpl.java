@@ -225,7 +225,7 @@ public class DMPServiceImpl implements DMPService {
                 // Create a new location
                 final String oldLocation = currentIdentifier.getAtLocation();
                 final String location = oldLocation.replace(currentIdentifier.getValue(), identifier.getValue());
-                // Create a new entity
+                // Update entity
                 entityService.update(
                         Functions.createEntity(dmp, oldLocation, currentIdentifier.getSpecializationOf(),
                                 identifier.getValue()),
@@ -267,35 +267,14 @@ public class DMPServiceImpl implements DMPService {
      * @return
      */
     public List<Entity> loadIdentifierHistory(DMP dmp) {
+        Objects.requireNonNull(dmp);
+
         final List<Entity> entities = new ArrayList<>();
 
-        // // DMP
-        // properties.addAll(propertyService.loadAllIdentifiers(dmp.getClassIdentifier(),
-        // "dmp_id", null));
-        // // Project
-        // properties.addAll(propertyService.loadAllIdentifiers(dmp.getClassIdentifier(),
-        // "project", "title"));
-        // // Funding
-        // properties.addAll(propertyService.loadAllIdentifiers(dmp.getClassIdentifier(),
-        // "funder_id", null));
-        // // Grant id
-        // properties.addAll(propertyService.loadAllIdentifiers(dmp.getClassIdentifier(),
-        // "grant_id", null));
-        // // Contact
-        // properties.addAll(propertyService.loadAllIdentifiers(dmp.getClassIdentifier(),
-        // "contact_id", null));
-        // // Contributor
-        // properties.addAll(propertyService.loadAllIdentifiers(dmp.getClassIdentifier(),
-        // "contributor_id", null));
-        // // Cost
-        // properties.addAll(propertyService.loadAllIdentifiers(dmp.getClassIdentifier(),
-        // "cost", "title"));
-        // // Dataset
-        // properties.addAll(propertyService.loadAllIdentifiers(dmp.getClassIdentifier(),
-        // "dataset_id", null));
-        // // Distribution
-        // properties.addAll(propertyService.loadAllIdentifiers(dmp.getClassIdentifier(),
-        // "distribution", "access_url"));
+        // For each changeable class identifier
+        for(String specializationOf: ModelConstants.IDENTIFIER_CHANGEABLE_CLASSES) {
+            entities.addAll(entityService.loadIdentifierHistory(dmp.getLocation(""), specializationOf));
+        }
 
         return entities;
     }

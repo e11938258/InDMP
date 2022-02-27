@@ -27,6 +27,8 @@ public class TestCase4Service extends AbstractTestCaseService {
 
     @Override
     public TestCaseEntity executeTestSteps(OAuth2AuthorizedClient authorizedClient) {
+        log.info("Executing test steps...");
+        
         // Create test case entity
         final TestCaseEntity testCaseEntity = new TestCaseEntity();
 
@@ -117,6 +119,8 @@ public class TestCase4Service extends AbstractTestCaseService {
 
     @Override
     public String validate(OAuth2AuthorizedClient authorizedClient, TestCaseEntity testCaseEntity) {
+        log.info("Validating results..");
+        
         // Get current maDMP from InDMP
         final HttpEntity<String> request = new HttpEntity<>("", Functions.getHeaders(authorizedClient));
         final ResponseEntity<DMPScheme> reponse = Functions.sendHTTPRequest(log,
@@ -127,7 +131,7 @@ public class TestCase4Service extends AbstractTestCaseService {
         // Are same?
         validateDMPScheme(testCaseEntity.getDmpScheme(), reponse.getBody());
 
-        return Functions.processSuccess(log, "long maDMP was created");
+        return Functions.processSuccess(log, "Long maDMP was created");
     }
 
 }

@@ -39,6 +39,9 @@ public class TestCaseController {
     private TestCase5Service testCase5;
 
     @Autowired
+    private TestCase6Service testCase6;
+
+    @Autowired
     private TestCase7Service testCase7;
 
     @Autowired
@@ -147,7 +150,7 @@ public class TestCaseController {
         if (environment.getActiveProfiles().length > 0 && environment.getActiveProfiles()[0].equals("repository")) {
             return Functions.processError(log, "Only dmp app can execute the test case!");
         } else {
-            // try {
+            try {
                 // Check entry conditions
                 testCase4.checkEntryConditions(authorizedClient);
 
@@ -156,9 +159,9 @@ public class TestCaseController {
 
                 // Validate
                 return testCase4.validate(authorizedClient, testCaseEntity);
-            // } catch (Throwable e) {
-            //     return Functions.processError(log, e.toString());
-            // }
+            } catch (Throwable e) {
+                return Functions.processError(log, e.toString());
+            }
         }
     }
 
@@ -200,13 +203,13 @@ public class TestCaseController {
             @RegisteredOAuth2AuthorizedClient("indmp-client") OAuth2AuthorizedClient authorizedClient) {
         try {
             // Check entry conditions
-            testCase5.checkEntryConditions(authorizedClient);
+            testCase6.checkEntryConditions(authorizedClient);
 
             // Execute test steps
-            final TestCaseEntity testCaseEntity = testCase5.executeTestSteps(authorizedClient);
+            final TestCaseEntity testCaseEntity = testCase6.executeTestSteps(authorizedClient);
 
             // Validate
-            return testCase5.validate(authorizedClient, testCaseEntity);
+            return testCase6.validate(authorizedClient, testCaseEntity);
         } catch (Throwable e) {
             return Functions.processError(log, e.toString());
         }

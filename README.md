@@ -13,29 +13,26 @@ The software was developed by Filip Zoubek (https://orcid.org/0000-0003-1269-266
 
 ## General info
 
-Integrated The Machine-actionable Data Management planning application (InDMP) serves as a proof-of-concept for the thesis Framework for integration of RDM services using machine-actionable DMPs. The application allows to integrate RDM services using maDMPs to exchange information using a REST API, manage which services can modify what as well as to track the evolution of DMPs and provenance of information. The repository contains the mentioned application for integration (indmp-app) and two other applications that simulate the behavior of the DMP tool (dmp-app-simulation) and the repository (repository-app-simulation) using test cases. You can see the structure of the repository in the following listing:
+Integrated The Machine-actionable Data Management planning application (InDMP) serves as a proof-of-concept for the thesis Framework for integration of RDM services using machine-actionable DMPs. The application allows to integrate RDM services using maDMPs to exchange information using a REST API, manage which services can modify what as well as to track the evolution of DMPs and provenance of information. The repository contains the mentioned application for integration (indmp-app) and an application (app-simulation) that simulates the behaviour of the DMP tool and the repository using test cases. You can see the structure of the repository in the following listing:
 
 ```
 indmp-app
 │   README.md
 │   LICENSE
-└───dmp-app-simulation
+└───app-simulation
 │   │   src
 │   │   pom.xml
 └───indmp-app
 │   │   src
 │   │   pom.xml
-└───repository-app-simulation
-    │   src
-    │   pom.xml
 ```
 
 ## Technologies
-The applications were developed using Spring Boot in Java programming language version 11.0.13. The authorization between the  applications for simulation and InDMP is done using the OAuth2 protocol, where [Keycloak](https://www.keycloak.org/) 6.0.1 was used as the authorization server. InDMP also uses the PostgreSQL 10.19 tool as information storage and [Temporal Tables Extension](https://github.com/arkhipov/temporal_tables) 1.2.0 for data versioning. Tests were performed operating system on Ubuntu 18.04.6.
+The applications were developed using Spring Boot in Java programming language version 11.0.13. The authorization between the  application for simulations and InDMP is done using the OAuth2 protocol, where [Keycloak](https://www.keycloak.org/) 6.0.1 was used as the authorization server. InDMP also uses the PostgreSQL 10.19 tool as information storage and [Temporal Tables Extension](https://github.com/arkhipov/temporal_tables) 1.2.0 for data versioning. Tests were performed operating system on Ubuntu 18.04.6.
 
 ## Setup
 
-All three applications have configuration file in /src/main/resources/application.properties. By default, they are configured  that all services run on the same machine with ports:
+InDMP application has configuration file in /src/main/resources/application.properties. The simulation application has a basic configuration in the same location but in addition has two more configurations, /src/main/resources/application-dmp.properties and /src/main/resources/application-repository.properties, which are for the specific service they are supposed to simulate. For this reason, the second application is run twice each time as a simulation of a different tool. By default, they are configured  that all services run on the same machine with ports:
 
 | Address| Service name |
 | - | - |
@@ -99,7 +96,7 @@ WARNING: The InDMP application deletes the content of the tables each time it st
 
 #### Keycloak
 
-RDM (simulation) services are authorized before communicating with InDMP using the OAuth2 protocol. In our case, it is done using the [Keycloak](https://www.keycloak.org/) application, which needs to be set up properly after installation.
+RDM simulation services are authorized before communicating with InDMP using the OAuth2 protocol. In our case, it is done using the [Keycloak](https://www.keycloak.org/) application, which needs to be set up properly after installation.
 
 WARNING: The default port of the application is 8080, it is necessary to change it to port 8090 before starting the application, for example using the input argument:
 
@@ -121,9 +118,9 @@ WARNING: The default port of the application is 8080, it is necessary to change 
 | Access Token Lifespan | dmp_app, repository_app | 1 day |
 | Assigned Default Client Scopes | dmp_app, repository_app | update |
 
-5. Create two new users: "dmp_app_1" and "repository_app_1" with (same) passwords.
+5. Create two new users: "dmp_app_1" and "repository_app_1" with passwords.
 
-That's it! The first time you call a request, you will be redirected to a login page where you will enter your login details (depending on the service you are calling - dmp_app_1 or repository_app_1) to receive a token. The token will be valid for one day (depending on the settings). When creating users, each of them will get a client id, which the InDMP application will use to recognize from which service the request was sent.
+That's it! The first time you call a request, you will be redirected to a login page where you will enter your login details (depending on the service you are calling - dmp_app_1 or repository_app_1) to receive a token. When creating users, each of them will get a client id, which the InDMP application will use to recognize from which service the request was sent.
 
 ## How to run
 
@@ -137,7 +134,7 @@ If PostgreSQL and Keycloak setup are running, you can run individual application
 > java -jar target/INDMP-1.0.0.jar
 ```
 
-2. Run DMP app simulation
+2. Run app simulation with configuration for DMP (default)
 
 ```console
 > cd ./app-simulation
@@ -147,7 +144,7 @@ If PostgreSQL and Keycloak setup are running, you can run individual application
 
 3. Authorize the service using the acccount dmp_app_1 and register to InDMP, use URL: http://127.0.0.1:8081/init
 
-4. Run Repository app simulation
+4. Run app simulation with configuration for repository
 
 ```console
 > cd ./app-simulation
@@ -158,7 +155,7 @@ If PostgreSQL and Keycloak setup are running, you can run individual application
 
 ## Test cases
 
-To verify the functionality of InDMP, a set of functional and non-functional test cases was created to model common situations in DMP development during the research. Each test case is run using a GET request to the DMP simulation tool application or repository API, therefore it can be run from any browser. Because of OAuth authorization, it is necessary to use two separate browsers each for one service. The result can be read from the response. For further verification, the log of all three applications that are created within each folder can be used.
+To verify the functionality of InDMP, a set of functional and non-functional test cases was created to model common situations in DMP development during the research. With specific exceptions, every test case can be execute using a GET request to the DMP or repository service simulation app, therefore it can be run from any browser. Because of OAuth authorization, it is necessary to use two separate browsers each for one service. The result can be read from the response. For further verification, the log of all three applications can be found within folders.
 
 #### Modification scope of services
 
@@ -181,35 +178,36 @@ In order to understand all the tests, it is necessary to mention the modificatio
 | security and privacy | Yes | Yes |
 | technical resource | Yes | No |
 
+However, if the DMP is new, all values from the received data are stored.
+
 #### Functional test cases
 
-In the following table you can see the individual functional test cases with a short description and how to run it (URL). You can run these test cases from the service in which they are implemented. Some test cases are split into multiple calls to better demonstrate functionality and integration.
+In the following table you can see the individual functional test cases with a short description and how to run it (URL). You can run these test cases from the service in which they are implemented.
 
 | Test case | Name | Service scope | URL | Description |
 | - | - | - | - | - |
 | FTC1 | Send minimal maDMP | Both | http://localhost:8081/ftc1 or http://localhost:8082/ftc1 | Send maDMP with mandatory minimum properties |
 | FTC2 | Send incomplete maDMP | Both | http://localhost:8081/ftc2 or http://localhost:8082/ftc2 | Send maDMP with incomplete mandatory minimum |
 | FTC3 | Send maDMP out of modification scope | Repository app (only) | http://localhost:8082/ftc3 | Send maDMP with properties outside the modification scope of the repository |
-| FTC4 | Send long maDMP | DMP app | http://localhost:8081/ftc4 | Send maDMP with lots of property information |
-| FTC5 | Change identifier of dataset | DMP app | http://localhost:8081/ftc5 | Send maDMP with dataset information |
-|  |  | Repository app | http://localhost:8082/ftc5 | Send request to change identifier of the dataset |
-| FTC6 | Delete dataset instance | Repository app | http://localhost:8082/ftc6  | Send maDMP with dataset information and then send a request to delete it |
-| FTC7 | Get history of identifiers | DMP app | http://localhost:8081/ftc7  | Send maDMP with datasets and distributions, then send an identifier change request, and finally send an identifier history request |
+| FTC4 | Send long maDMP | Both | http://localhost:8081/ftc4 or http://localhost:8082/ftc4 | Send maDMP with lots of property information |
+| FTC5 | Change identifier of dataset | Both | http://localhost:8081/ftc5 or http://localhost:8082/ftc5 | Send maDMP with dataset information |
+| FTC6 | Delete dataset instance | Both | http://localhost:8081/ftc6 or http://localhost:8082/ftc6  | Send maDMP with dataset information and then send a request to delete it |
+| FTC7 | Get history of identifiers | Both | http://localhost:8081/ftc7 or http://localhost:8082/ftc7  | Send maDMP with datasets and distributions, then send an identifier change request, and finally send an identifier history request |
 
 #### Non-Functional test cases
 
-In the following table you can see the individual non-functional cases with a short description and how to run it (URL). You can run these test cases from the service in which they are implemented.
+In the following table you can see the individual non-functional cases with a short description and how to run it (URL).
 
 | Test case | Service scope | URL | Description |
 | - | - | - | - |
-| NFTC1 | DMP app | http://localhost:8081/nftc1 | Examine response time of updating minimal maDMP  |
-| NFTC2 | DMP app | http://localhost:8081/nftc2 | Examine response time of updating long maDMP |
+| NFTC1 | Both | http://localhost:8081/nftc1 or http://localhost:8082/nftc1| Examine response time of updating minimal maDMP  |
+| NFTC2 | Both | http://localhost:8081/nftc2 or http://localhost:8082/nftc2 | Examine response time of updating long maDMP |
 
 ## Limitations
 
-The current version serves only as a proof-of-concept solution to verify the functionality of the proposed architecture. The implementation can register a service and restrict its rights to specific maDMP classes. It can also update the DMP using maDMP within registered and authorized services as well as change the identifier and delete the class instance. It can also list the history of identifiers.
+The current version serves only as a proof-of-concept solution to verify the functionality of the proposed architecture. The implementation can register a service and restrict its rights to specific maDMP classes. It can also update the DMP using maDMP within registered and authorized services as well as change the identifier and delete the class instance. It can also list the history of identifiers. For testing purposes, a method for getting maDMP from the InDMP application is also implemented.
 
-However, the solution cannot get older maDMP versions, it synchronizes the information between all registered services, therefore it does not restrict services to a specific maDMP, and does not resolve user errors, such as sending a maDMP with an older modified date than the current version. At the same time, when changing identifiers or deleting instances, it does not consider the class type, but deletes instances or changes identifiers only according to the reference (ID). Also, modification of the scope of services is not considered in these two operations. It can also restrict privileges only to classes not to specific properties, the only exception is the modified property, which has to change all services. The database has maDMP references and ids as string type, which can be made more efficient by using numeric ids.
+However, the solution cannot get older maDMP versions, it synchronizes the information between all registered services, therefore it does not restrict services to a specific maDMP, and also does not resolve user errors, such as sending a maDMP with an older modified date than the current version. At the same time, modification scope of services is not considered in the operations for identifier change and instance deletion, and privileges are restricted only to classes not to specific properties, where only exception is the modified property, which has to change all services.
 
 ## License
 

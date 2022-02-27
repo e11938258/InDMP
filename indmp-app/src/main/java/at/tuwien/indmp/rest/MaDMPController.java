@@ -1,6 +1,7 @@
 package at.tuwien.indmp.rest;
 
 import java.security.Principal;
+import java.util.Date;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -186,14 +187,13 @@ public class MaDMPController {
     @RequestMapping(value = Endpoints.GET_MADMP_IDENTIFIERS, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Entity> getIdentifierHistory(Principal principal,
             @RequestParam(required = true) String identifier,
-            @RequestParam(required = true) String created,
-            @RequestParam(required = true) String modified) {
+            @RequestParam(required = true) String created) {
 
         // Get current RDM Service
         final DataService dataService = dataServiceService.findByAccessRights(principal.getName());
 
         // Identify maDMP
-        final DMP currentDMP = DMPService.identifyDMP(new DMP(created, modified, new DMP_id(identifier)), dataService);
+        final DMP currentDMP = DMPService.identifyDMP(new DMP(created, new Date(), new DMP_id(identifier)), dataService);
 
         // Was the DMP found?
         if (currentDMP != null) {

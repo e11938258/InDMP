@@ -141,9 +141,9 @@ public class Project extends AbstractClassEntity {
 
         // Nested classes
         // Funding
-        for (Entity property : entityService.findAllEntities(getLocation(location), "funding:identifier")) {
+        for (Entity property : entityService.findAllEntities(location, "funding:identifier")) {
             final Funding i = new Funding();
-            i.build(entityService, getLocation(location) + "/" + property.getValue());
+            i.build(entityService, location + "/" + property.getValue());
             funding.add(i);
         }
     }

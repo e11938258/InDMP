@@ -23,6 +23,6 @@ public interface EntityService {
 
     public void removeAllNestedEntities(String currentLocation);
 
-    public List<Entity> loadIdentifierHistory();
+    public List<Entity> loadIdentifierHistory(String dmpIdentifier, String specializationOf);
 
 }

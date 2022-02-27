@@ -12,8 +12,6 @@ public class TestCaseEntity {
 
     private final Date startDate;
 
-    private Date endDate;
-
     public TestCaseEntity() {
         this.startDate = new Date();
     }
@@ -44,14 +42,6 @@ public class TestCaseEntity {
 
     public Date getStartDate() {
         return this.startDate;
-    }
-
-    public Date getEndDate() {
-        return this.endDate;
-    }
-
-    public void setEndDate(Date endDate) {
-        this.endDate = endDate;
     }
 
     public void generateNewModifiedDate() {

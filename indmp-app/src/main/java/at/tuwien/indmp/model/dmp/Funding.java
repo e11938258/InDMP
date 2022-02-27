@@ -100,11 +100,13 @@ public class Funding extends AbstractClassEntity {
         funder_id = new Funder_id(identifier.getValue(), type.getValue());
 
         // Set grant id
-        final Entity grantIdentifier = entityService.findEntity(getLocation(location), "grant_id:identifier", null);
-        final Entity grantType = entityService.findEntity(getLocation(location), "grant_id:type", null);
-        if (grantIdentifier != null) {
-            identifier = grantIdentifier;
-            type = grantType;
+        for (Entity property : entityService.findAllEntities(location, "grant_id:identifier")) {
+            // Set properties
+            final List<Entity> grantProperties = entityService.findEntities(location + "/" + property.getValue(), null);
+
+            identifier = Functions.findPropertyInList("grant_id", "identifier", grantProperties);
+            type = Functions.findPropertyInList("grant_id", "type", grantProperties);
+
             setGrant_id(new Grant_id(identifier.getValue(), type.getValue()));
         }
     }

@@ -36,7 +36,6 @@ public class TestCase1Service extends AbstractTestCaseService {
         final ResponseEntity<String> responseEntity = Functions.sendHTTPRequest(log, indmpHost + indmpUpdateMaDMP,
                 HttpMethod.PUT, request, String.class);
         testCaseEntity.setStatusCode(responseEntity.getStatusCode().toString());
-        testCaseEntity.setBody(responseEntity.getBody().toString());
 
         return testCaseEntity;
     }

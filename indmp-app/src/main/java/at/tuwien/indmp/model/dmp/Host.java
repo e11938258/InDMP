@@ -144,7 +144,7 @@ public class Host extends AbstractClassEntity {
                 getCertified_with(),
                 getDescription(),
                 getGeo_location(),
-                getPid_system(),
+                getPid_system() != null ? getPid_system().toString() : null,
                 getStorage_type(),
                 getSupport_versioning(),
                 getTitle(),

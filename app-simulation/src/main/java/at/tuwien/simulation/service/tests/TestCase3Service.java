@@ -13,8 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.stereotype.Service;
 
-import at.tuwien.simulation.model.dmp.Contact;
-import at.tuwien.simulation.model.dmp.Contact_id;
 import at.tuwien.simulation.model.dmp.Cost;
 import at.tuwien.simulation.model.dmp.DMPScheme;
 import at.tuwien.simulation.model.test.TestCaseEntity;
@@ -36,15 +34,23 @@ public class TestCase3Service extends AbstractTestCaseService {
         // Create a new DMP Scheme
         final DMPScheme dmpScheme = createMinimalDMPScheme(true);
 
-        // DMP
+        // Set request with body
+        final HttpEntity<DMPScheme> request = new HttpEntity<>(dmpScheme, Functions.getHeaders(authorizedClient));
+
+        // Send request
+        final ResponseEntity<String> responseEntity = Functions.sendHTTPRequest(log, indmpHost + indmpUpdateMaDMP,
+                HttpMethod.PUT, request, String.class);
+        testCaseEntity.setStatusCode(responseEntity.getStatusCode().toString());
+
+        // Send second request with modifications
+
+        // Set some DMP properties
+        dmpScheme.getDmp().setModified(new Date());
+        //  Not in modification scope
         dmpScheme.getDmp().setEthical_issues_exist("no");
         dmpScheme.getDmp().setLanguage("eng");
         dmpScheme.getDmp().setTitle("DMP for a new project");
         dmpScheme.getDmp().getDmp_id().setType("doi");
-
-        // Contact
-        dmpScheme.getDmp().setContact(new Contact("john.smith@tuwien.ac.at", "John Smith",
-                new Contact_id("https://www.tiss.tuwien.ac.at/person/2351952424", "other")));
 
         // Cost - not in modification scope
         dmpScheme.getDmp().setCost(Arrays
@@ -52,12 +58,12 @@ public class TestCase3Service extends AbstractTestCaseService {
 
         // Set request with body
         testCaseEntity.setDmpScheme(dmpScheme);
-        final HttpEntity<DMPScheme> request = new HttpEntity<>(dmpScheme, Functions.getHeaders(authorizedClient));
+        final HttpEntity<DMPScheme> request2 = new HttpEntity<>(dmpScheme, Functions.getHeaders(authorizedClient));
 
         // Send request
-        final ResponseEntity<String> responseEntity = Functions.sendHTTPRequest(log, indmpHost + indmpUpdateMaDMP,
-                HttpMethod.PUT, request, String.class);
-        testCaseEntity.setStatusCode(responseEntity.getStatusCode().toString());
+        final ResponseEntity<String> responseEntity2 = Functions.sendHTTPRequest(log, indmpHost + indmpUpdateMaDMP,
+                HttpMethod.PUT, request2, String.class);
+        testCaseEntity.setStatusCode(responseEntity2.getStatusCode().toString());
 
         return testCaseEntity;
     }

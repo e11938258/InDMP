@@ -51,6 +51,7 @@ public class DataService implements Serializable {
 
     @Column(name = "endpoint_url", nullable = false, unique = true)
     @NotNull
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private URI endpointURL; // https://www.w3.org/TR/vocab-dcat-3/#Property:data_service_endpoint_url
 
     @Column(name = "endpoint_description")

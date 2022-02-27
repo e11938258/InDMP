@@ -37,7 +37,6 @@ public class TestCase2Service extends AbstractTestCaseService {
             Functions.sendHTTPRequest(log, indmpHost + indmpUpdateMaDMP, HttpMethod.PUT, request, String.class);
         } catch (HttpClientErrorException ex) {
             testCaseEntity.setStatusCode(ex.getStatusCode().toString());
-            testCaseEntity.setBody(ex.getMessage());
         }
 
         return testCaseEntity;

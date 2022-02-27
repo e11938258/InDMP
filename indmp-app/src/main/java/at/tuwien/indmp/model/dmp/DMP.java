@@ -93,6 +93,16 @@ public class DMP extends AbstractClassEntity {
         this.dmp_id = dmp_id;
     }
 
+    public DMP(String created, Date modified, DMP_id dmp_id) {
+        try {
+            this.created = ModelConstants.DATE_TIME_FORMATTER_ISO_8601.parse(created);
+        } catch (ParseException e) {
+            throw new BadRequestException("Wrong date format");
+        }
+        this.modified = modified;
+        this.dmp_id = dmp_id;
+    }
+
     public Date getCreated() {
         return this.created;
     }
@@ -210,6 +220,7 @@ public class DMP extends AbstractClassEntity {
         this.project = project;
     }
 
+    @JsonIgnore
     public boolean isNew() {
         return getCreated().equals(getModified());
     }
@@ -337,37 +348,36 @@ public class DMP extends AbstractClassEntity {
 
         // Nested classes
         // Contact
-        final Entity contactIdentifier = entityService.findEntity(getLocation(location), "contact:identifier", null);
-        if (contactIdentifier != null) {
+        for (Entity property : entityService.findAllEntities(location, "contact:identifier")) {
             contact = new Contact();
-            contact.build(entityService, "/" + contactIdentifier.getValue());
+            contact.build(entityService, location + "/" + property.getValue());
         }
 
         // Contributor
-        for (Entity property : entityService.findAllEntities(getLocation(location), "contributor:identifier")) {
+        for (Entity property : entityService.findAllEntities(location, "contributor:identifier")) {
             final Contributor i = new Contributor();
-            i.build(entityService, getLocation(location) + "/" + property.getValue());
+            i.build(entityService, location + "/" + property.getValue());
             contributor.add(i);
         }
 
         // Cost
-        for (Entity property : entityService.findAllEntities(getLocation(location), "cost:title")) {
+        for (Entity property : entityService.findAllEntities(location, "cost:title")) {
             final Cost i = new Cost();
-            i.build(entityService, getLocation(location) + "/" + property.getValue());
+            i.build(entityService, location + "/" + property.getValue());
             cost.add(i);
         }
 
         // Project
-        for (Entity property : entityService.findAllEntities(getLocation(location), "project:title")) {
+        for (Entity property : entityService.findAllEntities(location, "project:title")) {
             final Project i = new Project();
-            i.build(entityService, getLocation(location) + "/" + property.getValue());
+            i.build(entityService, location + "/" + property.getValue());
             project.add(i);
         }
 
         // Dataset
-        for (Entity property : entityService.findAllEntities(getLocation(location), "dataset:identifier")) {
+        for (Entity property : entityService.findAllEntities(location, "dataset:identifier")) {
             final Dataset i = new Dataset();
-            i.build(entityService, getLocation(location) + "/" + property.getValue());
+            i.build(entityService, location + "/" + property.getValue());
             dataset.add(i);
         }
 

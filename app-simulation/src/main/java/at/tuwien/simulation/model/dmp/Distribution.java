@@ -147,7 +147,7 @@ public class Distribution extends AbstractClassEntity {
                 getByte_size(),
                 getDescription(),
                 getDownload_url(),
-                getFormat().toString(),
+                getFormat() != null ? getFormat().toString() : null,
                 getTitle(),
                 getAccess_url().toString()
         };

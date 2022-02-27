@@ -30,11 +30,6 @@ public abstract class Identifier extends AbstractEntity {
     public abstract String getClassType();
 
     @Override
-    public String getLocation(String location) {
-        return location;
-    }
-
-    @Override
     public Object[] getValues() {
         return new Object[] {
                 getClassIdentifier(),

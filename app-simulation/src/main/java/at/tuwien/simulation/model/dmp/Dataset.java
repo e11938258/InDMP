@@ -201,10 +201,10 @@ public class Dataset extends AbstractClassEntity {
     @Override
     public Object[] getValues() {
         return new Object[] {
-                getData_quality_assurance().toString(),
+                getData_quality_assurance() != null ? getData_quality_assurance().toString() : null,
                 getDescription(),
                 getIssued() != null ? ModelConstants.DATE_FORMATTER_ISO_8601.format(getIssued()) : null,
-                getKeyword().toString(),
+                getKeyword() != null ? getKeyword().toString() : null,
                 getLanguage(),
                 getPersonal_data(),
                 getPreservation_statement(),
@@ -226,7 +226,7 @@ public class Dataset extends AbstractClassEntity {
                 "preservation_statement",
                 "sensitive_data",
                 "title",
-                "type",
+                "dtype",
         };
     }
 

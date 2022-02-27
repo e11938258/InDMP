@@ -8,6 +8,7 @@ import at.tuwien.indmp.model.Entity;
 import at.tuwien.indmp.service.DataServiceService;
 import at.tuwien.indmp.service.EntityService;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -230,14 +231,28 @@ public class EntityServiceImpl implements EntityService {
 
     /**
      *
-     * Load all identifiers of class
+     * Load identifier history of class
      *
+     * @param location
+     * @param specializationOf
      * @return
      */
-    public List<Entity> loadIdentifierHistory() {
-        // return propertyDao.findIdentifiers(dmpIdentifier, classType, propertyName);
-        // TODO
-        return null;
+    public List<Entity> loadIdentifierHistory(String location, String specializationOf) {
+        Objects.requireNonNull(location);
+        Objects.requireNonNull(specializationOf);
+
+        final List<Entity> entities = new ArrayList<>();
+
+        // Find current instance
+        for(Entity entity: entityDao.findAllEntities(location, specializationOf)) {
+            // Add current one to list
+            entities.add(entity);
+
+            // Add history
+            entities.addAll(entityDao.findInHistory(entity.getId()));
+        }
+
+        return entities;
     }
 
 }

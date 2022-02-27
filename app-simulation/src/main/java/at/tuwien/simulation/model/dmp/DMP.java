@@ -187,6 +187,7 @@ public class DMP extends AbstractClassEntity {
         this.project = project;
     }
 
+    @JsonIgnore
     public boolean isNew() {
         return getCreated().equals(getModified());
     }

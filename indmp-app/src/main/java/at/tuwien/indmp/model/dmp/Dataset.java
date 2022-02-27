@@ -185,10 +185,10 @@ public class Dataset extends AbstractClassEntity {
     @Override
     public Object[] getValues() {
         return new Object[] {
-                getData_quality_assurance().toString(),
+                getData_quality_assurance() != null ? getData_quality_assurance().toString() : null,
                 getDescription(),
                 getIssued() != null ? ModelConstants.DATE_FORMATTER_ISO_8601.format(getIssued()) : null,
-                getKeyword().toString(),
+                getKeyword() != null ? getKeyword().toString() : null,
                 getLanguage(),
                 getPersonal_data(),
                 getPreservation_statement(),
@@ -210,7 +210,7 @@ public class Dataset extends AbstractClassEntity {
                 "preservation_statement",
                 "sensitive_data",
                 "title",
-                "type",
+                "dtype",
         };
     }
 
@@ -289,7 +289,7 @@ public class Dataset extends AbstractClassEntity {
         p = Functions.findPropertyInList(getClassType(), "title", properties);
         setTitle(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList(getClassType(), "type", properties);
+        p = Functions.findPropertyInList(getClassType(), "dtype", properties);
         setType(p != null ? p.getValue() : null);
 
         // Set identifier
@@ -299,30 +299,30 @@ public class Dataset extends AbstractClassEntity {
 
         // Nested classes
         // Distribution
-        for (Entity property : entityService.findAllEntities(getLocation(location), "distribution:access_url")) {
+        for (Entity property : entityService.findAllEntities(location, "distribution:access_url")) {
             final Distribution i = new Distribution();
-            i.build(entityService, getLocation(location) + "/" + property.getValue());
+            i.build(entityService, location + "/" + property.getValue());
             distribution.add(i);
         }
 
         // Metadata
-        for (Entity property : entityService.findAllEntities(getLocation(location), "metadata:metadata_standard_id")) {
+        for (Entity property : entityService.findAllEntities(location, "metadata:metadata_standard_id")) {
             final Metadata i = new Metadata();
-            i.build(entityService, getLocation(location) + "/" + property.getValue());
+            i.build(entityService, location + "/" + property.getValue());
             metadata.add(i);
         }
 
         // Security and privacy
-        for (Entity property : entityService.findAllEntities(getLocation(location), "securityandprivacy:title")) {
+        for (Entity property : entityService.findAllEntities(location, "securityandprivacy:title")) {
             final SecurityAndPrivacy i = new SecurityAndPrivacy();
-            i.build(entityService, getLocation(location) + "/" + property.getValue());
+            i.build(entityService, location + "/" + property.getValue());
             security_and_privacy.add(i);
         }
 
         // Technical resource
-        for (Entity property : entityService.findAllEntities(getLocation(location), "techicalresource:name")) {
+        for (Entity property : entityService.findAllEntities(location, "techicalresource:name")) {
             final TechnicalResource i = new TechnicalResource();
-            i.build(entityService, getLocation(location) + "/" + property.getValue());
+            i.build(entityService, location + "/" + property.getValue());
             technical_resource.add(i);
         }
 
