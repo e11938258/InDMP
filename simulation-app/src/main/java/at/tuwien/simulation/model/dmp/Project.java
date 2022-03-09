@@ -1,7 +1,7 @@
 package at.tuwien.simulation.model.dmp;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.validation.constraints.NotNull;
@@ -17,10 +17,10 @@ public class Project extends AbstractClassEntity {
     private String description;
 
     @JsonFormat(pattern = ModelConstants.DATE_FORMAT_ISO_8601)
-    private Date end;
+    private LocalDate end;
 
     @JsonFormat(pattern = ModelConstants.DATE_FORMAT_ISO_8601)
-    private Date start;
+    private LocalDate start;
 
     @NotNull
     private String title;
@@ -31,7 +31,7 @@ public class Project extends AbstractClassEntity {
     public Project() {
     }
 
-    public Project(String description, Date end, Date start, String title, List<Funding> funding) {
+    public Project(String description, LocalDate end, LocalDate start, String title, List<Funding> funding) {
         this.description = description;
         this.end = end;
         this.start = start;
@@ -47,19 +47,19 @@ public class Project extends AbstractClassEntity {
         this.description = description;
     }
 
-    public Date getEnd() {
+    public LocalDate getEnd() {
         return this.end;
     }
 
-    public void setEnd(Date end) {
+    public void setEnd(LocalDate end) {
         this.end = end;
     }
 
-    public Date getStart() {
+    public LocalDate getStart() {
         return this.start;
     }
 
-    public void setStart(Date start) {
+    public void setStart(LocalDate start) {
         this.start = start;
     }
 

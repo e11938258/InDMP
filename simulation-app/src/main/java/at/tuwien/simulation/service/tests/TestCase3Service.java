@@ -1,7 +1,7 @@
 package at.tuwien.simulation.service.tests;
 
+import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.Date;
 
 import javax.validation.ValidationException;
 
@@ -45,7 +45,7 @@ public class TestCase3Service extends AbstractTestCaseService {
         // Send second request with modifications
 
         // Set some DMP properties
-        dmpScheme.getDmp().setModified(new Date());
+        dmpScheme.getDmp().setModified(LocalDateTime.now());
         //  Not in modification scope
         dmpScheme.getDmp().setEthical_issues_exist("no");
         dmpScheme.getDmp().setLanguage("eng");
@@ -76,7 +76,7 @@ public class TestCase3Service extends AbstractTestCaseService {
         final HttpEntity<String> request = new HttpEntity<>("", Functions.getHeaders(authorizedClient));
         final ResponseEntity<DMPScheme> reponse = Functions.sendHTTPRequest(log,
                 indmpHost + indmpGetMaDMP
-                        + Functions.getDMPParameters(testCaseEntity.getDmpScheme().getDmp(), new Date()),
+                        + Functions.getDMPParameters(testCaseEntity.getDmpScheme().getDmp(), LocalDateTime.now()),
                 HttpMethod.GET, request, DMPScheme.class);
 
         // Are same?

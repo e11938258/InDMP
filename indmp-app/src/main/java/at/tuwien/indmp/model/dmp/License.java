@@ -1,8 +1,7 @@
 package at.tuwien.indmp.model.dmp;
 
 import java.net.URI;
-import java.text.ParseException;
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 import javax.validation.constraints.NotNull;
@@ -22,7 +21,7 @@ public class License extends AbstractClassEntity {
 
     @NotNull
     @JsonFormat(pattern = ModelConstants.DATE_FORMAT_ISO_8601)
-    private Date start_date;
+    private LocalDate start_date;
 
     public License() {
     }
@@ -35,11 +34,11 @@ public class License extends AbstractClassEntity {
         this.license_ref = license_ref;
     }
 
-    public Date getStart_date() {
+    public LocalDate getStart_date() {
         return this.start_date;
     }
 
-    public void setStart_date(Date start_date) {
+    public void setStart_date(LocalDate start_date) {
         this.start_date = start_date;
     }
 
@@ -70,11 +69,7 @@ public class License extends AbstractClassEntity {
         final List<Entity> properties = entityService.findEntities(location, null);
 
         Entity p = Functions.findPropertyInList(getClassType(), "start_date", properties);
-        try {
-            setStart_date(p != null ? ModelConstants.DATE_FORMATTER_ISO_8601.parse(p.getValue()) : null);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        setStart_date(p != null ? LocalDate.parse(p.getValue()) : null);
 
         // Set identifier
         p = Functions.findPropertyInList(getClassType(), "license_ref", properties);

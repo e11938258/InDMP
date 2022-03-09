@@ -1,10 +1,9 @@
 package at.tuwien.indmp.model.dmp;
 
 import java.net.URI;
-import java.text.ParseException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 import javax.validation.constraints.NotNull;
@@ -25,7 +24,7 @@ public class Distribution extends AbstractClassEntity {
     private URI access_url;
 
     @JsonFormat(pattern = ModelConstants.DATE_FORMAT_ISO_8601)
-    private Date available_until;
+    private LocalDate available_until;
 
     private Long byte_size;
 
@@ -57,11 +56,11 @@ public class Distribution extends AbstractClassEntity {
         this.access_url = access_url;
     }
 
-    public Date getAvailable_until() {
+    public LocalDate getAvailable_until() {
         return this.available_until;
     }
 
-    public void setAvailable_until(Date available_until) {
+    public void setAvailable_until(LocalDate available_until) {
         this.available_until = available_until;
     }
 
@@ -133,7 +132,8 @@ public class Distribution extends AbstractClassEntity {
     public Object[] getValues() {
         return new Object[] {
                 getData_access(),
-                getAvailable_until() != null ? ModelConstants.DATE_FORMATTER_ISO_8601.format(getAvailable_until()) : null,
+                getAvailable_until() != null ? ModelConstants.DATE_FORMATTER_ISO_8601.format(getAvailable_until())
+                        : null,
                 getByte_size(),
                 getDescription(),
                 getDownload_url(),
@@ -188,11 +188,7 @@ public class Distribution extends AbstractClassEntity {
         setData_access(p != null ? p.getValue() : null);
 
         p = Functions.findPropertyInList(getClassType(), "available_until", properties);
-        try {
-            setAvailable_until(p != null ? ModelConstants.DATE_FORMATTER_ISO_8601.parse(p.getValue()) : null);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        setAvailable_until(p != null ? LocalDate.parse(p.getValue()) : null);
 
         p = Functions.findPropertyInList(getClassType(), "byte_size", properties);
         setByte_size(p != null ? Long.valueOf(p.getValue()) : null);

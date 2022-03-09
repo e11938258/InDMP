@@ -1,8 +1,7 @@
 package at.tuwien.indmp.model.dmp;
 
-import java.text.ParseException;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.validation.constraints.NotNull;
@@ -21,10 +20,10 @@ public class Project extends AbstractClassEntity {
     private String description;
 
     @JsonFormat(pattern = ModelConstants.DATE_FORMAT_ISO_8601)
-    private Date end;
+    private LocalDate end;
 
     @JsonFormat(pattern = ModelConstants.DATE_FORMAT_ISO_8601)
-    private Date start;
+    private LocalDate start;
 
     @NotNull
     private String title;
@@ -43,19 +42,19 @@ public class Project extends AbstractClassEntity {
         this.description = description;
     }
 
-    public Date getEnd() {
+    public LocalDate getEnd() {
         return this.end;
     }
 
-    public void setEnd(Date end) {
+    public void setEnd(LocalDate end) {
         this.end = end;
     }
 
-    public Date getStart() {
+    public LocalDate getStart() {
         return this.start;
     }
 
-    public void setStart(Date start) {
+    public void setStart(LocalDate start) {
         this.start = start;
     }
 
@@ -122,18 +121,10 @@ public class Project extends AbstractClassEntity {
         setDescription(p != null ? p.getValue() : null);
 
         p = Functions.findPropertyInList(getClassType(), "end", properties);
-        try {
-            setEnd(p != null ? ModelConstants.DATE_FORMATTER_ISO_8601.parse(p.getValue()) : null);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        setEnd(p != null ? LocalDate.parse(p.getValue()) : null);
 
         p = Functions.findPropertyInList(getClassType(), "start", properties);
-        try {
-            setStart(p != null ? ModelConstants.DATE_FORMATTER_ISO_8601.parse(p.getValue()) : null);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        setStart(p != null ? LocalDate.parse(p.getValue()) : null);
 
         // Set identifier
         p = Functions.findPropertyInList(getClassType(), "title", properties);

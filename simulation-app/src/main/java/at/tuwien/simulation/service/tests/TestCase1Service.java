@@ -1,6 +1,6 @@
 package at.tuwien.simulation.service.tests;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -48,7 +48,7 @@ public class TestCase1Service extends AbstractTestCaseService {
         final HttpEntity<String> request = new HttpEntity<>("", Functions.getHeaders(authorizedClient));
         final ResponseEntity<DMPScheme> reponse = Functions.sendHTTPRequest(log, 
                 indmpHost + indmpGetMaDMP
-                        + Functions.getDMPParameters(testCaseEntity.getDmpScheme().getDmp(), new Date()),
+                        + Functions.getDMPParameters(testCaseEntity.getDmpScheme().getDmp(), LocalDateTime.now()),
                 HttpMethod.GET, request, DMPScheme.class);
 
         // Are same?

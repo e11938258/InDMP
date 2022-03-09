@@ -1,8 +1,8 @@
 package at.tuwien.simulation.model.dmp;
 
 import java.net.URI;
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.validation.constraints.NotNull;
@@ -20,7 +20,7 @@ public class Distribution extends AbstractClassEntity {
     private URI access_url;
 
     @JsonFormat(pattern = ModelConstants.DATE_FORMAT_ISO_8601)
-    private Date available_until;
+    private LocalDate available_until;
 
     private Long byte_size;
 
@@ -44,7 +44,7 @@ public class Distribution extends AbstractClassEntity {
     public Distribution() {
     }
 
-    public Distribution(URI access_url, Date available_until, Long byte_size, String data_access, String description,
+    public Distribution(URI access_url, LocalDate available_until, Long byte_size, String data_access, String description,
             URI download_url, List<String> format, String title, Host host, List<License> license) {
         this.access_url = access_url;
         this.available_until = available_until;
@@ -66,11 +66,11 @@ public class Distribution extends AbstractClassEntity {
         this.access_url = access_url;
     }
 
-    public Date getAvailable_until() {
+    public LocalDate getAvailable_until() {
         return this.available_until;
     }
 
-    public void setAvailable_until(Date available_until) {
+    public void setAvailable_until(LocalDate available_until) {
         this.available_until = available_until;
     }
 

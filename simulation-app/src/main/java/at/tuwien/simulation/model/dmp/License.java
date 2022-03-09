@@ -1,7 +1,7 @@
 package at.tuwien.simulation.model.dmp;
 
 import java.net.URI;
-import java.util.Date;
+import java.time.LocalDate;
 
 import javax.validation.constraints.NotNull;
 
@@ -17,12 +17,12 @@ public class License extends AbstractClassEntity {
 
     @NotNull
     @JsonFormat(pattern = ModelConstants.DATE_FORMAT_ISO_8601)
-    private Date start_date;
+    private LocalDate start_date;
 
     public License() {
     }
 
-    public License(URI license_ref, Date start_date) {
+    public License(URI license_ref, LocalDate start_date) {
         this.license_ref = license_ref;
         this.start_date = start_date;
     }
@@ -35,11 +35,11 @@ public class License extends AbstractClassEntity {
         this.license_ref = license_ref;
     }
 
-    public Date getStart_date() {
+    public LocalDate getStart_date() {
         return this.start_date;
     }
 
-    public void setStart_date(Date start_date) {
+    public void setStart_date(LocalDate start_date) {
         this.start_date = start_date;
     }
 

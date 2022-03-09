@@ -1,6 +1,6 @@
 package at.tuwien.simulation.service.tests;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +32,7 @@ public class TestCase7Service extends AbstractTestCaseService {
         final HttpEntity<String> request = new HttpEntity<>("", Functions.getHeaders(authorizedClient));
         final ResponseEntity<String> responseEntity = Functions.sendHTTPRequest(log,
                 indmpHost + indmpGetIdentifiers
-                        + Functions.getDMPParameters(testCaseEntity.getDmpScheme().getDmp(), new Date()),
+                        + Functions.getDMPParameters(testCaseEntity.getDmpScheme().getDmp(), LocalDateTime.now()),
                 HttpMethod.GET, request, String.class);
         testCaseEntity.setStatusCode(responseEntity.getStatusCode().toString());
         testCaseEntity.setBody(responseEntity.getBody());

@@ -1,6 +1,6 @@
 package at.tuwien.simulation.model.test;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import at.tuwien.simulation.model.dmp.DMPScheme;
 
@@ -10,10 +10,10 @@ public class TestCaseEntity {
 
     private String statusCode, body;
 
-    private final Date startDate;
+    private final LocalDateTime startDate;
 
     public TestCaseEntity() {
-        this.startDate = new Date();
+        this.startDate = LocalDateTime.now();
     }
 
     public DMPScheme getDmpScheme() {
@@ -40,12 +40,12 @@ public class TestCaseEntity {
         this.body = body;
     }
 
-    public Date getStartDate() {
+    public LocalDateTime getStartDate() {
         return this.startDate;
     }
 
     public void generateNewModifiedDate() {
-        dmpScheme.getDmp().setModified(new Date());
+        dmpScheme.getDmp().setModified(LocalDateTime.now());
     }
 
 }

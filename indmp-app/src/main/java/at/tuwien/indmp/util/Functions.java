@@ -1,5 +1,6 @@
 package at.tuwien.indmp.util;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -45,7 +46,7 @@ public class Functions {
      */
     public static Entity createEntity(DMP dmp, String location, String propertyName, String value) {
         // Create a new activity
-        final Activity activity = new Activity(dmp.getModified());
+        final Activity activity = new Activity(Timestamp.valueOf(dmp.getModified()));
         // Add a new entity
         final Entity entity = new Entity(location, propertyName, value, activity);
         // Set entity to activity

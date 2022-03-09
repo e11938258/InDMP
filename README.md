@@ -139,7 +139,7 @@ If PostgreSQL and Keycloak setup are running, you can run individual application
 ```console
 > cd ./simulation-app
 > mvn clean package
-> java -jar target/app-simulation-1.0.0.jar
+> java -jar target/simulation-app-1.0.0.jar
 ```
 
 3. Authorize the service using the acccount dmp_app_1 and register to InDMP, use URL: http://127.0.0.1:8081/init
@@ -148,7 +148,7 @@ If PostgreSQL and Keycloak setup are running, you can run individual application
 
 ```console
 > cd ./simulation-app
-> java -jar target/app-simulation-1.0.0.jar --spring.profiles.active=repository
+> java -jar target/simulation-app-1.0.0.jar --spring.profiles.active=repository
 ```
 
 5. Authorize the service using the acccount repository_app_1 and register to InDMP, use URL IN ANOTHER BROWSER or in an incognito window, since you are already logged in as dmp_app_1 in your current browser: http://127.0.0.1:8082/init .

@@ -1,6 +1,6 @@
 package at.tuwien.simulation.util;
 
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -79,7 +79,7 @@ public class Functions {
      * 
      * @return
      */
-    public static String getDMPParameters(DMP dmp, Date modified) {
+    public static String getDMPParameters(DMP dmp, LocalDateTime modified) {
         return "?identifier=" + dmp.getClassIdentifier() + "&created="
                 + ModelConstants.DATE_TIME_FORMATTER_ISO_8601.format(dmp.getCreated()) + "&modified="
                 + ModelConstants.DATE_TIME_FORMATTER_ISO_8601.format(modified);

@@ -1,9 +1,8 @@
 package at.tuwien.indmp.model.dmp;
 
 import java.net.URI;
-import java.text.ParseException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.validation.constraints.NotNull;
@@ -12,7 +11,6 @@ import javax.validation.constraints.Pattern;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import at.tuwien.indmp.exception.BadRequestException;
 import at.tuwien.indmp.model.DataService;
 import at.tuwien.indmp.model.Entity;
 import at.tuwien.indmp.service.EntityService;
@@ -24,7 +22,7 @@ public class DMP extends AbstractClassEntity {
     /* Properties */
     @NotNull
     @JsonFormat(pattern = ModelConstants.DATE_TIME_FORMAT_ISO_8601)
-    private Date created;
+    private LocalDateTime created;
 
     private String description;
 
@@ -40,7 +38,7 @@ public class DMP extends AbstractClassEntity {
 
     @NotNull
     @JsonFormat(pattern = ModelConstants.DATE_TIME_FORMAT_ISO_8601)
-    private Date modified;
+    private LocalDateTime modified;
 
     private String title;
 
@@ -69,7 +67,7 @@ public class DMP extends AbstractClassEntity {
      * @param modified
      * @param dmp_id
      */
-    public DMP(Date created, Date modified, DMP_id dmp_id) {
+    public DMP(LocalDateTime created, LocalDateTime modified, DMP_id dmp_id) {
         this.created = created;
         this.modified = modified;
         this.dmp_id = dmp_id;
@@ -84,30 +82,22 @@ public class DMP extends AbstractClassEntity {
      * @param dmp_id
      */
     public DMP(String created, String modified, DMP_id dmp_id) {
-        try {
-            this.created = ModelConstants.DATE_TIME_FORMATTER_ISO_8601.parse(created);
-            this.modified = ModelConstants.DATE_TIME_FORMATTER_ISO_8601.parse(modified);
-        } catch (ParseException e) {
-            throw new BadRequestException("Wrong date format");
-        }
+        this.created = LocalDateTime.parse(created);
+        this.modified = LocalDateTime.parse(modified);
         this.dmp_id = dmp_id;
     }
 
-    public DMP(String created, Date modified, DMP_id dmp_id) {
-        try {
-            this.created = ModelConstants.DATE_TIME_FORMATTER_ISO_8601.parse(created);
-        } catch (ParseException e) {
-            throw new BadRequestException("Wrong date format");
-        }
+    public DMP(String created, LocalDateTime modified, DMP_id dmp_id) {
+        this.created = LocalDateTime.parse(created);
         this.modified = modified;
         this.dmp_id = dmp_id;
     }
 
-    public Date getCreated() {
+    public LocalDateTime getCreated() {
         return this.created;
     }
 
-    public void setCreated(Date created) {
+    public void setCreated(LocalDateTime created) {
         this.created = created;
     }
 
@@ -156,11 +146,11 @@ public class DMP extends AbstractClassEntity {
         this.language = language;
     }
 
-    public Date getModified() {
+    public LocalDateTime getModified() {
         return this.modified;
     }
 
-    public void setModified(Date modified) {
+    public void setModified(LocalDateTime modified) {
         this.modified = modified;
     }
 
@@ -307,11 +297,7 @@ public class DMP extends AbstractClassEntity {
         final List<Entity> properties = entityService.findEntities(location, null);
 
         Entity p = Functions.findPropertyInList(getClassType(), "created", properties);
-        try {
-            setCreated(p != null ? ModelConstants.DATE_TIME_FORMATTER_ISO_8601.parse(p.getValue()) : null);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        setCreated(p != null ? LocalDateTime.parse(p.getValue()) : null);
 
         p = Functions.findPropertyInList(getClassType(), "description", properties);
         setDescription(p != null ? p.getValue() : null);
@@ -329,11 +315,7 @@ public class DMP extends AbstractClassEntity {
         setLanguage(p != null ? p.getValue() : null);
 
         p = Functions.findPropertyInList(getClassType(), "modified", properties);
-        try {
-            setModified(p != null ? ModelConstants.DATE_TIME_FORMATTER_ISO_8601.parse(p.getValue()) : null);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        setModified(p != null ? LocalDateTime.parse(p.getValue()) : null);
 
         p = Functions.findPropertyInList(getClassType(), "title", properties);
         setTitle(p != null ? p.getValue() : null);
@@ -342,7 +324,7 @@ public class DMP extends AbstractClassEntity {
         final Entity identifier = Functions.findPropertyInList(getClassType(), "identifier", properties);
         final Entity type = Functions.findPropertyInList(getClassType(), "type", properties);
         dmp_id = new DMP_id(identifier.getValue());
-        if(type != null) {
+        if (type != null) {
             dmp_id.setType(type.getValue());
         }
 

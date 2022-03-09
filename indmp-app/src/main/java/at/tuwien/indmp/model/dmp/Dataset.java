@@ -1,9 +1,8 @@
 package at.tuwien.indmp.model.dmp;
 
-import java.text.ParseException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 
 import javax.validation.constraints.NotNull;
@@ -25,7 +24,7 @@ public class Dataset extends AbstractClassEntity {
     private String description;
 
     @JsonFormat(pattern = ModelConstants.DATE_FORMAT_ISO_8601)
-    private Date issued;
+    private LocalDate issued;
 
     private List<String> keyword = new ArrayList<>();
 
@@ -78,11 +77,11 @@ public class Dataset extends AbstractClassEntity {
         this.description = description;
     }
 
-    public Date getIssued() {
+    public LocalDate getIssued() {
         return this.issued;
     }
 
-    public void setIssued(Date issued) {
+    public void setIssued(LocalDate issued) {
         this.issued = issued;
     }
 
@@ -263,11 +262,7 @@ public class Dataset extends AbstractClassEntity {
         setDescription(p != null ? p.getValue() : null);
 
         p = Functions.findPropertyInList(getClassType(), "issued", properties);
-        try {
-            setIssued(p != null ? ModelConstants.DATE_FORMATTER_ISO_8601.parse(p.getValue()) : null);
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+        setIssued(p != null ? LocalDate.parse(p.getValue()) : null);
 
         p = Functions.findPropertyInList(getClassType(), "keyword", properties);
         setKeyword(p != null

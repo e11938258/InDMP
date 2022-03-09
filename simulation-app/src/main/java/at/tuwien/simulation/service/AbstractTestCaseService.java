@@ -1,7 +1,7 @@
 package at.tuwien.simulation.service;
 
 import java.net.URISyntaxException;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -91,8 +91,8 @@ public abstract class AbstractTestCaseService {
         log.info("Creating minimal DMP scheme...");
 
         // Get create, modified, identifier
-        Date modified = new Date();
-        final Date created = new Date(modified.getTime() - 60000);
+        LocalDateTime modified = LocalDateTime.now();
+        final LocalDateTime created = modified.minusMinutes(1);
         final String identifier = "DMP_" + Functions.getRandomNumberBetween(1, 20000);
 
         // Should be create and modified same?

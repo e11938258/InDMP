@@ -1,6 +1,6 @@
 package at.tuwien.indmp.service.impl;
 
-import java.text.ParseException;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -154,12 +154,7 @@ public class DMPServiceImpl implements DMPService {
 
         // Create a new minimal DMP
         final DMP_id dmp_id = new DMP_id(identifier);
-        try {
-            return new DMP(ModelConstants.DATE_TIME_FORMATTER_ISO_8601.parse(created),
-                    ModelConstants.DATE_TIME_FORMATTER_ISO_8601.parse(modified), dmp_id);
-        } catch (ParseException e) {
-            return null;
-        }
+        return new DMP(LocalDateTime.parse(created), LocalDateTime.parse(modified), dmp_id);
     }
 
     /**
@@ -272,7 +267,7 @@ public class DMPServiceImpl implements DMPService {
         final List<Entity> entities = new ArrayList<>();
 
         // For each changeable class identifier
-        for(String specializationOf: ModelConstants.IDENTIFIER_CHANGEABLE_CLASSES) {
+        for (String specializationOf : ModelConstants.IDENTIFIER_CHANGEABLE_CLASSES) {
             entities.addAll(entityService.loadIdentifierHistory(dmp.getLocation(""), specializationOf));
         }
 

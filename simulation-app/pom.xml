@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>at.tuwien.simulation</groupId>
-    <artifactId>app-simulation</artifactId>
+    <artifactId>simulation-app</artifactId>
     <version>1.0.0</version>
     <name>App simulation</name>
 

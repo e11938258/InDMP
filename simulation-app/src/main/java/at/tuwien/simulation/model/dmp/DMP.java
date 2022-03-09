@@ -1,8 +1,8 @@
 package at.tuwien.simulation.model.dmp;
 
 import java.net.URI;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.validation.constraints.NotNull;
@@ -19,7 +19,7 @@ public class DMP extends AbstractClassEntity {
     /* Properties */
     @NotNull
     @JsonFormat(pattern = ModelConstants.DATE_TIME_FORMAT_ISO_8601)
-    private Date created;
+    private LocalDateTime created;
 
     private String description;
 
@@ -35,7 +35,7 @@ public class DMP extends AbstractClassEntity {
 
     @NotNull
     @JsonFormat(pattern = ModelConstants.DATE_TIME_FORMAT_ISO_8601)
-    private Date modified;
+    private LocalDateTime modified;
 
     private String title;
 
@@ -64,17 +64,17 @@ public class DMP extends AbstractClassEntity {
      * @param modified
      * @param dmp_id
      */
-    public DMP(Date created, Date modified, DMP_id dmp_id) {
+    public DMP(LocalDateTime created, LocalDateTime modified, DMP_id dmp_id) {
         this.created = created;
         this.modified = modified;
         this.dmp_id = dmp_id;
     }
 
-    public Date getCreated() {
+    public LocalDateTime getCreated() {
         return this.created;
     }
 
-    public void setCreated(Date created) {
+    public void setCreated(LocalDateTime created) {
         this.created = created;
     }
 
@@ -123,11 +123,11 @@ public class DMP extends AbstractClassEntity {
         this.language = language;
     }
 
-    public Date getModified() {
+    public LocalDateTime getModified() {
         return this.modified;
     }
 
-    public void setModified(Date modified) {
+    public void setModified(LocalDateTime modified) {
         this.modified = modified;
     }
 

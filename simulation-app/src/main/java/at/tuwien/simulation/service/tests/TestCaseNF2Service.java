@@ -1,6 +1,7 @@
 package at.tuwien.simulation.service.tests;
 
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,8 +29,8 @@ public class TestCaseNF2Service extends AbstractTestCaseService {
 
     @Override
     public String validate(OAuth2AuthorizedClient authorizedClient, TestCaseEntity testCaseEntity) {
-        return Functions.processSuccess(log, "Minimal maDMP was created in time: "
-                + (new Date().getTime() - testCaseEntity.getStartDate().getTime()) + "ms");
+        return Functions.processSuccess(log, "Minimal maDMP was created in time: " +
+                ChronoUnit.MILLIS.between(testCaseEntity.getStartDate(), LocalDateTime.now()))  + "ms";
     }
 
 }

@@ -1,6 +1,6 @@
 package at.tuwien.indmp.util;
 
-import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 
@@ -41,8 +41,9 @@ public class ModelConstants {
     // ISO 8601 Date and Time compliant string
     public final static String DATE_FORMAT_ISO_8601 = "yyyy-MM-dd";
     public final static String DATE_TIME_FORMAT_ISO_8601 = "yyyy-MM-dd'T'HH:mm:ss";
-    public final static SimpleDateFormat DATE_FORMATTER_ISO_8601 = new SimpleDateFormat(DATE_FORMAT_ISO_8601);
-    public final static SimpleDateFormat DATE_TIME_FORMATTER_ISO_8601 = new SimpleDateFormat(
+    public final static DateTimeFormatter DATE_FORMATTER_ISO_8601 = DateTimeFormatter
+            .ofPattern(DATE_FORMAT_ISO_8601);
+    public final static DateTimeFormatter DATE_TIME_FORMATTER_ISO_8601 = DateTimeFormatter.ofPattern(
             DATE_TIME_FORMAT_ISO_8601);
 
     // Controlled vocabularies for maDMP

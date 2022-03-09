@@ -1,7 +1,7 @@
 package at.tuwien.indmp.rest;
 
 import java.security.Principal;
-import java.util.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import javax.validation.Valid;
@@ -193,7 +193,7 @@ public class MaDMPController {
         final DataService dataService = dataServiceService.findByAccessRights(principal.getName());
 
         // Identify maDMP
-        final DMP currentDMP = DMPService.identifyDMP(new DMP(created, new Date(), new DMP_id(identifier)), dataService);
+        final DMP currentDMP = DMPService.identifyDMP(new DMP(created, LocalDateTime.now(), new DMP_id(identifier)), dataService);
 
         // Was the DMP found?
         if (currentDMP != null) {

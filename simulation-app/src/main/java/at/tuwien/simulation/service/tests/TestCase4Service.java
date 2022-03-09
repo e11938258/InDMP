@@ -2,8 +2,9 @@ package at.tuwien.simulation.service.tests;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Arrays;
-import java.util.Date;
 
 import javax.validation.ValidationException;
 
@@ -59,7 +60,7 @@ public class TestCase4Service extends AbstractTestCaseService {
         // Project
         dmpScheme.getDmp().setProject(
                 Arrays.asList(new Project[] {
-                        new Project("Project description...", null, new Date(), "openEO",
+                        new Project("Project description...", null, LocalDate.now(), "openEO",
                                 Arrays.asList(new Funding[] {
                                         // Funding + grant id
                                         new Funding("European Commission - Framework Programme",
@@ -73,7 +74,7 @@ public class TestCase4Service extends AbstractTestCaseService {
                     Arrays.asList(new Dataset[] {
                             new Dataset(
                                     Arrays.asList(new String[] {}),
-                                    "Some test scripts", new Date(),
+                                    "Some test scripts", LocalDate.now(),
                                     Arrays.asList(new String[] { "client", "application" }),
                                     "eng", "no", null, "no", "Client application", "Source code",
                                     // Dataset id
@@ -94,7 +95,7 @@ public class TestCase4Service extends AbstractTestCaseService {
                                                     Arrays.asList(new License[] {
                                                             new License(
                                                                     new URI("http://opensource.org/licenses/mit-license.php"),
-                                                                    new Date())
+                                                                    LocalDate.now())
                                                     }))
                                     }),
                                     Arrays.asList(new Metadata[] {}),
@@ -125,7 +126,7 @@ public class TestCase4Service extends AbstractTestCaseService {
         final HttpEntity<String> request = new HttpEntity<>("", Functions.getHeaders(authorizedClient));
         final ResponseEntity<DMPScheme> reponse = Functions.sendHTTPRequest(log,
                 indmpHost + indmpGetMaDMP
-                        + Functions.getDMPParameters(testCaseEntity.getDmpScheme().getDmp(), new Date()),
+                        + Functions.getDMPParameters(testCaseEntity.getDmpScheme().getDmp(), LocalDateTime.now()),
                 HttpMethod.GET, request, DMPScheme.class);
 
         // Are same?

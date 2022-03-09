@@ -1,7 +1,7 @@
 package at.tuwien.simulation.model.dmp;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import javax.validation.constraints.NotNull;
@@ -20,7 +20,7 @@ public class Dataset extends AbstractClassEntity {
     private String description;
 
     @JsonFormat(pattern = ModelConstants.DATE_FORMAT_ISO_8601)
-    private Date issued;
+    private LocalDate issued;
 
     private List<String> keyword = new ArrayList<>();
 
@@ -57,7 +57,7 @@ public class Dataset extends AbstractClassEntity {
     public Dataset() {
     }
 
-    public Dataset(List<String> data_quality_assurance, String description, Date issued, List<String> keyword,
+    public Dataset(List<String> data_quality_assurance, String description, LocalDate issued, List<String> keyword,
             String language, String personal_data, String preservation_statement, String sensitive_data, String title,
             String type, Dataset_id dataset_id, List<Distribution> distribution, List<Metadata> metadata,
             List<SecurityAndPrivacy> security_and_privacy, List<TechnicalResource> technical_resource) {
@@ -94,11 +94,11 @@ public class Dataset extends AbstractClassEntity {
         this.description = description;
     }
 
-    public Date getIssued() {
+    public LocalDate getIssued() {
         return this.issued;
     }
 
-    public void setIssued(Date issued) {
+    public void setIssued(LocalDate issued) {
         this.issued = issued;
     }
 
