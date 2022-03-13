@@ -10,14 +10,20 @@ import at.tuwien.simulation.util.Endpoints;
 
 import static org.springframework.security.config.Customizer.withDefaults;
 
+import org.springframework.beans.factory.annotation.Value;
+
 @EnableWebSecurity
 public class SecurityConfiguration {
+
+    @Value("${indmp.host}")
+    private String host;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http.csrf().disable().httpBasic().and()
                 .authorizeRequests(authorizeRequests -> authorizeRequests
-                        .antMatchers(HttpMethod.PUT, Endpoints.MADMP).permitAll()
+                        .antMatchers(HttpMethod.PUT, Endpoints.MADMP)
+                        .hasIpAddress(host.replaceAll("http://", "").replaceAll(":8080", ""))
                         .anyRequest().authenticated())
                 .oauth2Login(oauth2Login -> oauth2Login.loginPage("/oauth2/authorization/indmp-client"))
                 .oauth2Client(withDefaults());

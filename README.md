@@ -86,7 +86,7 @@ That's it! By default, the application uses the following configuration:
 
 | Property | Value |
 | - | - |
-| Host | localhost |
+| Host | 127.0.0.1 |
 | Port | 5432 |
 | Database | indmp |
 | Username | indmp |
@@ -131,7 +131,7 @@ If PostgreSQL and Keycloak setup are running, you can run individual application
 ```console
 > cd ./indmp-app
 > mvn clean package
-> java -jar target/INDMP-1.0.0.jar
+> java -jar target/indmp-app-1.0.0.jar
 ```
 
 2. Run app simulation with configuration for DMP (default)
@@ -186,13 +186,13 @@ In the following table you can see the individual functional test cases with a s
 
 | Test case | Name | Service scope | URL | Description |
 | - | - | - | - | - |
-| FTC1 | Send minimal maDMP | Both | http://localhost:8081/ftc1 or http://localhost:8082/ftc1 | Send maDMP with mandatory minimum properties |
-| FTC2 | Send incomplete maDMP | Both | http://localhost:8081/ftc2 or http://localhost:8082/ftc2 | Send maDMP with incomplete mandatory minimum |
-| FTC3 | Send maDMP out of modification scope | Repository app (only) | http://localhost:8082/ftc3 | Send maDMP with properties outside the modification scope of the repository |
-| FTC4 | Send long maDMP | Both | http://localhost:8081/ftc4 or http://localhost:8082/ftc4 | Send maDMP with lots of property information |
-| FTC5 | Change identifier of dataset | Both | http://localhost:8081/ftc5 or http://localhost:8082/ftc5 | Send maDMP with dataset information |
-| FTC6 | Delete dataset instance | Both | http://localhost:8081/ftc6 or http://localhost:8082/ftc6  | Send maDMP with dataset information and then send a request to delete it |
-| FTC7 | Get history of identifiers | Both | http://localhost:8081/ftc7 or http://localhost:8082/ftc7  | Send maDMP with datasets and distributions, then send an identifier change request, and finally send an identifier history request |
+| FTC1 | Send minimal maDMP | Both | http://127.0.0.1:8081/ftc1 or http://127.0.0.1:8082/ftc1 | Send maDMP with mandatory minimum properties |
+| FTC2 | Send incomplete maDMP | Both | http://127.0.0.1:8081/ftc2 or http://127.0.0.1:8082/ftc2 | Send maDMP with incomplete mandatory minimum |
+| FTC3 | Send maDMP out of modification scope | Repository app (only) | http://127.0.0.1:8082/ftc3 | Send maDMP with properties outside the modification scope of the repository |
+| FTC4 | Send long maDMP | Both | http://127.0.0.1:8081/ftc4 or http://127.0.0.1:8082/ftc4 | Send maDMP with lots of property information |
+| FTC5 | Change identifier of dataset | Both | http://127.0.0.1:8081/ftc5 or http://127.0.0.1:8082/ftc5 | Send maDMP with dataset information |
+| FTC6 | Delete dataset instance | Both | http://127.0.0.1:8081/ftc6 or http://127.0.0.1:8082/ftc6  | Send maDMP with dataset information and then send a request to delete it |
+| FTC7 | Get history of identifiers | Both | http://127.0.0.1:8081/ftc7 or http://127.0.0.1:8082/ftc7  | Send maDMP with datasets and distributions, then send an identifier change request, and finally send an identifier history request |
 
 #### Non-Functional test cases
 
@@ -200,8 +200,8 @@ In the following table you can see the individual non-functional cases with a sh
 
 | Test case | Service scope | URL | Description |
 | - | - | - | - |
-| NFTC1 | Both | http://localhost:8081/nftc1 or http://localhost:8082/nftc1| Examine response time of updating minimal maDMP  |
-| NFTC2 | Both | http://localhost:8081/nftc2 or http://localhost:8082/nftc2 | Examine response time of updating long maDMP |
+| NFTC1 | Both | http://127.0.0.1:8081/nftc1 or http://127.0.0.1:8082/nftc1| Examine response time of updating minimal maDMP  |
+| NFTC2 | Both | http://127.0.0.1:8081/nftc2 or http://127.0.0.1:8082/nftc2 | Examine response time of updating long maDMP |
 
 ## Limitations
 

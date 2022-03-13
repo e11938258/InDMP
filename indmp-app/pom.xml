@@ -3,9 +3,9 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>at.tuwien.indmp</groupId>
-    <artifactId>INDMP</artifactId>
+    <artifactId>indmp-app</artifactId>
     <version>1.0.0</version>
-    <name>INDMP</name>
+    <name>InDMP</name>
 
     <developers>
         <developer>
