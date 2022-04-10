@@ -25,7 +25,7 @@ public abstract class AbstractClassEntity extends AbstractEntity {
 
     @JsonIgnore
     public boolean hasRightsToUpdate(DataService dataService) {
-        if (dataService.getRights().contains(getClassIdentifier())) {
+        if (dataService.getRights().contains(getClassType())) {
             return true;
         } else {
             return false;

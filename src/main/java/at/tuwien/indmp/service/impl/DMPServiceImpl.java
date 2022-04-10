@@ -8,6 +8,7 @@ import java.util.Objects;
 import javax.validation.Valid;
 
 import at.tuwien.indmp.exception.BadRequestException;
+import at.tuwien.indmp.exception.ConflictException;
 import at.tuwien.indmp.exception.ForbiddenException;
 import at.tuwien.indmp.exception.NotFoundException;
 import at.tuwien.indmp.model.DataService;
@@ -50,13 +51,18 @@ public class DMPServiceImpl implements DMPService {
      * @param dmp
      * @param dataService
      */
+    @Override
     public void create(DMP dmp, DataService dataService) {
-        // Get properties from new DMP
-        final List<Entity> properties = dmp.getProperties(dmp, "", dataService);
-        properties.addAll(dmp.getPropertiesFromNestedClasses(dmp, "", dataService));
+        if (findByCreationDate(dmp.getCreatedInString()) == null) {
+            // Get properties from new DMP
+            final List<Entity> properties = dmp.getProperties(dmp, "", dataService);
+            properties.addAll(dmp.getPropertiesFromNestedClasses(dmp, "", dataService));
 
-        // Persist the properties
-        entityService.persist(properties, dataService);
+            // Persist the properties
+            entityService.persist(properties, dataService);
+        } else {
+            throw new ConflictException("DMP is already created.");
+        }
     }
 
     /**
@@ -67,6 +73,7 @@ public class DMPServiceImpl implements DMPService {
      * @param dataService
      * @return minimum of DMP
      */
+    @Override
     public DMP identifyDMP(@Valid DMP dmp, DataService dataService) {
         // Check minimal DMP
         checkMinimalDMP(dmp);
@@ -159,11 +166,29 @@ public class DMPServiceImpl implements DMPService {
 
     /**
      * 
+     * Check if modified property is newer than the stored one
+     * 
+     * @param originModified
+     * @param newModified
+     * 
+     */
+    @Override
+    public void checkModifiedProperty(LocalDateTime originModified, LocalDateTime newModified) {
+        if (originModified.equals(newModified) || originModified.isAfter(newModified)) {
+            throw new ConflictException("There is a newer version of maDMP.");
+        } else if(LocalDateTime.now().isBefore(newModified)) {
+            throw new ForbiddenException("Cannot use future time.");
+        }
+    }
+
+    /**
+     * 
      * Build the dmp
      * 
      * @param dmp
      * @return
      */
+    @Override
     public DMPScheme loadWholeDMP(DMP dmp) {
         // Build DMP
         final DMP wholeDMP = new DMP();
@@ -183,6 +208,7 @@ public class DMPServiceImpl implements DMPService {
      * @param dmp
      * @param dataService
      */
+    @Override
     public void update(DMP dmp, DataService dataService) {
         // Get properties from new DMP
         final List<Entity> properties = dmp.getProperties(dmp, "", dataService);
@@ -200,6 +226,7 @@ public class DMPServiceImpl implements DMPService {
      * @param identifier
      * @param dataService
      */
+    @Override
     public void changeIdentifiers(DMP dmp, Entity identifier, DataService dataService) {
         Objects.requireNonNull(dmp, "DMP is null.");
         Objects.requireNonNull(identifier, "Identifier is null.");
@@ -249,6 +276,7 @@ public class DMPServiceImpl implements DMPService {
      *
      * @param entity
      */
+    @Override
     public void deleteInstance(Entity entity) {
         Objects.requireNonNull(entity, "Entity is null.");
         entityService.removeAllNestedEntities(entity.getAtLocation());
@@ -261,6 +289,7 @@ public class DMPServiceImpl implements DMPService {
      * @param dmp
      * @return
      */
+    @Override
     public List<Entity> loadIdentifierHistory(DMP dmp) {
         Objects.requireNonNull(dmp);
 
@@ -273,5 +302,4 @@ public class DMPServiceImpl implements DMPService {
 
         return entities;
     }
-
 }

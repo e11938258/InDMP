@@ -13,6 +13,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
@@ -27,7 +28,9 @@ import at.tuwien.indmp.util.ModelConstants;
  * 
  */
 @javax.persistence.Entity
-@Table(name = "data_service")
+@Table(name = "data_service", uniqueConstraints = {
+    @UniqueConstraint(columnNames = "access_rights")
+})
 public class DataService implements Serializable {
 
     @Id

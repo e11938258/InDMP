@@ -54,11 +54,13 @@ public class MaDMPController {
      *
      * Update maDMP
      *
-     * @param dmp
+     * @param principal
+     * @param dmpScheme
      */
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(value = Endpoints.UPDATE_MADMP, method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
-    public void updateMaDMP(Principal principal, @Valid @RequestBody DMPScheme dmpScheme) {
+    public void updateMaDMP(Principal principal,
+            @Valid @RequestBody DMPScheme dmpScheme) {
 
         // Get current RDM Service
         final DataService dataService = dataServiceService.findByAccessRights(principal.getName());
@@ -69,6 +71,8 @@ public class MaDMPController {
         // Was the DMP found?
         if (currentDMP != null) {
             log.info("DMP was found, identifier: " + currentDMP.getClassIdentifier() + ". Updating...");
+            // Check maDMP modified property
+            DMPService.checkModifiedProperty(currentDMP.getModified(), dmpScheme.getDmp().getModified());
             // Update DMP
             DMPService.update(dmpScheme.getDmp(), dataService);
         } else {
@@ -86,7 +90,11 @@ public class MaDMPController {
      *
      * Change identifier
      *
-     * @param idmpScheme
+     * @param principal
+     * @param identifier
+     * @param created
+     * @param modified
+     * @param entity
      */
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(value = Endpoints.UPDATE_MADMP_IDENTIFIER, method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -123,7 +131,11 @@ public class MaDMPController {
      *
      * Delete instance
      *
-     * @param idmpScheme
+     * @param principal
+     * @param identifier
+     * @param created
+     * @param modified
+     * @param entity
      */
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(value = Endpoints.DELETE_MADMP_INSTANCE, method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -178,9 +190,43 @@ public class MaDMPController {
 
     /**
      *
+     * Get maDMP by minimal DMP
+     * 
+     * @param principal
+     * @param identifier
+     * @param created
+     * @param modified should be used to get older versions of maDMP, not implemented 
+     * @return
+     */
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(value = Endpoints.GET_MADMP, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public DMPScheme getMaDMP(Principal principal,
+            @RequestParam(required = true) String identifier,
+            @RequestParam(required = true) String created,
+            @RequestParam(required = true) String modified) {
+
+        // Get current RDM Service
+        final DataService dataService = dataServiceService.findByAccessRights(principal.getName());
+
+        // Identify maDMP
+        final DMP dmpMinimum = DMPService.identifyDMP(new DMP(created, modified, new DMP_id(identifier)), null);
+
+        // Return current version of maDMP if found
+        if (dmpMinimum != null) {
+            return DMPService.loadWholeDMP(dmpMinimum);
+        } else {
+            throw new NotFoundException("DMP not found, identifier: " + identifier);
+        }
+    }
+
+    /**
+     *
      * Get history of identifiers
      * 
-     * @param dmpScheme
+     * @param principal
+     * @param identifier
+     * @param created
+     * @return
      */
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
@@ -193,9 +239,10 @@ public class MaDMPController {
         final DataService dataService = dataServiceService.findByAccessRights(principal.getName());
 
         // Identify maDMP
-        final DMP currentDMP = DMPService.identifyDMP(new DMP(created, LocalDateTime.now(), new DMP_id(identifier)), dataService);
+        final DMP currentDMP = DMPService.identifyDMP(new DMP(created, LocalDateTime.now(), new DMP_id(identifier)),
+                dataService);
 
-        // Was the DMP found?
+        // Return identifier history if found
         if (currentDMP != null) {
             return DMPService.loadIdentifierHistory(currentDMP);
         } else {
@@ -203,22 +250,4 @@ public class MaDMPController {
         }
     }
 
-    /**
-     *
-     * Get maDMP by minimal DMP - just for test cases
-     * 
-     * @param dmpScheme
-     */
-    @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(value = Endpoints.GET_MADMP, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public DMPScheme getMaDMP(@RequestParam(required = true) String identifier,
-            @RequestParam(required = true) String created,
-            @RequestParam(required = true) String modified) {
-        final DMP dmpMinimum = DMPService.identifyDMP(new DMP(created, modified, new DMP_id(identifier)), null);
-        if (dmpMinimum != null) {
-            return DMPService.loadWholeDMP(dmpMinimum);
-        } else {
-            throw new NotFoundException("DMP not found, identifier: " + identifier);
-        }
-    }
 }

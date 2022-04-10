@@ -1,7 +1,7 @@
 package at.tuwien.indmp.service.impl;
 
 import at.tuwien.indmp.dao.DataServiceDao;
-import at.tuwien.indmp.exception.ForbiddenException;
+import at.tuwien.indmp.exception.ConflictException;
 import at.tuwien.indmp.exception.NotFoundException;
 import at.tuwien.indmp.model.DataService;
 import at.tuwien.indmp.service.DataServiceService;
@@ -32,13 +32,14 @@ public class DataServiceServiceImpl implements DataServiceService {
      * 
      * @param dataService
      */
+    @Override
     @Transactional
     public void persist(DataService dataService) {
         Objects.requireNonNull(dataService);
         if (!existsByAccessRights(dataService.getAccessRights())) {
             dataServiceDao.persist(dataService);
         } else {
-            throw new ForbiddenException("This client id is already registered.");
+            throw new ConflictException("This client id is already registered.");
         }
     }
 
@@ -49,6 +50,7 @@ public class DataServiceServiceImpl implements DataServiceService {
      * @param accessRights
      * @return
      */
+    @Override
     @Transactional(readOnly = true)
     public DataService findByAccessRights(String accessRights) {
         try {
@@ -59,15 +61,8 @@ public class DataServiceServiceImpl implements DataServiceService {
         }
     }
 
-    /**
-     * 
-     * Exists by access rights
-     * 
-     * @param accessRights
-     * @return
-     */
     @Transactional(readOnly = true)
-    public boolean existsByAccessRights(String accessRights) {
+    private boolean existsByAccessRights(String accessRights) {
         try {
             if (dataServiceDao.findByAccessRights(accessRights) != null) {
                 return true;
@@ -85,6 +80,7 @@ public class DataServiceServiceImpl implements DataServiceService {
      * 
      * @return
      */
+    @Override
     @Transactional(readOnly = true)
     public List<DataService> getAllDataServices() {
         return dataServiceDao.findAll();
@@ -95,6 +91,7 @@ public class DataServiceServiceImpl implements DataServiceService {
      * Update service
      * 
      */
+    @Override
     @Transactional
     public void update(DataService dataService) {
         dataServiceDao.update(dataService);

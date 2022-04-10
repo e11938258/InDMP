@@ -1,5 +1,6 @@
 package at.tuwien.indmp.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import at.tuwien.indmp.model.DataService;
@@ -12,6 +13,8 @@ public interface  DMPService {
     public void create(DMP dmp, DataService rdmService);
 
     public DMP identifyDMP(DMP dmp, DataService dataService);
+
+    public void checkModifiedProperty(LocalDateTime originModified, LocalDateTime newModified);
 
     public DMPScheme loadWholeDMP(DMP dmp);
 

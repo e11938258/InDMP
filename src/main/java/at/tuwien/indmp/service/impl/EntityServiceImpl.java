@@ -42,6 +42,7 @@ public class EntityServiceImpl implements EntityService {
      * @param entities
      * @param dataService
      */
+    @Override
     @Transactional
     public void persist(List<Entity> entities, DataService dataService) {
         Objects.requireNonNull(entities, "List with entities is null.");
@@ -78,6 +79,7 @@ public class EntityServiceImpl implements EntityService {
      * @param value
      * @return
      */
+    @Override
     @Transactional(readOnly = true)
     public Entity findEntity(String atLocation, String specializationOf, String value) {
         try {
@@ -95,6 +97,7 @@ public class EntityServiceImpl implements EntityService {
      * @param specializationOf
      * @return
      */
+    @Override
     @Transactional(readOnly = true)
     public List<Entity> findEntities(String atLocation, String specializationOf) {
         return entityDao.findEntities(atLocation, specializationOf);
@@ -108,6 +111,7 @@ public class EntityServiceImpl implements EntityService {
      * @param specializationOf
      * @return
      */
+    @Override
     @Transactional(readOnly = true)
     public List<Entity> findAllEntities(String atLocation, String specializationOf) {
         return entityDao.findAllEntities(atLocation, specializationOf);
@@ -120,6 +124,7 @@ public class EntityServiceImpl implements EntityService {
      * @param entities
      * @param dataService
      */
+    @Override
     @Transactional
     public void updateOrCreateEntities(List<Entity> entities, DataService dataService) {
         Objects.requireNonNull(entities, "List with entities is null.");
@@ -154,6 +159,7 @@ public class EntityServiceImpl implements EntityService {
      * @param currentEntity can be null
      * @param dataService
      */
+    @Override
     @Transactional
     public void update(Entity entity, Entity currentEntity, DataService dataService) {
         Objects.requireNonNull(entity, "Entity is null.");
@@ -198,6 +204,7 @@ public class EntityServiceImpl implements EntityService {
      * @param currentLocation
      * @param newLocation
      */
+    @Override
     @Transactional
     public void changeNestedEntities(String currentLocation, String newLocation) {
         Objects.requireNonNull(currentLocation, "Current atlocation is null.");
@@ -219,6 +226,7 @@ public class EntityServiceImpl implements EntityService {
      *
      * @param currentLocation
      */
+    @Override
     @Transactional
     public void removeAllNestedEntities(String currentLocation) {
         Objects.requireNonNull(currentLocation, "Current location is null.");
@@ -237,6 +245,8 @@ public class EntityServiceImpl implements EntityService {
      * @param specializationOf
      * @return
      */
+    @Override
+    @Transactional(readOnly = true)
     public List<Entity> loadIdentifierHistory(String location, String specializationOf) {
         Objects.requireNonNull(location);
         Objects.requireNonNull(specializationOf);
@@ -244,7 +254,7 @@ public class EntityServiceImpl implements EntityService {
         final List<Entity> entities = new ArrayList<>();
 
         // Find current instance
-        for(Entity entity: entityDao.findAllEntities(location, specializationOf)) {
+        for (Entity entity : entityDao.findAllEntities(location, specializationOf)) {
             // Add current one to list
             entities.add(entity);
 

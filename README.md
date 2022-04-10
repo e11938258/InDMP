@@ -14,7 +14,7 @@ The software was developed by Filip Zoubek (https://orcid.org/0000-0003-1269-266
 
 ## General info
 
-Integrated The Machine-actionable Data Management planning application (InDMP) serves as a proof-of-concept for the thesis Framework for integration of RDM services using machine-actionable DMPs. The application allows to integrate RDM services using maDMPs to exchange information using a REST API, manage which services can modify what as well as to track the evolution of DMPs and provenance of information. The repository contains the mentioned application for integration and also the json file in which the test cases are stored ready for uploading to Postman. You can see the structure of the repository in the following listing:
+Integrated The Machine-actionable Data Management planning application (InDMP) serves as a proof-of-concept for the thesis Framework for integration of RDM services using machine-actionable DMPs. The application allows to integrate RDM services using maDMPs to exchange information using a REST API, manage which services can modify what as well as to track the evolution of DMPs and provenance of information. The repository contains the mentioned application for integration and also the json file in which the test cases are stored ready for uploading to the Postman application. You can see the structure of the repository in the following listing:
 
 ```
 indmp-app
@@ -25,7 +25,7 @@ indmp-app
 │   test-cases.json
 ```
 
-API documentation is also available on this site: https://app.swaggerhub.com/apis/e11938258/InDMP/1.0.0#/
+There is alsi API documentation of InDMP available on this site: https://app.swaggerhub.com/apis/e11938258/InDMP/1.0.0#/
 
 ## Technologies
 The application was developed using Spring Boot in Java programming language version 11.0.13. The authorization between InDMP and Postman (client) is done using the OAuth2 protocol, where [Keycloak](https://www.keycloak.org/) 6.0.1 was used as the authorization server. InDMP also uses the PostgreSQL 10.19 tool as information storage and [Temporal Tables Extension](https://github.com/arkhipov/temporal_tables) 1.2.0 for data versioning. Tests were performed operating system on Ubuntu 18.04.6.
@@ -115,7 +115,7 @@ WARNING: The default port of the application is 8080, it is necessary to change 
 | Access Token Lifespan | 1 day |
 | Assigned Default Client Scopes | update |
 
-5. Create two new users: "dmp_app_1" and "repository_app_1" with same password.
+5. Create two new users: "dmp_app_1" and "repository_app_1" with password same as username.
 
 That's it! 
 
@@ -123,20 +123,60 @@ When creating users, each of them will get a client id, which the InDMP applicat
 
 ## How to run
 
-If PostgreSQL and Keycloak setup are running, you can run the InDMP application using the following commands in terminal:
+If PostgreSQL and Keycloak setup are running, you can firstly build the InDMP application using the following command in terminal:
 
 ```console
 > mvn clean package
+```
+
+and then run:
+
+```console
 > java -jar target/indmp-app-1.0.0.jar
 ```
 
 ## Test cases
 
-To verify the functionality of InDMP, a set of functional and non-functional test cases were created to model common situations in DMP development during the research.
+To verify the functionality of InDMP, a set of functional and non-functional test cases were created to model common situations in DMP development during the research. If you have Postman installed, import the test cases into your environment via the File menu. You will need to obtain a token from the authorization server before running the test cases which is obtained at the collection level, where the necessary information is preloaded. There are also general variables that can be changed at will as needed. You will then need to send two requests in the Init folder that register services to the InDMP application, however, you need to change the values of accessRights, to the correct client id from the application Keycloak, and endpointURL which should point to the endpoint where InDMP will send the new maDMP. For testing purposes, this can be done using [Webhook.site](https://webhook.site/) , which will generate an API endpoint to receive information. You can just create one for both services.
 
-#### How to run
+#### Modification scope of services
+
+In order to understand all the tests, it is necessary to mention the modification scope of each service, you can see them in the following table:
+
+| maDMP class | DMP app | Repository app |
+| - | - | - |
+| contact | Yes | Yes |
+| contributor | Yes | Yes |
+| cost | Yes | No |
+| dataset | Yes | Yes |
+| distribution | Yes | Yes |
+| dmp | Yes | No |
+| funding | Yes | No |
+| grant id | Yes | No |
+| host | Yes | Yes |
+| license | Yes | Yes |
+| metadata | Yes | Yes |
+| project | Yes | No |
+| security and privacy | Yes | Yes |
+| technical resource | Yes | No |
+
+However, if the DMP is new, all values from the received data are stored.
+
+### Test case descriptions
+
+In the following two tables you can see the individual functional and non-functional test cases with steps and expected results. Each test case has its own folder in Postman, which consists of several consecutive requests. Requests also contain tests to verify the correctness of the response.
 
 #### Functional test cases
+
+| Test case | Description | Steps | Expected code | Expected body |
+| - | - | - | - | - |
+| FTC1 | Testing maDMP update | Send minimal maDMP with incomplete body | 400 |  |
+|  |  | Send a new minimal maDMP with wrong timing | 404 |  |
+|  |  | Send a new minimal maDMP | 200 |  |
+|  |  | Send a new minimal maDMP again with same ID | 409 |  |
+|  |  | Send the minimal maDMP with invalid modified property | 409 |  |
+|  |  | Send long maDMP with correct ID | 200 |  |
+| FTC2 |  |  |  |  |
 
 
 #### Non-Functional test cases
@@ -144,7 +184,7 @@ To verify the functionality of InDMP, a set of functional and non-functional tes
 
 ## Limitations
 
-The current version serves only as a proof-of-concept solution to verify the functionality of the proposed architecture. The implementation can register a service and restrict its rights to specific maDMP classes. It can also update the DMP using maDMP within registered and authorized services as well as change the identifier and delete the class instance. It can also list the history of identifiers. For testing purposes, a method for getting maDMP from the InDMP application is also implemented.
+The current version serves only as a proof-of-concept solution to verify the functionality of the proposed architecture. The implementation can register a service and restrict its rights to specific maDMP classes. It can also update the DMP using maDMP within registered and authorized services as well as change the identifier and delete the class instance. It can also list the history of identifiers and get current version of maDMP from the InDMP application.
 
 However, the solution cannot get older maDMP versions, it synchronizes the information between all registered services, therefore it does not restrict services to a specific maDMP, and also privileges are restricted only to classes not to specific properties.
 

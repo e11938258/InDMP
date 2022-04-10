@@ -10,7 +10,7 @@ create table data_service (
     identifier bigserial NOT NULL,
     title varchar(64) NOT NULL,
     access_rights varchar(64) NOT NULL UNIQUE,
-    endpoint_url varchar(255) NOT NULL UNIQUE,
+    endpoint_url varchar(255) NOT NULL,
     endpoint_description varchar(512),
     PRIMARY KEY (identifier)
 );
