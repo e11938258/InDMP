@@ -22,7 +22,7 @@ public interface  DMPService {
 
     public void changeIdentifiers(DMP dmp, Entity identifier, DataService dataService);
 
-    public void deleteInstance(Entity entity);
+    public void deleteInstance(Entity entity, DataService dataService);
 
     public List<Entity> loadIdentifierHistory(DMP dmp);
 

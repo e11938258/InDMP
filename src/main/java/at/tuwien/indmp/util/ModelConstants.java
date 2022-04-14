@@ -59,24 +59,7 @@ public class ModelConstants {
     public static final String REGEX_DATA_ACCESS = "^(open|shared|closed)$";
     public static final String REGEX_YES_NO_UNKNOWN = "^(yes|no|unknown)$";
 
-    // DMP class types
-    public static final String REGEX_DMP_CLASS_TYPE = "^("
-            + "contact|"
-            + "contributor|"
-            + "cost|"
-            + "dmp|"
-            + "dataset|"
-            + "distribution|"
-            + "funding|"
-            + "grant_id|"
-            + "host|"
-            + "license|"
-            + "metadata|"
-            + "project|"
-            + "securityandprivacy|"
-            + "technicalresource)$";
-
-    // Which parameters can be changed?
+    // Which identifiers can be change?
     public static final List<String> IDENTIFIER_CHANGEABLE_CLASSES = Arrays.asList(new String[] {
             "dmp:identifier",
             "contributor:identifier",
@@ -86,6 +69,23 @@ public class ModelConstants {
             "dataset:identifier",
             "distribution:access_url",
             "grant_id:identifier",
+    });
+
+    // Which classes can be deleted?
+    public static final List<String> REMOVABLE_CLASSES = Arrays.asList(new String[] {
+            "contact",
+            "contributor",
+            "cost",
+            "dataset",
+            "distribution",
+            "funding",
+            "grant_id",
+            "host",
+            "license",
+            "metadata",
+            "project",
+            "securityandprivacy",
+            "technicalresource",
     });
 
     // Repository certified

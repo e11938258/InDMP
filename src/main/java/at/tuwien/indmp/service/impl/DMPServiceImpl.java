@@ -126,7 +126,7 @@ public class DMPServiceImpl implements DMPService {
     }
 
     private void checkMinimalDMP(DMP dmp) {
-        if (dmp.getCreated() == null || dmp.getModified() == null || dmp.getDmp_id() == null
+        if (dmp == null || dmp.getCreated() == null || dmp.getModified() == null || dmp.getDmp_id() == null
                 || dmp.getDmp_id().getClassIdentifier() == null
                 || dmp.getDmp_id().getClassIdentifier().length() == 0) {
             log.error("Missing minimum maDMP.");
@@ -166,7 +166,7 @@ public class DMPServiceImpl implements DMPService {
 
     /**
      * 
-     * Check if modified property is newer than the stored one
+     * Check if modified property is newer than the stored one, but not future
      * 
      * @param originModified
      * @param newModified
@@ -176,7 +176,7 @@ public class DMPServiceImpl implements DMPService {
     public void checkModifiedProperty(LocalDateTime originModified, LocalDateTime newModified) {
         if (originModified.equals(newModified) || originModified.isAfter(newModified)) {
             throw new ConflictException("There is a newer version of maDMP.");
-        } else if(LocalDateTime.now().isBefore(newModified)) {
+        } else if (LocalDateTime.now().isBefore(newModified)) {
             throw new ForbiddenException("Cannot use future time.");
         }
     }
@@ -223,46 +223,62 @@ public class DMPServiceImpl implements DMPService {
      * Change identifier
      *
      * @param dmp         is the new DMP
-     * @param identifier
+     * @param entity
      * @param dataService
      */
     @Override
-    public void changeIdentifiers(DMP dmp, Entity identifier, DataService dataService) {
+    public void changeIdentifiers(DMP dmp, Entity entity, DataService dataService) {
         Objects.requireNonNull(dmp, "DMP is null.");
-        Objects.requireNonNull(identifier, "Identifier is null.");
+        Objects.requireNonNull(entity, "Identifier is null.");
         Objects.requireNonNull(dataService, "Service is null.");
 
         // Is the identifier changeable for the this class?
-        if (ModelConstants.IDENTIFIER_CHANGEABLE_CLASSES.contains(identifier.getSpecializationOf())) {
+        if (ModelConstants.IDENTIFIER_CHANGEABLE_CLASSES.contains(entity.getSpecializationOf())) {
 
-            // Find identifier
-            final Entity currentIdentifier = entityService.findEntity(identifier.getAtLocation(),
-                    identifier.getSpecializationOf(), null);
+            // Has service rights to update?
+            if (hasRights(entity, dataService)) {
 
-            // Found?
-            if (currentIdentifier != null) {
-                // Change modified
-                updateModified(dmp, dataService);
+                // Find identifier
+                final Entity currentIdentifier = entityService.findEntity(entity.getAtLocation(),
+                        entity.getSpecializationOf(), null);
 
-                // Create a new location
-                final String oldLocation = currentIdentifier.getAtLocation();
-                final String location = oldLocation.replace(currentIdentifier.getValue(), identifier.getValue());
-                // Update entity
-                entityService.update(
-                        Functions.createEntity(dmp, oldLocation, currentIdentifier.getSpecializationOf(),
-                                identifier.getValue()),
-                        currentIdentifier, dataService);
+                // Found?
+                if (currentIdentifier != null) {
+                    // Change modified
+                    updateModified(dmp, dataService);
 
-                // Change nested locations
-                entityService.changeNestedEntities(oldLocation, location);
+                    // Create a new location
+                    final String oldLocation = currentIdentifier.getAtLocation();
+                    final String location = oldLocation.replace(currentIdentifier.getValue(), entity.getValue());
+                    // Update entity
+                    entityService.update(
+                            Functions.createEntity(dmp, oldLocation, currentIdentifier.getSpecializationOf(),
+                                    entity.getValue()),
+                            currentIdentifier, dataService);
+
+                    // Change nested locations
+                    entityService.changeNestedEntities(oldLocation, location);
+                } else {
+                    log.error("Cannot find identifier at location " + entity.getAtLocation());
+                    throw new NotFoundException("Cannot find identifier at location " + entity.getAtLocation());
+                }
             } else {
-                log.error("Cannot find identifier at location " + identifier.getAtLocation());
-                throw new NotFoundException("Cannot find identifier at location " + identifier.getAtLocation());
+                log.error("Service does not have rights to update the identifier in this class.");
+                throw new ForbiddenException("Service does not have rights to update the identifier in this class.");
             }
         } else {
-            log.error("Cannot change " + identifier.getSpecializationOf());
-            throw new ForbiddenException("Cannot change " + identifier.getSpecializationOf());
+            log.error("Cannot change " + entity.getSpecializationOf());
+            throw new BadRequestException("Cannot change " + entity.getSpecializationOf());
         }
+    }
+
+    private boolean hasRights(Entity entity, DataService dataService) {
+        for (String right : dataService.getRights()) {
+            if (entity.getSpecializationOf().contains(right)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void updateModified(DMP dmp, DataService dataService) {
@@ -275,11 +291,35 @@ public class DMPServiceImpl implements DMPService {
      * Delete instance
      *
      * @param entity
+     * @param dataService
      */
     @Override
-    public void deleteInstance(Entity entity) {
+    public void deleteInstance(Entity entity, DataService dataService) {
         Objects.requireNonNull(entity, "Entity is null.");
-        entityService.removeAllNestedEntities(entity.getAtLocation());
+
+        // Removable class?
+        if (ModelConstants.REMOVABLE_CLASSES.contains(entity.getSpecializationOf())) {
+
+            // Has service rights to delete?
+            if (hasRights(entity, dataService)) {
+
+                // Find location
+                final List<Entity> entities = entityService.findEntities(entity.getAtLocation(), null);
+
+                if (entities.size() > 0) {
+                    entityService.removeAllNestedEntities(entity.getAtLocation());
+                } else {
+                    log.error("Cannot find location " + entity.getAtLocation());
+                    throw new NotFoundException("Cannot find location " + entity.getAtLocation());
+                }
+            } else {
+                log.error("Service does not have rights to delete the class.");
+                throw new ForbiddenException("Service does not have rights to delete the class.");
+            }
+        } else {
+            log.error("Cannot delete " + entity.getSpecializationOf());
+            throw new BadRequestException("Cannot delete " + entity.getSpecializationOf());
+        }
     }
 
     /**

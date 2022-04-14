@@ -2,10 +2,14 @@ package at.tuwien.indmp.rest;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeParseException;
 import java.util.List;
 
 import javax.validation.Valid;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import at.tuwien.indmp.exception.BadRequestException;
 import at.tuwien.indmp.exception.ForbiddenException;
 import at.tuwien.indmp.exception.NotFoundException;
 import at.tuwien.indmp.model.DataService;
@@ -16,6 +20,7 @@ import at.tuwien.indmp.model.dmp.DMP_id;
 import at.tuwien.indmp.service.DMPService;
 import at.tuwien.indmp.service.DataServiceService;
 import at.tuwien.indmp.util.Endpoints;
+import at.tuwien.indmp.util.ModelConstants;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -88,6 +93,51 @@ public class MaDMPController {
 
     /**
      *
+     * Get maDMP by minimal DMP
+     * 
+     * @param principal
+     * @param identifier
+     * @param created
+     * @param modified   should be used to get older versions of maDMP, not
+     *                   implemented
+     * @return
+     */
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(value = Endpoints.GET_MADMP, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public DMPScheme getMaDMP(Principal principal,
+            @RequestParam(required = true) String identifier,
+            @RequestParam(required = true) String created,
+            @RequestParam(required = false) @JsonFormat(pattern = ModelConstants.DATE_TIME_FORMAT_ISO_8601) String modified) {
+
+        // Get current RDM Service
+        final DataService dataService = dataServiceService.findByAccessRights(principal.getName());
+
+        try {
+            // If modified is null...
+            LocalDateTime modifiedProperty;
+            if (modified == null) {
+                modifiedProperty = LocalDateTime.now();
+            } else {
+                modifiedProperty = LocalDateTime.parse(modified);
+            }
+
+            // Identify maDMP
+            final DMP dmpMinimum = DMPService.identifyDMP(new DMP(created, modifiedProperty, new DMP_id(identifier)),
+                    null);
+
+            // Return current version of maDMP if found
+            if (dmpMinimum != null) {
+                return DMPService.loadWholeDMP(dmpMinimum);
+            } else {
+                throw new NotFoundException("DMP not found, identifier: " + identifier);
+            }
+        } catch (DateTimeParseException ex) {
+            throw new BadRequestException("Wrong time format");
+        }
+    }
+
+    /**
+     *
      * Change identifier
      *
      * @param principal
@@ -108,20 +158,27 @@ public class MaDMPController {
         final DataService dataService = dataServiceService.findByAccessRights(principal.getName());
 
         // Identify maDMP
-        final DMP currentDMP = DMPService.identifyDMP(new DMP(created, modified, new DMP_id(identifier)), dataService);
+        final DMP dmp = new DMP(created, modified, new DMP_id(identifier));
+        final DMP currentDMP = DMPService.identifyDMP(dmp, dataService);
 
         // Was the DMP found?
         if (currentDMP == null) {
             throw new NotFoundException("DMP not found, identifier: " + identifier);
         }
 
+        // Checking mandatory properties
+        if (entity == null || entity.getAtLocation() == null || entity.getSpecializationOf() == null
+                || entity.getValue() == null) {
+            throw new BadRequestException("Incomplete entity class.");
+        }
+
         // Checking location
-        if (!entity.getAtLocation().startsWith(currentDMP.getLocation(""))) {
+        if (!entity.getAtLocation().startsWith(dmp.getLocation(""))) {
             throw new ForbiddenException("Cannot find location in dmp: " + entity.getAtLocation());
         }
 
         // Change identifier
-        DMPService.changeIdentifiers(currentDMP, entity, dataService);
+        DMPService.changeIdentifiers(dmp, entity, dataService);
 
         // Send DMP to all other services
         sendDMPToServices(currentDMP, dataService);
@@ -151,13 +208,18 @@ public class MaDMPController {
         // Identify maDMP
         final DMP currentDMP = DMPService.identifyDMP(new DMP(created, modified, new DMP_id(identifier)), dataService);
 
+        // Checking mandatory properties
+        if (entity == null || entity.getAtLocation() == null || entity.getSpecializationOf() == null) {
+            throw new BadRequestException("Incomplete entity class.");
+        }
+
         // Checking location
         if (!entity.getAtLocation().startsWith(currentDMP.getLocation(""))) {
             throw new ForbiddenException("Cannot find location in dmp: " + entity.getAtLocation());
         }
 
         // Delete instance
-        DMPService.deleteInstance(entity);
+        DMPService.deleteInstance(entity, dataService);
 
         // Send DMP to all other services
         sendDMPToServices(currentDMP, dataService);
@@ -190,37 +252,6 @@ public class MaDMPController {
 
     /**
      *
-     * Get maDMP by minimal DMP
-     * 
-     * @param principal
-     * @param identifier
-     * @param created
-     * @param modified should be used to get older versions of maDMP, not implemented 
-     * @return
-     */
-    @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(value = Endpoints.GET_MADMP, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public DMPScheme getMaDMP(Principal principal,
-            @RequestParam(required = true) String identifier,
-            @RequestParam(required = true) String created,
-            @RequestParam(required = true) String modified) {
-
-        // Get current RDM Service
-        final DataService dataService = dataServiceService.findByAccessRights(principal.getName());
-
-        // Identify maDMP
-        final DMP dmpMinimum = DMPService.identifyDMP(new DMP(created, modified, new DMP_id(identifier)), null);
-
-        // Return current version of maDMP if found
-        if (dmpMinimum != null) {
-            return DMPService.loadWholeDMP(dmpMinimum);
-        } else {
-            throw new NotFoundException("DMP not found, identifier: " + identifier);
-        }
-    }
-
-    /**
-     *
      * Get history of identifiers
      * 
      * @param principal
@@ -235,7 +266,7 @@ public class MaDMPController {
             @RequestParam(required = true) String identifier,
             @RequestParam(required = true) String created) {
 
-        // Get current RDM Service
+        // Get current RDM service
         final DataService dataService = dataServiceService.findByAccessRights(principal.getName());
 
         // Identify maDMP

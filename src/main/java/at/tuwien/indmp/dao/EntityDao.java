@@ -133,7 +133,7 @@ public class EntityDao extends AbstractDao<Entity> {
 
         // Run query
         final Query query = entityManager.createNativeQuery(
-                "SELECT e.at_location, e.specialization_of, e.value, e.was_generated_by from entity_history e WHERE ID = ?");
+                "SELECT e.at_location, e.specialization_of, e.value, e.was_generated_by from entity_history e WHERE ID = ? ORDER BY e.ID ASC");
         query.setParameter(1, id);
 
         // Create a new entity for each instance
