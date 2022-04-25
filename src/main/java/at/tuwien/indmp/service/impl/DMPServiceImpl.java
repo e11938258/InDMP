@@ -53,7 +53,8 @@ public class DMPServiceImpl implements DMPService {
      */
     @Override
     public void create(DMP dmp, DataService dataService) {
-        if (findByCreationDate(dmp.getCreatedInString()) == null) {
+        if (findByCreationDate(dmp.getCreatedInString()) == null
+                && findByIdentifier(dmp.getClassIdentifier()) == null) {
             // Get properties from new DMP
             final List<Entity> properties = dmp.getProperties(dmp, "", dataService);
             properties.addAll(dmp.getPropertiesFromNestedClasses(dmp, "", dataService));

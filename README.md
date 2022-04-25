@@ -14,7 +14,7 @@ The software was developed by Filip Zoubek (https://orcid.org/0000-0003-1269-266
 
 ## General info
 
-Integrated The Machine-actionable Data Management planning application (InDMP) serves as a proof-of-concept for the thesis Framework for integration of RDM services using machine-actionable DMPs. The application allows to integrate RDM services using maDMPs to exchange information using a REST API, manage which services can modify what as well as to track the evolution of DMPs and provenance of information. The repository contains the mentioned application for integration and also the json file in which the test cases are stored ready for uploading to the Postman application. You can see the structure of the repository in the following listing:
+Integrated The Machine-actionable Data Management planning application (InDMP) serves as a proof-of-concept for the thesis Framework for integration of RDM services using machine-actionable DMPs. The application allows to integrate RDM services using maDMPs to exchange information through the REST API, manage which services can modify what as well as to track the evolution of DMPs and provenance of information. The repository contains the mentioned application for integration and also the json file in which the test cases are stored ready for uploading to the Postman application. You can see the structure of the repository in the following listing:
 
 ```
 indmp-app
@@ -25,7 +25,7 @@ indmp-app
 │   test-cases.json
 ```
 
-There is alsi API documentation of InDMP available on this site: https://app.swaggerhub.com/apis/e11938258/InDMP/1.0.0#/
+There is also API documentation of the InDMP application available on the [SwaggerHub](https://app.swaggerhub.com/apis/e11938258/InDMP/1.0.0#/).
 
 ## Technologies
 The application was developed using Spring Boot in Java programming language version 11.0.13. The authorization between InDMP and Postman (client) is done using the OAuth2 protocol, where [Keycloak](https://www.keycloak.org/) 6.0.1 was used as the authorization server. InDMP also uses the PostgreSQL 10.19 tool as information storage and [Temporal Tables Extension](https://github.com/arkhipov/temporal_tables) 1.2.0 for data versioning. Tests were performed operating system on Ubuntu 18.04.6.
@@ -111,7 +111,7 @@ WARNING: The default port of the application is 8080, it is necessary to change 
 | Property | Value |
 | - | - |
 | Client protocol | openid-connect |
-| Valid Redirect URIs | https://oauth.pstmn.io/v1/* |
+| Valid Redirect URIs | * |
 | Access Token Lifespan | 1 day |
 | Assigned Default Client Scopes | update |
 
@@ -123,13 +123,13 @@ When creating users, each of them will get a client id, which the InDMP applicat
 
 ## How to run
 
-If PostgreSQL and Keycloak setup are running, you can firstly build the InDMP application using the following command in terminal:
+If PostgreSQL and Keycloak setup are running, you must firstly build the InDMP application using the following command in terminal:
 
 ```console
 > mvn clean package
 ```
 
-and then run:
+and then run it:
 
 ```console
 > java -jar target/indmp-app-1.0.0.jar
@@ -143,11 +143,13 @@ However, the solution cannot get older maDMP versions, it synchronizes the infor
 
 ## Test cases
 
-To verify the functionality of InDMP, a set of functional and non-functional test cases were created to model common situations in DMP development during the research. If you have Postman installed, import the test cases into your environment via the File menu. You will need to obtain a token from the authorization server before running the test cases which is obtained at the collection level, where the necessary information is preloaded. There are also general variables that can be changed at will as needed. You will then need to send two requests in the Init folder that register services to the InDMP application, however, you need to change the values of accessRights, to the correct client id from the application Keycloak, and endpointURL which should point to the endpoint where InDMP will send the new maDMP. For testing purposes, this can be done using [Webhook.site](https://webhook.site/) , which will generate an API endpoint to receive requests. You can just create one for both services.
+To verify the functionality of InDMP, a set of functional and non-functional test cases were created to model common situations in DMP development during the research. If you have Postman installed, import the test cases from the repository into your environment via the File menu. You will need to obtain a token from the authorization server before running the test cases. It can be get at the collection level, where the necessary information is preloaded. There are also general variables that can be changed at will as needed. In test case 6, one request has a different authorization due to the modification scope test. 
+
+Each new run of the application you must send two requests in the Init folder that register services to the InDMP application. However, you need firstly to change the values of accessRights, to the correct client id from the application Keycloak, and endpointURL which should point to the endpoint where InDMP will send the new maDMP information. For testing purposes, this can be done using the [Webhook.site](https://webhook.site/) application, which will generate an API endpoint to receive requests. You can just create one for both services.
 
 #### Modification scope of services
 
-In order to understand all the tests, it is necessary to mention the modification scope of each service, you can see them in the following table:
+In order to understand all the tests, it is necessary to mention the modification scope of each testing service, you can see them in the following table:
 
 | maDMP class | DMP app | Repository app |
 | - | - | - |
@@ -166,13 +168,11 @@ In order to understand all the tests, it is necessary to mention the modificatio
 | security and privacy | Yes | Yes |
 | technical resource | Yes | No |
 
-However, if the DMP is new, all values from the received data are stored.
+NOTE: If the DMP is new, all values from the received data are stored.
 
-### Test case descriptions
+### Functional and non-functional test cases
 
 In the following two tables you can see the individual functional and non-functional test cases with steps and expected results. Each test case has its own folder in Postman, which consists of several consecutive requests. Requests also contain tests to verify the correctness of the response.
-
-#### Functional test cases
 
 | Test case | Description | Steps | Expected code | Expected body |
 | - | - | - | - | - |
@@ -204,14 +204,34 @@ In the following two tables you can see the individual functional and non-functi
 |  |  | Update identifier of dataset | 200 |  |
 |  |  | Get identifier history with wrong parameters | 400 |  |
 |  |  | Get identifier history | 200 | n. 4 |
-| FTC6 |  |  |  |  |
-|  |  |  |  |  |
-| FTC7 |  |  |  |  |
-|  |  |  |  |  |
+| FTC6 | Testing the modification scope | Send a new minimal maDMP | 200 |  |
+|  |  | Send a new maDMP out of modification scope | 200 |  |
+|  |  | Get current version of maDMP and verify the modification scope | 200 | n. 5 |
+| FTC7 | Simulation of production env. 1 | Send a new minimal maDMP | 200 |  |
+|  |  | Update maDMP with long body | 200 |  |
+|  |  | Delete dataset | 200 |  |
+|  |  | Update maDMP with the deleted dataset | 200 |  |
+|  |  | Update maDMP with the old modified property | 409 |  |
+| FTC8 | Simulation of production env. 2 | Send a new long maDMP with 3 datasets | 200 |  |
+|  |  | Delete dataset 0 | 200 |  |
+|  |  | Delete dataset 1 | 200 |  |
+|  |  | Update identifier of dataset 2 -> 0 | 200 |  |
+|  |  | Delete dataset 0 | 200 |  |
+|  |  | Delete project information | 200 |  |
+|  |  | Get current version of maDMP | 200 | n. 6 |
 
-##### Expected bodies
+| Test case | Description | Steps | Expected code | Expected time |
+| - | - | - | - | - |
+| NFTC1 | Testing creation time | Send a new minimal maDMP | 200 | ~445ms |
+|  |  | Send a new long maDMP | 200 | ~815ms |
+| NFTC2 | Update time testing | Send a new minimal maDMP | 200 | ~560ms |
+|  |  | Update maDMP with short body | 200 | ~485ms |
+|  |  | Update maDMP with long body | 200 | ~930ms |
+|  |  | Update maDMP with short body | 200 | ~755ms |
 
-###### 1.
+#### Expected bodies
+
+##### 1.
 
 ```json
 {
@@ -229,7 +249,7 @@ In the following two tables you can see the individual functional and non-functi
 }
 ```
 
-###### 2.
+##### 2.
 
 ```json
 {
@@ -286,7 +306,7 @@ In the following two tables you can see the individual functional and non-functi
 }
 ```
 
-###### 3.
+##### 3.
 
 ```json
 {
@@ -304,7 +324,7 @@ In the following two tables you can see the individual functional and non-functi
 }
 ```
 
-###### 4.
+##### 4.
 
 ```json
 [
@@ -384,12 +404,90 @@ In the following two tables you can see the individual functional and non-functi
 ]
 ```
 
-#### Non-Functional test cases
+##### 5.
 
-| Test case | Description | Steps | Expected code | Expected body |
-| - | - | - | - | - |
-| NFTC1 |  |  |  |  |
-|  |  |  |  |  |
+```json
+{
+    "dmp": {
+        "created": "2022-04-25T07:04:05.000",
+        "modified": "2022-04-25T07:27:43.000",
+        "contributor": [],
+        "cost": [],
+        "dataset": [],
+        "dmp_id": {
+            "identifier": "https://doi.org/10.0002/17.7.189"
+        },
+        "project": []
+    }
+}
+```
+
+##### 6.
+
+```json
+{
+    "dmp": {
+        "created": "2022-04-25T07:38:01.000",
+        "description": "This DMP is for our new project.",
+        "ethical_issues_description": "Ethical issues are handled by ...",
+        "ethical_issues_exist": "yes",
+        "ethical_issues_report": "https://docs.google.com/document/d/xyz",
+        "language": "eng",
+        "modified": "2022-04-25T07:38:22.000",
+        "title": "DMP for our new project",
+        "contact": {
+            "mbox": "john.smith@tuwien.ac.at",
+            "name": "John Smith",
+            "contact_id": {
+                "identifier": "https://www.tiss.tuwien.ac.at/person/2351952424",
+                "type": "other"
+            }
+        },
+        "contributor": [
+            {
+                "mbox": "leo.messi@barcelona.com",
+                "name": "Leo Messi",
+                "role": [
+                    "ProjectLeader"
+                ],
+                "contributor_id": {
+                    "identifier": "https://orcid.org/0000-0002-0000-0000",
+                    "type": "orcid"
+                }
+            },
+            {
+                "mbox": "robert@bayern.de",
+                "name": "Robert Lewandowski",
+                "role": [
+                    "ContactPerson",
+                    "DataManager"
+                ],
+                "contributor_id": {
+                    "identifier": "https://orcid.org/0000-0002-4929-7875",
+                    "type": "orcid"
+                }
+            },
+            {
+                "mbox": "CR@juve.it",
+                "name": "Cristiano Ronaldo",
+                "role": [
+                    "DataCurator"
+                ],
+                "contributor_id": {
+                    "identifier": "https://www.tiss.tuwien.ac.at/person/305962565",
+                    "type": "other"
+                }
+            }
+        ],
+        "cost": [],
+        "dataset": [],
+        "dmp_id": {
+            "identifier": "https://doi.org/17.1992/13.5.666"
+        },
+        "project": []
+    }
+}
+```
 
 ## License
 
