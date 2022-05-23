@@ -291,11 +291,12 @@ public class DMPServiceImpl implements DMPService {
      *
      * Delete instance
      *
+     * @param entidmpty
      * @param entity
      * @param dataService
      */
     @Override
-    public void deleteInstance(Entity entity, DataService dataService) {
+    public void deleteInstance(DMP dmp, Entity entity, DataService dataService) {
         Objects.requireNonNull(entity, "Entity is null.");
 
         // Removable class?
@@ -308,6 +309,9 @@ public class DMPServiceImpl implements DMPService {
                 final List<Entity> entities = entityService.findEntities(entity.getAtLocation(), null);
 
                 if (entities.size() > 0) {
+                    // Change modified
+                    updateModified(dmp, dataService);
+                    // Remove entities
                     entityService.removeAllNestedEntities(entity.getAtLocation());
                 } else {
                     log.error("Cannot find location " + entity.getAtLocation());

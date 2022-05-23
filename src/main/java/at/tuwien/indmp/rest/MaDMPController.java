@@ -166,6 +166,9 @@ public class MaDMPController {
             throw new NotFoundException("DMP not found, identifier: " + identifier);
         }
 
+        // Check maDMP modified property
+        DMPService.checkModifiedProperty(currentDMP.getModified(), dmp.getModified());
+
         // Checking mandatory properties
         if (entity == null || entity.getAtLocation() == null || entity.getSpecializationOf() == null
                 || entity.getValue() == null) {
@@ -206,7 +209,11 @@ public class MaDMPController {
         final DataService dataService = dataServiceService.findByAccessRights(principal.getName());
 
         // Identify maDMP
-        final DMP currentDMP = DMPService.identifyDMP(new DMP(created, modified, new DMP_id(identifier)), dataService);
+        final DMP dmp = new DMP(created, modified, new DMP_id(identifier));
+        final DMP currentDMP = DMPService.identifyDMP(dmp, dataService);
+
+        // Check maDMP modified property
+        DMPService.checkModifiedProperty(currentDMP.getModified(), dmp.getModified());
 
         // Checking mandatory properties
         if (entity == null || entity.getAtLocation() == null || entity.getSpecializationOf() == null) {
@@ -219,7 +226,7 @@ public class MaDMPController {
         }
 
         // Delete instance
-        DMPService.deleteInstance(entity, dataService);
+        DMPService.deleteInstance(dmp, entity, dataService);
 
         // Send DMP to all other services
         sendDMPToServices(currentDMP, dataService);
