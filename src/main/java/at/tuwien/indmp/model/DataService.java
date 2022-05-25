@@ -41,14 +41,14 @@ public class DataService implements Serializable {
 
     @Column(nullable = false)
     @NotNull
-    @Size(min = ModelConstants.SOFTWARE_AGENT_TITLE_MIN, max = ModelConstants.SOFTWARE_AGENT_TITLE_MAX)
-    @Pattern(regexp = ModelConstants.SOFTWARE_AGENT_TITLE_REGEX)
+    @Size(min = ModelConstants.DATA_SERVICE_TITLE_MIN, max = ModelConstants.DATA_SERVICE_TITLE_MAX)
+    @Pattern(regexp = ModelConstants.DATA_SERVICE_TITLE_REGEX)
     private String title; // https://www.w3.org/TR/vocab-dcat-3/#Property:resource_title
 
     @Column(name = "access_rights", nullable = false, unique = true)
     @NotNull
-    @Size(min = ModelConstants.SOFTWARE_AGENT_ACCESS_RIGHTS_MIN, max = ModelConstants.RDM_SERVICE_ACESS_RIGHTS_MAX)
-    @Pattern(regexp = ModelConstants.RDM_SERVICE_ACCESS_RIGHTS_REGEX)
+    @Size(min = ModelConstants.DATA_SERVICE_ACCESS_RIGHTS_MIN, max = ModelConstants.DATA_SERVICE_ACCESS_RIGHTS_MAX)
+    @Pattern(regexp = ModelConstants.DATA_SERVICE_ACCESS_RIGHTS_REGEX)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String accessRights; // https://www.w3.org/TR/vocab-dcat-3/#Property:resource_access_rights
 
@@ -58,8 +58,8 @@ public class DataService implements Serializable {
     private URI endpointURL; // https://www.w3.org/TR/vocab-dcat-3/#Property:data_service_endpoint_url
 
     @Column(name = "endpoint_description")
-    @Size(min = ModelConstants.SOFTWARE_AGENT_ENDPOINT_DESCRIPTION_MIN, max = ModelConstants.SOFTWARE_AGENT_ENDPOINT_DESCRIPTION_MAX)
-    @Pattern(regexp = ModelConstants.SOFTWARE_AGENT_ENDPOINT_DESCRIPTION_REGEX)
+    @Size(min = ModelConstants.DATA_SERVICE_ENDPOINT_DESCRIPTION_MIN, max = ModelConstants.DATA_SERVICE_ENDPOINT_DESCRIPTION_MAX)
+    @Pattern(regexp = ModelConstants.DATA_SERVICE_ENDPOINT_DESCRIPTION_REGEX)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String endpointDescription; // https://www.w3.org/TR/vocab-dcat-3/#Property:data_service_endpoint_description
 

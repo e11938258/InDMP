@@ -13,17 +13,17 @@ public class ModelConstants {
     private static final String REGEX_STRING = "^$|^[\\p{IsAlphabetic}\\p{Punct}\\p{Digit}\\p{Blank}\\n]+$";
 
     // Software agent constants
-    public static final int SOFTWARE_AGENT_TITLE_MIN = 1;
-    public static final int SOFTWARE_AGENT_TITLE_MAX = 64;
-    public static final String SOFTWARE_AGENT_TITLE_REGEX = REGEX_STRING;
+    public static final int DATA_SERVICE_TITLE_MIN = 1;
+    public static final int DATA_SERVICE_TITLE_MAX = 64;
+    public static final String DATA_SERVICE_TITLE_REGEX = REGEX_STRING;
 
-    public static final int SOFTWARE_AGENT_ACCESS_RIGHTS_MIN = 1;
-    public static final int RDM_SERVICE_ACESS_RIGHTS_MAX = 64;
-    public static final String RDM_SERVICE_ACCESS_RIGHTS_REGEX = "^[\\p{IsAlphabetic}\\p{Digit}-]+$";
+    public static final int DATA_SERVICE_ACCESS_RIGHTS_MIN = 1;
+    public static final int DATA_SERVICE_ACCESS_RIGHTS_MAX = 64;
+    public static final String DATA_SERVICE_ACCESS_RIGHTS_REGEX = "^[\\p{IsAlphabetic}\\p{Digit}-]+$";
 
-    public static final int SOFTWARE_AGENT_ENDPOINT_DESCRIPTION_MIN = 0;
-    public static final int SOFTWARE_AGENT_ENDPOINT_DESCRIPTION_MAX = 512;
-    public static final String SOFTWARE_AGENT_ENDPOINT_DESCRIPTION_REGEX = REGEX_STRING;
+    public static final int DATA_SERVICE_ENDPOINT_DESCRIPTION_MIN = 0;
+    public static final int DATA_SERVICE_ENDPOINT_DESCRIPTION_MAX = 512;
+    public static final String DATA_SERVICE_ENDPOINT_DESCRIPTION_REGEX = REGEX_STRING;
 
     // Entity constants
     public static final int ENTITY_AT_LOCATION_MIN = 1;

@@ -43,6 +43,19 @@ public class DataServiceServiceImpl implements DataServiceService {
         }
     }
 
+    @Transactional(readOnly = true)
+    private boolean existsByAccessRights(String accessRights) {
+        try {
+            if (dataServiceDao.findByAccessRights(accessRights) != null) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (NoResultException | EmptyResultDataAccessException ex) {
+            return false;
+        }
+    }
+
     /**
      * 
      * Find the service by access rights
@@ -58,19 +71,6 @@ public class DataServiceServiceImpl implements DataServiceService {
         } catch (NoResultException | EmptyResultDataAccessException ex) {
             log.error("Service not found by client id");
             throw new NotFoundException("Service not found by client id");
-        }
-    }
-
-    @Transactional(readOnly = true)
-    private boolean existsByAccessRights(String accessRights) {
-        try {
-            if (dataServiceDao.findByAccessRights(accessRights) != null) {
-                return true;
-            } else {
-                return false;
-            }
-        } catch (NoResultException | EmptyResultDataAccessException ex) {
-            return false;
         }
     }
 
