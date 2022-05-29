@@ -93,7 +93,7 @@ public class MaDMPController {
 
     /**
      *
-     * Get maDMP by minimal DMP
+     * Get maDMP
      * 
      * @param principal
      * @param identifier
@@ -110,7 +110,7 @@ public class MaDMPController {
             @RequestParam(required = false) @JsonFormat(pattern = ModelConstants.DATE_TIME_FORMAT_ISO_8601) String modified) {
 
         // Get current RDM Service
-        final DataService dataService = dataServiceService.findByAccessRights(principal.getName());
+        dataServiceService.findByAccessRights(principal.getName());
 
         try {
             // If modified is null...

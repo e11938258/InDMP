@@ -115,7 +115,7 @@ public class Project extends AbstractClassEntity {
     @Override
     public void build(EntityService entityService, String location) {
         // Set properties
-        final List<Entity> properties = entityService.findEntities(location, null);
+        final List<Entity> properties = entityService.findEntities(location, null, null, true);
 
         Entity p = Functions.findPropertyInList(getClassType(), "description", properties);
         setDescription(p != null ? p.getValue() : null);
@@ -132,7 +132,7 @@ public class Project extends AbstractClassEntity {
 
         // Nested classes
         // Funding
-        for (Entity property : entityService.findAllEntities(location, "funding:identifier")) {
+        for (Entity property : entityService.findAllEntities(location, "funding:identifier", true)) {
             final Funding i = new Funding();
             i.build(entityService, location + "/" + property.getValue());
             funding.add(i);

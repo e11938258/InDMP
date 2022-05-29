@@ -177,7 +177,7 @@ public class Host extends AbstractClassEntity {
     @Override
     public void build(EntityService entityService, String location) {
         // Set properties
-        final List<Entity> properties = entityService.findEntities(location, null);
+        final List<Entity> properties = entityService.findEntities(location, null, null, true);
 
         Entity p = Functions.findPropertyInList(getClassType(), "availability", properties);
         setAvailability(p != null ? p.getValue() : null);

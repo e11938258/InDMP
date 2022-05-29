@@ -294,7 +294,7 @@ public class DMP extends AbstractClassEntity {
     @Override
     public void build(EntityService entityService, String location) {
         // Set properties
-        final List<Entity> properties = entityService.findEntities(location, null);
+        final List<Entity> properties = entityService.findEntities(location, null, null, true);
 
         Entity p = Functions.findPropertyInList(getClassType(), "created", properties);
         setCreated(p != null ? LocalDateTime.parse(p.getValue()) : null);
@@ -330,34 +330,34 @@ public class DMP extends AbstractClassEntity {
 
         // Nested classes
         // Contact
-        for (Entity property : entityService.findAllEntities(location, "contact:identifier")) {
+        for (Entity property : entityService.findAllEntities(location, "contact:identifier", true)) {
             contact = new Contact();
             contact.build(entityService, location + "/" + property.getValue());
         }
 
         // Contributor
-        for (Entity property : entityService.findAllEntities(location, "contributor:identifier")) {
+        for (Entity property : entityService.findAllEntities(location, "contributor:identifier", true)) {
             final Contributor i = new Contributor();
             i.build(entityService, location + "/" + property.getValue());
             contributor.add(i);
         }
 
         // Cost
-        for (Entity property : entityService.findAllEntities(location, "cost:title")) {
+        for (Entity property : entityService.findAllEntities(location, "cost:title", true)) {
             final Cost i = new Cost();
             i.build(entityService, location + "/" + property.getValue());
             cost.add(i);
         }
 
         // Project
-        for (Entity property : entityService.findAllEntities(location, "project:title")) {
+        for (Entity property : entityService.findAllEntities(location, "project:title", true)) {
             final Project i = new Project();
             i.build(entityService, location + "/" + property.getValue());
             project.add(i);
         }
 
         // Dataset
-        for (Entity property : entityService.findAllEntities(location, "dataset:identifier")) {
+        for (Entity property : entityService.findAllEntities(location, "dataset:identifier", true)) {
             final Dataset i = new Dataset();
             i.build(entityService, location + "/" + property.getValue());
             dataset.add(i);

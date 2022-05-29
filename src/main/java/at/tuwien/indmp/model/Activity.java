@@ -2,7 +2,6 @@ package at.tuwien.indmp.model;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
-import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.FetchType;
@@ -57,8 +56,8 @@ public class Activity implements Serializable {
     public Activity() {
     }
 
-    public Activity(Date startedAtTime) {
-        this.startedAtTime = new Timestamp(startedAtTime.getTime());
+    public Activity(Timestamp startedAtTime) {
+        this.startedAtTime = startedAtTime;
     }
 
     @JsonIgnore

@@ -57,12 +57,6 @@ public class DataService implements Serializable {
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private URI endpointURL; // https://www.w3.org/TR/vocab-dcat-3/#Property:data_service_endpoint_url
 
-    @Column(name = "endpoint_description")
-    @Size(min = ModelConstants.DATA_SERVICE_ENDPOINT_DESCRIPTION_MIN, max = ModelConstants.DATA_SERVICE_ENDPOINT_DESCRIPTION_MAX)
-    @Pattern(regexp = ModelConstants.DATA_SERVICE_ENDPOINT_DESCRIPTION_REGEX)
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private String endpointDescription; // https://www.w3.org/TR/vocab-dcat-3/#Property:data_service_endpoint_description
-
     @ElementCollection
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private final List<String> rights = new ArrayList<>(); // https://www.w3.org/TR/vocab-dcat-3/#Property:resource_rights
@@ -106,15 +100,6 @@ public class DataService implements Serializable {
 
     public void setEndpointURL(URI endpointURL) {
         this.endpointURL = endpointURL;
-    }
-
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    public String getEndpointDescription() {
-        return this.endpointDescription;
-    }
-
-    public void setEndpointDescription(String endpointDescription) {
-        this.endpointDescription = endpointDescription;
     }
 
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)

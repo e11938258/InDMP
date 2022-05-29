@@ -86,7 +86,7 @@ public class Cost extends AbstractClassEntity {
     @Override
     public void build(EntityService entityService, String location) {
         // Set properties
-        final List<Entity> properties = entityService.findEntities(location, null);
+        final List<Entity> properties = entityService.findEntities(location, null, null, true);
 
         Entity p = Functions.findPropertyInList(getClassType(), "currency_code", properties);
         setCurrency_code(p != null ? p.getValue() : null);

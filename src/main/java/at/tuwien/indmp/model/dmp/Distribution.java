@@ -182,7 +182,7 @@ public class Distribution extends AbstractClassEntity {
     @Override
     public void build(EntityService entityService, String location) {
         // Set properties
-        final List<Entity> properties = entityService.findEntities(location, null);
+        final List<Entity> properties = entityService.findEntities(location, null, null, true);
 
         Entity p = Functions.findPropertyInList(getClassType(), "data_access", properties);
         setData_access(p != null ? p.getValue() : null);
@@ -213,14 +213,14 @@ public class Distribution extends AbstractClassEntity {
 
         // Nested classes
         // Host
-        for (Entity property : entityService.findAllEntities(location, "host:url")) {
+        for (Entity property : entityService.findAllEntities(location, "host:url", true)) {
             host = new Host();
             host.build(entityService, location + "/" + property.getValue());
             setHost(host);
         }
 
         // License
-        for (Entity property : entityService.findAllEntities(location, "license:license_ref")) {
+        for (Entity property : entityService.findAllEntities(location, "license:license_ref", true)) {
             final License i = new License();
             i.build(entityService, location + "/" + property.getValue());
             license.add(i);

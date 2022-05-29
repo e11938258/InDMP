@@ -251,7 +251,7 @@ public class Dataset extends AbstractClassEntity {
     @Override
     public void build(EntityService entityService, String location) {
         // Set properties
-        final List<Entity> properties = entityService.findEntities(location, null);
+        final List<Entity> properties = entityService.findEntities(location, null, null, true);
 
         Entity p = Functions.findPropertyInList(getClassType(), "data_quality_assurance", properties);
         setData_quality_assurance(p != null
@@ -294,28 +294,28 @@ public class Dataset extends AbstractClassEntity {
 
         // Nested classes
         // Distribution
-        for (Entity property : entityService.findAllEntities(location, "distribution:access_url")) {
+        for (Entity property : entityService.findAllEntities(location, "distribution:access_url", true)) {
             final Distribution i = new Distribution();
             i.build(entityService, location + "/" + property.getValue());
             distribution.add(i);
         }
 
         // Metadata
-        for (Entity property : entityService.findAllEntities(location, "metadata:metadata_standard_id")) {
+        for (Entity property : entityService.findAllEntities(location, "metadata:metadata_standard_id", true)) {
             final Metadata i = new Metadata();
             i.build(entityService, location + "/" + property.getValue());
             metadata.add(i);
         }
 
         // Security and privacy
-        for (Entity property : entityService.findAllEntities(location, "securityandprivacy:title")) {
+        for (Entity property : entityService.findAllEntities(location, "securityandprivacy:title", true)) {
             final SecurityAndPrivacy i = new SecurityAndPrivacy();
             i.build(entityService, location + "/" + property.getValue());
             security_and_privacy.add(i);
         }
 
         // Technical resource
-        for (Entity property : entityService.findAllEntities(location, "techicalresource:name")) {
+        for (Entity property : entityService.findAllEntities(location, "techicalresource:name", true)) {
             final TechnicalResource i = new TechnicalResource();
             i.build(entityService, location + "/" + property.getValue());
             technical_resource.add(i);

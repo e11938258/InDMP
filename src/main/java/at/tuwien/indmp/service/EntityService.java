@@ -1,5 +1,6 @@
 package at.tuwien.indmp.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import at.tuwien.indmp.model.DataService;
@@ -11,18 +12,16 @@ public interface EntityService {
 
     public Entity findEntity(String atLocation, String specializationOf, String value);
 
-    public List<Entity> findEntities(String atLocation, String specializationOf);
+    public List<Entity> findEntities(String atLocation, String specializationOf, String value, boolean onlyActive);
 
-    public List<Entity> findAllEntities(String atLocation, String specializationOf);
+    public List<Entity> findAllEntities(String atLocation, String specializationOf, boolean onlyActive);
 
-    public void updateOrCreateEntities(List<Entity> entities, DataService dataService);
+    public void deactivateAndCreateEntities(List<Entity> entities, DataService dataService);
 
-    public void update(Entity entity, Entity currentEntity, DataService dataService);
+    public void deactivateAndCreateEntity(Entity entity, DataService dataService);
 
     public void changeNestedEntities(String currentLocation, String newLocation);
 
-    public void removeAllNestedEntities(String currentLocation);
-
-    public List<Entity> loadIdentifierHistory(String dmpIdentifier, String specializationOf);
+    public void removeAllNestedEntities(String currentLocation, LocalDateTime endTime);
 
 }

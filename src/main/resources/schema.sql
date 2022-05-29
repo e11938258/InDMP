@@ -1,5 +1,4 @@
 --Delete old tables if exists
-DROP TABLE IF EXISTS entity_history;
 DROP TABLE IF EXISTS entity;
 DROP TABLE IF EXISTS activity;
 DROP TABLE IF EXISTS data_service_rights;
@@ -11,7 +10,6 @@ create table data_service (
     title varchar(64) NOT NULL,
     access_rights varchar(64) NOT NULL UNIQUE,
     endpoint_url varchar(255) NOT NULL,
-    endpoint_description varchar(512),
     PRIMARY KEY (identifier)
 );
 
@@ -43,18 +41,8 @@ create table entity (
     value varchar(4096) NOT NULL,
     was_generated_by bigserial,
     PRIMARY KEY (id),
-    UNIQUE (at_location, specialization_of),
     CONSTRAINT fk_activity FOREIGN KEY (was_generated_by)
         REFERENCES activity (id) MATCH SIMPLE
         ON UPDATE NO ACTION
         ON DELETE NO ACTION
 );
-
---Activate temporal tables
-ALTER TABLE entity ADD COLUMN generated_at_time tstzrange NOT NULL;
-
-CREATE TABLE entity_history (LIKE entity);
-
-CREATE TRIGGER versioning_trigger
-BEFORE INSERT OR UPDATE OR DELETE ON entity
-FOR EACH ROW EXECUTE PROCEDURE versioning('generated_at_time', 'entity_history', true);

@@ -89,7 +89,7 @@ public class Funding extends AbstractClassEntity {
     @Override
     public void build(EntityService entityService, String location) {
         // Set properties
-        final List<Entity> properties = entityService.findEntities(location, null);
+        final List<Entity> properties = entityService.findEntities(location, null, null, true);
 
         Entity p = Functions.findPropertyInList(getClassType(), "funding_status", properties);
         setFunding_status(p != null ? p.getValue() : null);
@@ -100,9 +100,9 @@ public class Funding extends AbstractClassEntity {
         funder_id = new Funder_id(identifier.getValue(), type.getValue());
 
         // Set grant id
-        for (Entity property : entityService.findAllEntities(location, "grant_id:identifier")) {
+        for (Entity property : entityService.findAllEntities(location, "grant_id:identifier", true)) {
             // Set properties
-            final List<Entity> grantProperties = entityService.findEntities(location + "/" + property.getValue(), null);
+            final List<Entity> grantProperties = entityService.findEntities(location + "/" + property.getValue(), null, null, true);
 
             identifier = Functions.findPropertyInList("grant_id", "identifier", grantProperties);
             type = Functions.findPropertyInList("grant_id", "type", grantProperties);

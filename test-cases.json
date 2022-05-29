@@ -28,7 +28,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": " {\r\n     \"title\": \"dmp_app_1\",\r\n     \"accessRights\": \"<keycloak client id>\",\r\n     \"endpointURL\": \"<webhook.site endpoint>\",\r\n     \"rights\": [\r\n         \"contact\",\r\n         \"contributor\",\r\n         \"cost\",\r\n         \"dataset\",\r\n         \"distribution\",\r\n         \"dmp\",\r\n         \"funding\",\r\n         \"grant_id\",\r\n         \"host\",\r\n         \"license\",\r\n         \"metadata\",\r\n         \"project\",\r\n         \"securityandprivacy\",\r\n         \"technicalresource\"\r\n     ]\r\n }",
+							"raw": " {\r\n    \"title\": \"dmp_app_1\",\r\n    \"accessRights\": \"<keycloak client id>\",\r\n    \"endpointURL\": \"<webhook.site endpoint>\",\r\n    \"rights\": [\r\n         \"contact\",\r\n         \"contributor\",\r\n         \"cost\",\r\n         \"dataset\",\r\n         \"distribution\",\r\n         \"dmp\",\r\n         \"funding\",\r\n         \"grant_id\",\r\n         \"host\",\r\n         \"license\",\r\n         \"metadata\",\r\n         \"project\",\r\n         \"securityandprivacy\",\r\n         \"technicalresource\"\r\n     ]\r\n }",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -67,7 +67,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": " {\r\n     \"title\": \"repository_app_1\",\r\n     \"accessRights\": \"<keycloak client id>\",\r\n     \"endpointURL\": \"<webhook.site endpoint>\",\r\n     \"rights\": [\r\n         \"contact\",\r\n         \"contributor\",\r\n         \"dataset\",\r\n         \"distribution\",\r\n         \"host\",\r\n         \"license\",\r\n         \"metadata\",\r\n         \"securityandprivacy\"\r\n     ]\r\n }",
+							"raw": " {\r\n    \"title\": \"repository_app_1\",\r\n    \"accessRights\": \"<keycloak client id>\",\r\n    \"endpointURL\": \"<webhook.site endpoint>\",\r\n    \"rights\": [\r\n         \"contact\",\r\n         \"contributor\",\r\n         \"dataset\",\r\n         \"distribution\",\r\n         \"host\",\r\n         \"license\",\r\n         \"metadata\",\r\n         \"securityandprivacy\"\r\n     ]\r\n }",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -287,7 +287,7 @@
 					"response": []
 				},
 				{
-					"name": "Send long maDMP with correct ID",
+					"name": "Send long maDMP with same identifier",
 					"event": [
 						{
 							"listen": "test",
@@ -1419,6 +1419,11 @@
 							"type": "oauth2",
 							"oauth2": [
 								{
+									"key": "accessTokenUrl",
+									"value": "{{keycloak_endpoint}}",
+									"type": "string"
+								},
+								{
 									"key": "password",
 									"value": "repository_app_1",
 									"type": "string"
@@ -1431,11 +1436,6 @@
 								{
 									"key": "clientId",
 									"value": "{{app_client_id}}",
-									"type": "string"
-								},
-								{
-									"key": "accessTokenUrl",
-									"value": "http://192.168.1.7:8090/auth/realms/services/protocol/openid-connect/token",
 									"type": "string"
 								},
 								{
@@ -2379,6 +2379,11 @@
 		"type": "oauth2",
 		"oauth2": [
 			{
+				"key": "accessTokenUrl",
+				"value": "{{keycloak_endpoint}}",
+				"type": "string"
+			},
+			{
 				"key": "tokenName",
 				"value": "dmp-app-token",
 				"type": "string"
@@ -2396,11 +2401,6 @@
 			{
 				"key": "clientId",
 				"value": "{{app_client_id}}",
-				"type": "string"
-			},
-			{
-				"key": "accessTokenUrl",
-				"value": "http://192.168.1.7:8090/auth/realms/services/protocol/openid-connect/token",
 				"type": "string"
 			},
 			{
@@ -2463,12 +2463,17 @@
 	"variable": [
 		{
 			"key": "app_host",
-			"value": "",
+			"value": "http://127.0.0.1:8080",
 			"type": "default"
 		},
 		{
 			"key": "app_client_id",
-			"value": "",
+			"value": "indmp-service",
+			"type": "default"
+		},
+		{
+			"key": "keycloak_endpoint",
+			"value": "http://127.0.0.1:8090/auth/realms/services/protocol/openid-connect/token",
 			"type": "default"
 		}
 	]

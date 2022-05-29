@@ -9,7 +9,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
@@ -23,9 +22,7 @@ import at.tuwien.indmp.util.ModelConstants;
  * 
  */
 @javax.persistence.Entity
-@Table(name = "entity", uniqueConstraints = {
-        @UniqueConstraint(columnNames = { "at_location", "specialization_of" })
-})
+@Table(name = "entity")
 public class Entity implements Serializable {
 
     @Id
