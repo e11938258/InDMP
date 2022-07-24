@@ -63,6 +63,7 @@ public class ModelConstants {
     public static final List<String> IDENTIFIER_CHANGEABLE_CLASSES = Arrays.asList(new String[] {
             "dmp:identifier",
             "contributor:identifier",
+            "contact:identifier",
             "cost:title",
             "project:title",
             "funding:identifier",

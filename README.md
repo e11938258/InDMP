@@ -40,7 +40,38 @@ The InDMP application has configuration file in /src/main/resources/application.
 | 127.0.0.1:8090 | Keycloak |
 | 127.0.0.1:5432 | PostgreSQL database |
 
-#### PostgreSQL
+### Keycloak
+
+Every request has to be authorized before communicating with the application using the OAuth2 protocol. This is done using the [Keycloak](https://www.keycloak.org/) application, which needs to be set up properly after installation.
+
+NOTE: The default port of the application is 8080, it is necessary to change it to port 8090 before starting the application, for example using the input argument:
+
+```
+-Djboss.socket.binding.port-offset=10
+```
+
+You need to perform the following actions:
+
+1. Login to the Keycloak app, URL: http://127.0.0.1:8090/auth/admin/master/console/
+2. Create a new realm with name "Services"
+3. Select the realm "Services"
+4. Create a new client scope with name "update"
+5. Create a new client: "indmp_service" with settings:
+
+| Property | Value |
+| - | - |
+| Client protocol | openid-connect |
+| Valid Redirect URIs | * |
+| Access Token Lifespan | 1 day |
+| Assigned Default Client Scopes | update |
+
+5. Create two new users: "dmp_app_1" and "repository_app_1" with password same as username.
+
+That's it! 
+
+When creating users, each of them will get a client id, which the InDMP application will use to recognize from which service the request was sent.
+
+### PostgreSQL
 
 The InDMP application uses the PostgreSQL 10 database system. After installation and logging into the system, you have to create a new user with database and grant neccessary provileges. Therefore, you need to perform the following actions:
 
@@ -74,37 +105,6 @@ That's it! By default, InDMP uses the following configuration:
 
 NOTE: The InDMP application deletes the content of the tables each time it starts by default. If you want to change it, you need to modify the parameter initialization-mode in the application configuration from always to never.
 
-#### Keycloak
-
-Every request has to be authorized before communicating with the application using the OAuth2 protocol. This is done using the [Keycloak](https://www.keycloak.org/) application, which needs to be set up properly after installation.
-
-NOTE: The default port of the application is 8080, it is necessary to change it to port 8090 before starting the application, for example using the input argument:
-
-```
--Djboss.socket.binding.port-offset=10
-```
-
-You need to perform the following actions:
-
-1. Login to the Keycloak app, URL: http://127.0.0.1:8090/auth/admin/master/console/
-2. Create a new realm with name "Services"
-3. Select the realm "Services"
-4. Create a new client scope with name "update"
-5. Create a new client: "indmp_service" with settings:
-
-| Property | Value |
-| - | - |
-| Client protocol | openid-connect |
-| Valid Redirect URIs | * |
-| Access Token Lifespan | 1 day |
-| Assigned Default Client Scopes | update |
-
-5. Create two new users: "dmp_app_1" and "repository_app_1" with password same as username.
-
-That's it! 
-
-When creating users, each of them will get a client id, which the InDMP application will use to recognize from which service the request was sent.
-
 ## How to run
 
 If PostgreSQL and Keycloak are running and are properly configured, you firstly build the InDMP application using the following command in terminal:
@@ -131,7 +131,7 @@ To verify the functionality of InDMP, a set of functional and non-functional tes
 
 Each new run of the application you must send two requests in the Init folder that register services - dmp tool and data repository. However, you need firstly to change the values of accessRights, to the correct client id from the application Keycloak, and endpointURL which should point to the endpoint where InDMP will send the new maDMP information after each modification. For testing purposes, this can be done using the [Webhook.site](https://webhook.site/) application, which will generate an API endpoint to receive requests. You just need one for both services.
 
-#### Modification scope of services
+### Modification scope of services
 
 In order to understand all the tests, it is necessary to mention the modification scope of each testing service, you can see them in the following table:
 
@@ -208,7 +208,7 @@ In the following two tables you can see the individual functional and non-functi
 | - | - | - | - | - |
 | NFTC1 | Testing creation time | Send a new minimal maDMP | 200 | ~428ms |
 |  |  | Send a new long maDMP | 200 | ~564ms |
-| NFTC2 | Update time testing | Send a new minimal maDMP | 200 | ~245ms |
+| NFTC2 | Testing update time | Send a new minimal maDMP | 200 | ~245ms |
 |  |  | Update maDMP with short body | 200 | ~575ms |
 |  |  | Update maDMP with long body | 200 | ~707ms |
 |  |  | Update maDMP with short body | 200 | ~569ms |
