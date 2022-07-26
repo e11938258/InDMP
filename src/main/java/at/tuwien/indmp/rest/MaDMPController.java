@@ -175,9 +175,9 @@ public class MaDMPController {
             throw new BadRequestException("Incomplete entity class.");
         }
 
-        // Checking location
-        if (!entity.getAtLocation().startsWith(dmp.getLocation(""))) {
-            throw new ForbiddenException("Cannot find location in dmp: " + entity.getAtLocation());
+        // Checking validation of properties 
+        if (!entity.getAtLocation().startsWith(dmp.getLocation("")) || entity.getSpecializationOf().contains("dmp:identifier")) {
+            throw new ForbiddenException("Invalid property: cannot find location in dmp: " + entity.getAtLocation());
         }
 
         // Change identifier
@@ -220,9 +220,9 @@ public class MaDMPController {
             throw new BadRequestException("Incomplete entity class.");
         }
 
-        // Checking location
+        // Checking validation of properties
         if (!entity.getAtLocation().startsWith(currentDMP.getLocation(""))) {
-            throw new ForbiddenException("Cannot find location in dmp: " + entity.getAtLocation());
+            throw new ForbiddenException("Invalid property: cannot find location in dmp: " + entity.getAtLocation());
         }
 
         // Delete instance
