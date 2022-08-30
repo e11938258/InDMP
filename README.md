@@ -205,7 +205,7 @@ In the following two tables you can see the individual functional and non-functi
 |  |  | Get current version of maDMP | 200 | n. 6 |
 
 | Test case | Description | Steps | Expected code |
-| - | - | - | - | - |
+| - | - | - | - |
 | NFTC1 | Testing creation time | Send a new minimal maDMP | 200 |
 |  |  | Send a new small maDMP | 200 |
 |  |  | Send a new medium maDMP | 200 |
