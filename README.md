@@ -204,14 +204,20 @@ In the following two tables you can see the individual functional and non-functi
 |  |  | Delete project information | 200 |  |
 |  |  | Get current version of maDMP | 200 | n. 6 |
 
-| Test case | Description | Steps | Expected code | Expected time |
+| Test case | Description | Steps | Expected code |
 | - | - | - | - | - |
-| NFTC1 | Testing creation time | Send a new minimal maDMP | 200 | ~428ms |
-|  |  | Send a new long maDMP | 200 | ~564ms |
-| NFTC2 | Testing update time | Send a new minimal maDMP | 200 | ~245ms |
-|  |  | Update maDMP with short body | 200 | ~575ms |
-|  |  | Update maDMP with long body | 200 | ~707ms |
-|  |  | Update maDMP with short body | 200 | ~569ms |
+| NFTC1 | Testing creation time | Send a new minimal maDMP | 200 |
+|  |  | Send a new small maDMP | 200 |
+|  |  | Send a new medium maDMP | 200 |
+|  |  | Send a new large maDMP | 200 |
+| NFTC2 | Testing update time | Send a new minimal maDMP | 200 |
+|  |  | Update maDMP with minimal body content | 200 |
+|  |  | Send a new minimal maDMP | 200 |
+|  |  | Update maDMP with small body content | 200 |
+|  |  | Send a new minimal maDMP | 200 |
+|  |  | Update maDMP with medium body content | 200 |
+|  |  | Send a new minimal maDMP | 200 |
+|  |  | Update maDMP with large body content | 200 |
 
 #### Expected bodies
 
