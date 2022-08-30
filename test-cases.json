@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "89eec438-07f4-4cab-b39a-1609a8d50d0d",
+		"_postman_id": "4789af34-456e-456f-b3f2-7adce2c9c828",
 		"name": "InDMP Test Cases",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
 	},
@@ -2134,7 +2134,7 @@
 			"name": "NFTC1",
 			"item": [
 				{
-					"name": "Send a new minimal maDMP",
+					"name": "1. Send a new minimal maDMP",
 					"event": [
 						{
 							"listen": "test",
@@ -2153,7 +2153,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n\t\"dmp\": {\r\n\t\t\"created\": \"2022-04-25T08:46:20.000\",\r\n\t\t\"dmp_id\": {\r\n\t\t\t\"identifier\": \"https://doi.org/10.0000/14.4.6532\"\r\n\t\t},\r\n\t\t\"modified\": \"2022-04-25T08:46:20.000\"\r\n\t}\r\n}",
+							"raw": "{\r\n\t\"dmp\": {\r\n\t\t\"created\": \"2022-04-25T08:46:20.000\",\r\n\t\t\"dmp_id\": {\r\n\t\t\t\"identifier\": \"https://doi.org/10.0000/AB1\"\r\n\t\t},\r\n\t\t\"modified\": \"2022-04-25T08:46:20.000\"\r\n\t}\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2173,7 +2173,7 @@
 					"response": []
 				},
 				{
-					"name": "Send a new long maDMP",
+					"name": "2. Send a new small maDMP",
 					"event": [
 						{
 							"listen": "test",
@@ -2192,7 +2192,85 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n\t\"dmp\": {\r\n\t\t\"created\": \"2022-04-25T08:47:12.000\",\r\n\t\t\"dmp_id\": {\r\n\t\t\t\"identifier\": \"https://doi.org/10.0000/91.2.4321\",\r\n            \"type\": \"doi\"\r\n\t\t},\r\n\t\t\"modified\": \"2022-04-25T08:47:12.000\",\r\n        \"title\": \"DMP for our new project\",\r\n\t\t\"description\": \"This DMP is for our new project.\",\r\n\t\t\"language\": \"eng\",\r\n\t\t\"contact\": {\r\n\t\t\t\"name\": \"John Smith\",\r\n\t\t\t\"mbox\": \"john.smith@tuwien.ac.at\",\r\n\t\t\t\"contact_id\": {\r\n\t\t\t\t\"identifier\": \"https://www.tiss.tuwien.ac.at/person/2351952424\",\r\n\t\t\t\t\"type\": \"other\"\r\n\t\t\t}\r\n\t\t},\r\n\t\t\"contributor\": [\r\n\t\t\t{\r\n\t\t\t\t\"name\": \"Leo Messi\",\r\n\t\t\t\t\"mbox\": \"leo.messi@barcelona.com\",\r\n\t\t\t\t\"contributor_id\": {\r\n\t\t\t\t\t\"identifier\": \"https://orcid.org/0000-0002-0000-0000\",\r\n\t\t\t\t\t\"type\": \"orcid\"\r\n\t\t\t\t},\r\n\t\t\t\t\"role\": [\r\n\t\t\t\t\t\"ProjectLeader\"\r\n\t\t\t\t]\r\n\t\t\t},\r\n\t\t\t{\r\n\t\t\t\t\"name\": \"Robert Lewandowski\",\r\n\t\t\t\t\"mbox\": \"robert@bayern.de\",\r\n\t\t\t\t\"contributor_id\": {\r\n\t\t\t\t\t\"identifier\": \"https://orcid.org/0000-0002-4929-7875\",\r\n\t\t\t\t\t\"type\": \"orcid\"\r\n\t\t\t\t},\r\n\t\t\t\t\"role\": [\r\n\t\t\t\t\t\"ContactPerson\",\r\n\t\t\t\t\t\"DataManager\"\r\n\t\t\t\t]\r\n\t\t\t},\r\n\t\t\t{\r\n\t\t\t\t\"name\": \"Cristiano Ronaldo\",\r\n\t\t\t\t\"mbox\": \"CR@juve.it\",\r\n\t\t\t\t\"contributor_id\": {\r\n\t\t\t\t\t\"identifier\": \"https://www.tiss.tuwien.ac.at/person/305962565\",\r\n\t\t\t\t\t\"type\": \"other\"\r\n\t\t\t\t},\r\n\t\t\t\t\"role\": [\r\n\t\t\t\t\t\"DataCurator\"\r\n\t\t\t\t]\r\n\t\t\t}\r\n\t\t],\r\n\t\t\"ethical_issues_exist\": \"yes\",\r\n\t\t\"ethical_issues_report\": \"https://docs.google.com/document/d/xyz\",\r\n\t\t\"ethical_issues_description\": \"Ethical issues are handled by ...\",\r\n\t\t\"project\": [\r\n\t\t\t{\r\n\t\t\t\t\"title\": \"openEO - a common, open source interface between Earth Observation data infrastructures and front-end applications\",\r\n\t\t\t\t\"project_id\": \"https://tiss.tuwien.ac.at/api/pdb/rest/project/v3/1428966\",\r\n\t\t\t\t\"project_id_type\": \"HTTP-PDB\",\r\n\t\t\t\t\"start\": \"2017-10-01\",\r\n\t\t\t\t\"end\": \"2020-09-30\",\r\n\t\t\t\t\"description\": \"<p>The capabilities of the latest generation of Earth observation satellites to collect large volumes of diverse and thematically rich data are unprecedented. For exploiting these valuable data sets, many research and industry groups have started to shift their processing into the cloud. Although the functionalities of existing cloud computing solutions largely overlap, there are all custom-made and tailored to the specific data infrastructures. This lack of standards not only makes it hard for end users and application developers to develop generic front-ends, but also to compare the cloud offerings by running the same analysis against different cloud back-ends. To solve this, a common interface that allows end- and intermediate users to query cloud-based back offices and carry out computations on them in a simple way is needed. The openEO project will design such an interface, implement it as an open source community project, bind it to generic analytics front-ends and evaluate it against a set of relevant Earth observation cloud back offices. The openEO interface will consist of three layers of Application Programming Interfaces, namely a core API for finding, accessing, and processing large datasets, a driver APIs to connect to back offices operated by European and worldwide industry, and client APIs for analysing these datasets using R, Python and JavaScript. To demonstrate the capability of the openEO interface, four use cases based chiefly on Sentinel-1 and Sentinel-2 time series will be implemented. openEO will simplify the use of cloud-based processing engines, allow switching between cloud-based back office providers and comparing them, and enable reproducible, open Earth observation science. Thereby, openEO reduces the entry barriers for the adaptation of cloud computing technologies by a broad user community and paves the way for the federation of infrastructure capabilities.</p><p> </p>\",\r\n\t\t\t\t\"funding\": [\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\t\"funder_name\": \"European Commission - Framework Programme\",\r\n\t\t\t\t\t\t\"funder_id\": {\r\n\t\t\t\t\t\t\t\"identifier\": \"\",\r\n\t\t\t\t\t\t\t\"type\": \"other\"\r\n\t\t\t\t\t\t},\r\n\t\t\t\t\t\t\"grant_id\": {\r\n\t\t\t\t\t\t\t\"identifier\": \"EO-2-2017\",\r\n\t\t\t\t\t\t\t\"type\": \"other\"\r\n\t\t\t\t\t\t}\r\n\t\t\t\t\t}\r\n\t\t\t\t]\r\n\t\t\t}\r\n\t\t],\r\n\t\t\"dataset\": [\r\n\t\t\t{\r\n\t\t\t\t\"dataset_id\": {\r\n\t\t\t\t\t\"identifier\": \"https://hdl.handle.net/0000/00.00000\",\r\n\t\t\t\t\t\"type\": \"handle\"\r\n\t\t\t\t},\r\n\t\t\t\t\"title\": \"Client application\",\r\n\t\t\t\t\"personal_data\": \"no\",\r\n\t\t\t\t\"sensitive_data\": \"no\",\r\n\t\t\t\t\"type\": \"Source code\",\r\n\t\t\t\t\"description\": \"Some test scripts\",\r\n\t\t\t\t\"distribution\": [\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\t\"title\": \"Planned distribution\",\r\n\t\t\t\t\t\t\"format\": [],\r\n\t\t\t\t\t\t\"byte_size\": 1000000000,\r\n\t\t\t\t\t\t\"data_access\": \"open\",\r\n                        \"access_url\": \"https://hdl.handle.net/0000\",\r\n\t\t\t\t\t\t\"license\": [\r\n\t\t\t\t\t\t\t{\r\n\t\t\t\t\t\t\t\t\"license_name\": \"The MIT License (MIT)\",\r\n\t\t\t\t\t\t\t\t\"license_ref\": \"http://opensource.org/licenses/mit-license.php\",\r\n\t\t\t\t\t\t\t\t\"start_date\": \"2020-09-30\"\r\n\t\t\t\t\t\t\t}\r\n\t\t\t\t\t\t],\r\n\t\t\t\t\t\t\"host\": {\r\n\t\t\t\t\t\t\t\"title\": \"GitHub\",\r\n\t\t\t\t\t\t\t\"url\": \"https://www.re3data.org/repository/r3d100010375\",\r\n\t\t\t\t\t\t\t\"host_id_type\": \"HTTP-RE3DATA\",\r\n\t\t\t\t\t\t\t\"description\": \"GitHub is the best place to share code with friends, co-workers, classmates, and complete strangers. Over three million people use GitHub to build amazing things together. With the collaborative features of GitHub.com, our desktop and mobile apps, and GitHub Enterprise, it has never been easier for individuals and teams to write better code, faster. Originally founded by Tom Preston-Werner, Chris Wanstrath, and PJ Hyett to simplify sharing code, GitHub has grown into the largest code host in the world.\",\r\n\t\t\t\t\t\t\t\"supports_versioning\": \"yes\",\r\n\t\t\t\t\t\t\t\"storage_type\": \"repository\",\r\n\t\t\t\t\t\t\t\"pid_system\": [\r\n\t\t\t\t\t\t\t\t\"other\"\r\n\t\t\t\t\t\t\t]\r\n\t\t\t\t\t\t},\r\n\t\t\t\t\t\t\"available_until\": \"2030-09-30\"\r\n\t\t\t\t\t}\r\n\t\t\t\t]\r\n\t\t\t},\r\n\t\t\t{\r\n\t\t\t\t\"dataset_id\": {\r\n\t\t\t\t\t\"identifier\": \"https://hdl.handle.net/0000/00.00001\",\r\n\t\t\t\t\t\"type\": \"handle\"\r\n\t\t\t\t},\r\n\t\t\t\t\"title\": \"Image collection\",\r\n\t\t\t\t\"personal_data\": \"no\",\r\n\t\t\t\t\"sensitive_data\": \"yes\",\r\n\t\t\t\t\"type\": \"Images\",\r\n\t\t\t\t\"description\": \"Images of test object X\",\r\n\t\t\t\t\"distribution\": [\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\t\"title\": \"Planned distribution\",\r\n\t\t\t\t\t\t\"format\": [],\r\n                        \"access_url\": \"https://hdl.handle.net/0001\",\r\n\t\t\t\t\t\t\"byte_size\": 50000000000,\r\n\t\t\t\t\t\t\"data_access\": \"closed\"\r\n\t\t\t\t\t}\r\n\t\t\t\t]\r\n\t\t\t},\r\n\t\t\t{\r\n\t\t\t\t\"dataset_id\": {\r\n\t\t\t\t\t\"identifier\": \"https://hdl.handle.net/0000/00.00002\",\r\n\t\t\t\t\t\"type\": \"handle\"\r\n\t\t\t\t},\r\n\t\t\t\t\"title\": \"Interviews\",\r\n\t\t\t\t\"personal_data\": \"yes\",\r\n\t\t\t\t\"sensitive_data\": \"no\",\r\n\t\t\t\t\"type\": \"other\",\r\n\t\t\t\t\"description\": \"Audio recordings with test persons\",\r\n\t\t\t\t\"distribution\": [\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\t\"title\": \"Planned distribution\",\r\n\t\t\t\t\t\t\"format\": [\r\n\t\t\t\t\t\t\t\"audio/mpeg\"\r\n\t\t\t\t\t\t],\r\n\t\t\t\t\t\t\"byte_size\": 439705600,\r\n\t\t\t\t\t\t\"data_access\": \"open\",\r\n                        \"access_url\": \"https://hdl.handle.net/0002\",\r\n\t\t\t\t\t\t\"license\": [\r\n\t\t\t\t\t\t\t{\r\n\t\t\t\t\t\t\t\t\"license_name\": \"Creative Commons Attribution (CC-BY)\",\r\n\t\t\t\t\t\t\t\t\"license_ref\": \"http://creativecommons.org/licenses/by/4.0/\",\r\n\t\t\t\t\t\t\t\t\"start_date\": \"2021-01-01\"\r\n\t\t\t\t\t\t\t}\r\n\t\t\t\t\t\t],\r\n\t\t\t\t\t\t\"host\": {\r\n\t\t\t\t\t\t\t\"title\": \"Zenodo\",\r\n\t\t\t\t\t\t\t\"url\": \"https://www.re3data.org/repository/r3d100010468\",\r\n\t\t\t\t\t\t\t\"host_id_type\": \"HTTP-RE3DATA\",\r\n\t\t\t\t\t\t\t\"description\": \"ZENODO builds and operates a simple and innovative service that enables researchers, scientists, EU projects and institutions to share and showcase multidisciplinary research results (data and publications) that are not part of the existing institutional or subject-based repositories of the research communities.\\nZENODO enables researchers, scientists, EU projects and institutions to:\\neasily share the long tail of small research results in a wide variety of formats including text, spreadsheets, audio, video, and images across all fields of science.\\ndisplay their research results and get credited by making the research results citable and integrate them into existing reporting lines to funding agencies like the European Commission.\\neasily access and reuse shared research results.\",\r\n\t\t\t\t\t\t\t\"supports_versioning\": \"unknown\",\r\n\t\t\t\t\t\t\t\"storage_type\": \"repository\",\r\n\t\t\t\t\t\t\t\"pid_system\": [\r\n\t\t\t\t\t\t\t\t\"doi\"\r\n\t\t\t\t\t\t\t]\r\n\t\t\t\t\t\t},\r\n\t\t\t\t\t\t\"available_until\": \"2031-08-01\"\r\n\t\t\t\t\t}\r\n\t\t\t\t]\r\n\t\t\t}\r\n\t\t]\r\n\t}\r\n}",
+							"raw": "{\r\n\t\"dmp\": {\r\n\t\t\"created\": \"2022-04-25T08:46:40.000\",\r\n\t\t\"dmp_id\": {\r\n\t\t\t\"identifier\": \"https://doi.org/10.0000/AB2\",\r\n            \"type\": \"doi\"\r\n\t\t},\r\n\t\t\"modified\": \"2022-04-25T08:46:40.000\",\r\n        \"title\": \"DMP for our new project\",\r\n\t\t\"description\": \"This DMP is for our new project.\",\r\n\t\t\"language\": \"eng\",\r\n\t\t\"contact\": {\r\n\t\t\t\"name\": \"John Smith\",\r\n\t\t\t\"mbox\": \"john.smith@tuwien.ac.at\",\r\n\t\t\t\"contact_id\": {\r\n\t\t\t\t\"identifier\": \"https://www.tiss.tuwien.ac.at/person/2351952424\",\r\n\t\t\t\t\"type\": \"other\"\r\n\t\t\t}\r\n\t\t},\r\n\t\t\"project\": [\r\n\t\t\t{\r\n\t\t\t\t\"title\": \"openEO - a common, open source interface between Earth Observation data infrastructures and front-end applications\",\r\n\t\t\t\t\"project_id\": \"https://tiss.tuwien.ac.at/api/pdb/rest/project/v3/1428966\",\r\n\t\t\t\t\"project_id_type\": \"HTTP-PDB\",\r\n\t\t\t\t\"start\": \"2017-10-01\",\r\n\t\t\t\t\"end\": \"2020-09-30\",\r\n\t\t\t\t\"funding\": [\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\t\"funder_name\": \"European Commission - Framework Programme\",\r\n\t\t\t\t\t\t\"funder_id\": {\r\n\t\t\t\t\t\t\t\"identifier\": \"\",\r\n\t\t\t\t\t\t\t\"type\": \"other\"\r\n\t\t\t\t\t\t},\r\n\t\t\t\t\t\t\"grant_id\": {\r\n\t\t\t\t\t\t\t\"identifier\": \"EO-2-2017\",\r\n\t\t\t\t\t\t\t\"type\": \"other\"\r\n\t\t\t\t\t\t}\r\n\t\t\t\t\t}\r\n\t\t\t\t]\r\n\t\t\t}\r\n\t\t]\r\n\t}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{app_host}}/madmp",
+							"host": [
+								"{{app_host}}"
+							],
+							"path": [
+								"madmp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "3. Send a new medium maDMP",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"dmp\": {\r\n\t\t\"created\": \"2022-04-25T08:47:01.000\",\r\n\t\t\"dmp_id\": {\r\n\t\t\t\"identifier\": \"https://doi.org/10.0000/AB3\",\r\n            \"type\": \"doi\"\r\n\t\t},\r\n\t\t\"modified\": \"2022-04-25T08:47:01.000\",\r\n        \"title\": \"DMP for our new project\",\r\n\t\t\"description\": \"This DMP is for our new project.\",\r\n\t\t\"language\": \"eng\",\r\n\t\t\"contact\": {\r\n\t\t\t\"name\": \"John Smith\",\r\n\t\t\t\"mbox\": \"john.smith@tuwien.ac.at\",\r\n\t\t\t\"contact_id\": {\r\n\t\t\t\t\"identifier\": \"https://www.tiss.tuwien.ac.at/person/2351952424\",\r\n\t\t\t\t\"type\": \"other\"\r\n\t\t\t}\r\n\t\t},\r\n\t\t\"contributor\": [\r\n\t\t\t{\r\n\t\t\t\t\"name\": \"Leo Messi\",\r\n\t\t\t\t\"mbox\": \"leo.messi@barcelona.com\",\r\n\t\t\t\t\"contributor_id\": {\r\n\t\t\t\t\t\"identifier\": \"https://orcid.org/0000-0002-0000-0000\",\r\n\t\t\t\t\t\"type\": \"orcid\"\r\n\t\t\t\t},\r\n\t\t\t\t\"role\": [\r\n\t\t\t\t\t\"ProjectLeader\"\r\n\t\t\t\t]\r\n\t\t\t},\r\n\t\t\t{\r\n\t\t\t\t\"name\": \"Robert Lewandowski\",\r\n\t\t\t\t\"mbox\": \"robert@bayern.de\",\r\n\t\t\t\t\"contributor_id\": {\r\n\t\t\t\t\t\"identifier\": \"https://orcid.org/0000-0002-4929-7875\",\r\n\t\t\t\t\t\"type\": \"orcid\"\r\n\t\t\t\t},\r\n\t\t\t\t\"role\": [\r\n\t\t\t\t\t\"ContactPerson\",\r\n\t\t\t\t\t\"DataManager\"\r\n\t\t\t\t]\r\n\t\t\t},\r\n\t\t\t{\r\n\t\t\t\t\"name\": \"Cristiano Ronaldo\",\r\n\t\t\t\t\"mbox\": \"CR@juve.it\",\r\n\t\t\t\t\"contributor_id\": {\r\n\t\t\t\t\t\"identifier\": \"https://www.tiss.tuwien.ac.at/person/305962565\",\r\n\t\t\t\t\t\"type\": \"other\"\r\n\t\t\t\t},\r\n\t\t\t\t\"role\": [\r\n\t\t\t\t\t\"DataCurator\"\r\n\t\t\t\t]\r\n\t\t\t}\r\n\t\t],\r\n\t\t\"ethical_issues_exist\": \"yes\",\r\n\t\t\"ethical_issues_report\": \"https://docs.google.com/document/d/xyz\",\r\n\t\t\"ethical_issues_description\": \"Ethical issues are handled by ...\",\r\n\t\t\"project\": [\r\n\t\t\t{\r\n\t\t\t\t\"title\": \"openEO - a common, open source interface between Earth Observation data infrastructures and front-end applications\",\r\n\t\t\t\t\"project_id\": \"https://tiss.tuwien.ac.at/api/pdb/rest/project/v3/1428966\",\r\n\t\t\t\t\"project_id_type\": \"HTTP-PDB\",\r\n\t\t\t\t\"start\": \"2017-10-01\",\r\n\t\t\t\t\"end\": \"2020-09-30\",\r\n\t\t\t\t\"description\": \"<p>The capabilities of the latest generation of Earth observation satellites to collect large volumes of diverse and thematically rich data are unprecedented. For exploiting these valuable data sets, many research and industry groups have started to shift their processing into the cloud. Although the functionalities of existing cloud computing solutions largely overlap, there are all custom-made and tailored to the specific data infrastructures. This lack of standards not only makes it hard for end users and application developers to develop generic front-ends, but also to compare the cloud offerings by running the same analysis against different cloud back-ends. To solve this, a common interface that allows end- and intermediate users to query cloud-based back offices and carry out computations on them in a simple way is needed. The openEO project will design such an interface, implement it as an open source community project, bind it to generic analytics front-ends and evaluate it against a set of relevant Earth observation cloud back offices. The openEO interface will consist of three layers of Application Programming Interfaces, namely a core API for finding, accessing, and processing large datasets, a driver APIs to connect to back offices operated by European and worldwide industry, and client APIs for analysing these datasets using R, Python and JavaScript. To demonstrate the capability of the openEO interface, four use cases based chiefly on Sentinel-1 and Sentinel-2 time series will be implemented. openEO will simplify the use of cloud-based processing engines, allow switching between cloud-based back office providers and comparing them, and enable reproducible, open Earth observation science. Thereby, openEO reduces the entry barriers for the adaptation of cloud computing technologies by a broad user community and paves the way for the federation of infrastructure capabilities.</p><p> </p>\",\r\n\t\t\t\t\"funding\": [\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\t\"funder_name\": \"European Commission - Framework Programme\",\r\n\t\t\t\t\t\t\"funder_id\": {\r\n\t\t\t\t\t\t\t\"identifier\": \"\",\r\n\t\t\t\t\t\t\t\"type\": \"other\"\r\n\t\t\t\t\t\t},\r\n\t\t\t\t\t\t\"grant_id\": {\r\n\t\t\t\t\t\t\t\"identifier\": \"EO-2-2017\",\r\n\t\t\t\t\t\t\t\"type\": \"other\"\r\n\t\t\t\t\t\t}\r\n\t\t\t\t\t}\r\n\t\t\t\t]\r\n\t\t\t}\r\n\t\t]\r\n\t}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{app_host}}/madmp",
+							"host": [
+								"{{app_host}}"
+							],
+							"path": [
+								"madmp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "4. Send a new large maDMP",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"dmp\": {\r\n\t\t\"created\": \"2022-04-25T08:47:12.000\",\r\n\t\t\"dmp_id\": {\r\n\t\t\t\"identifier\": \"https://doi.org/10.0000/AB4\",\r\n            \"type\": \"doi\"\r\n\t\t},\r\n\t\t\"modified\": \"2022-04-25T08:47:12.000\",\r\n        \"title\": \"DMP for our new project\",\r\n\t\t\"description\": \"This DMP is for our new project.\",\r\n\t\t\"language\": \"eng\",\r\n\t\t\"contact\": {\r\n\t\t\t\"name\": \"John Smith\",\r\n\t\t\t\"mbox\": \"john.smith@tuwien.ac.at\",\r\n\t\t\t\"contact_id\": {\r\n\t\t\t\t\"identifier\": \"https://www.tiss.tuwien.ac.at/person/2351952424\",\r\n\t\t\t\t\"type\": \"other\"\r\n\t\t\t}\r\n\t\t},\r\n\t\t\"contributor\": [\r\n\t\t\t{\r\n\t\t\t\t\"name\": \"Leo Messi\",\r\n\t\t\t\t\"mbox\": \"leo.messi@barcelona.com\",\r\n\t\t\t\t\"contributor_id\": {\r\n\t\t\t\t\t\"identifier\": \"https://orcid.org/0000-0002-0000-0000\",\r\n\t\t\t\t\t\"type\": \"orcid\"\r\n\t\t\t\t},\r\n\t\t\t\t\"role\": [\r\n\t\t\t\t\t\"ProjectLeader\"\r\n\t\t\t\t]\r\n\t\t\t},\r\n\t\t\t{\r\n\t\t\t\t\"name\": \"Robert Lewandowski\",\r\n\t\t\t\t\"mbox\": \"robert@bayern.de\",\r\n\t\t\t\t\"contributor_id\": {\r\n\t\t\t\t\t\"identifier\": \"https://orcid.org/0000-0002-4929-7875\",\r\n\t\t\t\t\t\"type\": \"orcid\"\r\n\t\t\t\t},\r\n\t\t\t\t\"role\": [\r\n\t\t\t\t\t\"ContactPerson\",\r\n\t\t\t\t\t\"DataManager\"\r\n\t\t\t\t]\r\n\t\t\t},\r\n\t\t\t{\r\n\t\t\t\t\"name\": \"Cristiano Ronaldo\",\r\n\t\t\t\t\"mbox\": \"CR@juve.it\",\r\n\t\t\t\t\"contributor_id\": {\r\n\t\t\t\t\t\"identifier\": \"https://www.tiss.tuwien.ac.at/person/305962565\",\r\n\t\t\t\t\t\"type\": \"other\"\r\n\t\t\t\t},\r\n\t\t\t\t\"role\": [\r\n\t\t\t\t\t\"DataCurator\"\r\n\t\t\t\t]\r\n\t\t\t}\r\n\t\t],\r\n\t\t\"ethical_issues_exist\": \"yes\",\r\n\t\t\"ethical_issues_report\": \"https://docs.google.com/document/d/xyz\",\r\n\t\t\"ethical_issues_description\": \"Ethical issues are handled by ...\",\r\n\t\t\"project\": [\r\n\t\t\t{\r\n\t\t\t\t\"title\": \"openEO - a common, open source interface between Earth Observation data infrastructures and front-end applications\",\r\n\t\t\t\t\"project_id\": \"https://tiss.tuwien.ac.at/api/pdb/rest/project/v3/1428966\",\r\n\t\t\t\t\"project_id_type\": \"HTTP-PDB\",\r\n\t\t\t\t\"start\": \"2017-10-01\",\r\n\t\t\t\t\"end\": \"2020-09-30\",\r\n\t\t\t\t\"description\": \"<p>The capabilities of the latest generation of Earth observation satellites to collect large volumes of diverse and thematically rich data are unprecedented. For exploiting these valuable data sets, many research and industry groups have started to shift their processing into the cloud. Although the functionalities of existing cloud computing solutions largely overlap, there are all custom-made and tailored to the specific data infrastructures. This lack of standards not only makes it hard for end users and application developers to develop generic front-ends, but also to compare the cloud offerings by running the same analysis against different cloud back-ends. To solve this, a common interface that allows end- and intermediate users to query cloud-based back offices and carry out computations on them in a simple way is needed. The openEO project will design such an interface, implement it as an open source community project, bind it to generic analytics front-ends and evaluate it against a set of relevant Earth observation cloud back offices. The openEO interface will consist of three layers of Application Programming Interfaces, namely a core API for finding, accessing, and processing large datasets, a driver APIs to connect to back offices operated by European and worldwide industry, and client APIs for analysing these datasets using R, Python and JavaScript. To demonstrate the capability of the openEO interface, four use cases based chiefly on Sentinel-1 and Sentinel-2 time series will be implemented. openEO will simplify the use of cloud-based processing engines, allow switching between cloud-based back office providers and comparing them, and enable reproducible, open Earth observation science. Thereby, openEO reduces the entry barriers for the adaptation of cloud computing technologies by a broad user community and paves the way for the federation of infrastructure capabilities.</p><p> </p>\",\r\n\t\t\t\t\"funding\": [\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\t\"funder_name\": \"European Commission - Framework Programme\",\r\n\t\t\t\t\t\t\"funder_id\": {\r\n\t\t\t\t\t\t\t\"identifier\": \"\",\r\n\t\t\t\t\t\t\t\"type\": \"other\"\r\n\t\t\t\t\t\t},\r\n\t\t\t\t\t\t\"grant_id\": {\r\n\t\t\t\t\t\t\t\"identifier\": \"EO-2-2017\",\r\n\t\t\t\t\t\t\t\"type\": \"other\"\r\n\t\t\t\t\t\t}\r\n\t\t\t\t\t}\r\n\t\t\t\t]\r\n\t\t\t}\r\n\t\t],\r\n\t\t\"dataset\": [\r\n\t\t\t{\r\n\t\t\t\t\"dataset_id\": {\r\n\t\t\t\t\t\"identifier\": \"https://hdl.handle.net/0000/00.00000\",\r\n\t\t\t\t\t\"type\": \"handle\"\r\n\t\t\t\t},\r\n\t\t\t\t\"title\": \"Client application\",\r\n\t\t\t\t\"personal_data\": \"no\",\r\n\t\t\t\t\"sensitive_data\": \"no\",\r\n\t\t\t\t\"type\": \"Source code\",\r\n\t\t\t\t\"description\": \"Some test scripts\",\r\n\t\t\t\t\"distribution\": [\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\t\"title\": \"Planned distribution\",\r\n\t\t\t\t\t\t\"format\": [],\r\n\t\t\t\t\t\t\"byte_size\": 1000000000,\r\n\t\t\t\t\t\t\"data_access\": \"open\",\r\n                        \"access_url\": \"https://hdl.handle.net/0000\",\r\n\t\t\t\t\t\t\"license\": [\r\n\t\t\t\t\t\t\t{\r\n\t\t\t\t\t\t\t\t\"license_name\": \"The MIT License (MIT)\",\r\n\t\t\t\t\t\t\t\t\"license_ref\": \"http://opensource.org/licenses/mit-license.php\",\r\n\t\t\t\t\t\t\t\t\"start_date\": \"2020-09-30\"\r\n\t\t\t\t\t\t\t}\r\n\t\t\t\t\t\t],\r\n\t\t\t\t\t\t\"host\": {\r\n\t\t\t\t\t\t\t\"title\": \"GitHub\",\r\n\t\t\t\t\t\t\t\"url\": \"https://www.re3data.org/repository/r3d100010375\",\r\n\t\t\t\t\t\t\t\"host_id_type\": \"HTTP-RE3DATA\",\r\n\t\t\t\t\t\t\t\"description\": \"GitHub is the best place to share code with friends, co-workers, classmates, and complete strangers. Over three million people use GitHub to build amazing things together. With the collaborative features of GitHub.com, our desktop and mobile apps, and GitHub Enterprise, it has never been easier for individuals and teams to write better code, faster. Originally founded by Tom Preston-Werner, Chris Wanstrath, and PJ Hyett to simplify sharing code, GitHub has grown into the largest code host in the world.\",\r\n\t\t\t\t\t\t\t\"supports_versioning\": \"yes\",\r\n\t\t\t\t\t\t\t\"storage_type\": \"repository\",\r\n\t\t\t\t\t\t\t\"pid_system\": [\r\n\t\t\t\t\t\t\t\t\"other\"\r\n\t\t\t\t\t\t\t]\r\n\t\t\t\t\t\t},\r\n\t\t\t\t\t\t\"available_until\": \"2030-09-30\"\r\n\t\t\t\t\t}\r\n\t\t\t\t]\r\n\t\t\t},\r\n\t\t\t{\r\n\t\t\t\t\"dataset_id\": {\r\n\t\t\t\t\t\"identifier\": \"https://hdl.handle.net/0000/00.00001\",\r\n\t\t\t\t\t\"type\": \"handle\"\r\n\t\t\t\t},\r\n\t\t\t\t\"title\": \"Image collection\",\r\n\t\t\t\t\"personal_data\": \"no\",\r\n\t\t\t\t\"sensitive_data\": \"yes\",\r\n\t\t\t\t\"type\": \"Images\",\r\n\t\t\t\t\"description\": \"Images of test object X\",\r\n\t\t\t\t\"distribution\": [\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\t\"title\": \"Planned distribution\",\r\n\t\t\t\t\t\t\"format\": [],\r\n                        \"access_url\": \"https://hdl.handle.net/0001\",\r\n\t\t\t\t\t\t\"byte_size\": 50000000000,\r\n\t\t\t\t\t\t\"data_access\": \"closed\"\r\n\t\t\t\t\t}\r\n\t\t\t\t]\r\n\t\t\t},\r\n\t\t\t{\r\n\t\t\t\t\"dataset_id\": {\r\n\t\t\t\t\t\"identifier\": \"https://hdl.handle.net/0000/00.00002\",\r\n\t\t\t\t\t\"type\": \"handle\"\r\n\t\t\t\t},\r\n\t\t\t\t\"title\": \"Interviews\",\r\n\t\t\t\t\"personal_data\": \"yes\",\r\n\t\t\t\t\"sensitive_data\": \"no\",\r\n\t\t\t\t\"type\": \"other\",\r\n\t\t\t\t\"description\": \"Audio recordings with test persons\",\r\n\t\t\t\t\"distribution\": [\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\t\"title\": \"Planned distribution\",\r\n\t\t\t\t\t\t\"format\": [\r\n\t\t\t\t\t\t\t\"audio/mpeg\"\r\n\t\t\t\t\t\t],\r\n\t\t\t\t\t\t\"byte_size\": 439705600,\r\n\t\t\t\t\t\t\"data_access\": \"open\",\r\n                        \"access_url\": \"https://hdl.handle.net/0002\",\r\n\t\t\t\t\t\t\"license\": [\r\n\t\t\t\t\t\t\t{\r\n\t\t\t\t\t\t\t\t\"license_name\": \"Creative Commons Attribution (CC-BY)\",\r\n\t\t\t\t\t\t\t\t\"license_ref\": \"http://creativecommons.org/licenses/by/4.0/\",\r\n\t\t\t\t\t\t\t\t\"start_date\": \"2021-01-01\"\r\n\t\t\t\t\t\t\t}\r\n\t\t\t\t\t\t],\r\n\t\t\t\t\t\t\"host\": {\r\n\t\t\t\t\t\t\t\"title\": \"Zenodo\",\r\n\t\t\t\t\t\t\t\"url\": \"https://www.re3data.org/repository/r3d100010468\",\r\n\t\t\t\t\t\t\t\"host_id_type\": \"HTTP-RE3DATA\",\r\n\t\t\t\t\t\t\t\"description\": \"ZENODO builds and operates a simple and innovative service that enables researchers, scientists, EU projects and institutions to share and showcase multidisciplinary research results (data and publications) that are not part of the existing institutional or subject-based repositories of the research communities.\\nZENODO enables researchers, scientists, EU projects and institutions to:\\neasily share the long tail of small research results in a wide variety of formats including text, spreadsheets, audio, video, and images across all fields of science.\\ndisplay their research results and get credited by making the research results citable and integrate them into existing reporting lines to funding agencies like the European Commission.\\neasily access and reuse shared research results.\",\r\n\t\t\t\t\t\t\t\"supports_versioning\": \"unknown\",\r\n\t\t\t\t\t\t\t\"storage_type\": \"repository\",\r\n\t\t\t\t\t\t\t\"pid_system\": [\r\n\t\t\t\t\t\t\t\t\"doi\"\r\n\t\t\t\t\t\t\t]\r\n\t\t\t\t\t\t},\r\n\t\t\t\t\t\t\"available_until\": \"2031-08-01\"\r\n\t\t\t\t\t}\r\n\t\t\t\t]\r\n\t\t\t}\r\n\t\t]\r\n\t}\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2217,7 +2295,7 @@
 			"name": "NFTC2",
 			"item": [
 				{
-					"name": "Send a new minimal maDMP",
+					"name": "1. Send a new minimal maDMP",
 					"event": [
 						{
 							"listen": "test",
@@ -2236,7 +2314,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n\t\"dmp\": {\r\n\t\t\"created\": \"2022-04-25T08:49:42.000\",\r\n\t\t\"dmp_id\": {\r\n\t\t\t\"identifier\": \"https://doi.org/10.0125/12.16.1352\"\r\n\t\t},\r\n\t\t\"modified\": \"2022-04-25T08:49:42.000\"\r\n\t}\r\n}",
+							"raw": "{\r\n\t\"dmp\": {\r\n\t\t\"created\": \"2022-04-26T01:10:00.000\",\r\n\t\t\"dmp_id\": {\r\n\t\t\t\"identifier\": \"https://doi.org/10.0125/T1\"\r\n\t\t},\r\n\t\t\"modified\": \"2022-04-26T01:10:00.000\"\r\n\t}\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2256,7 +2334,7 @@
 					"response": []
 				},
 				{
-					"name": "Update maDMP with short body",
+					"name": "2. Update maDMP with minimal body content",
 					"event": [
 						{
 							"listen": "test",
@@ -2275,7 +2353,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n\t\"dmp\": {\r\n\t\t\"created\": \"2022-04-25T08:49:42.000\",\r\n\t\t\"dmp_id\": {\r\n\t\t\t\"identifier\": \"https://doi.org/10.0125/12.16.1352\"\r\n\t\t},\r\n\t\t\"modified\": \"2022-04-25T08:50:42.000\",\r\n        \"title\": \"DMP for our new project\",\r\n\t\t\"description\": \"This DMP is for our new project.\",\r\n\t\t\"language\": \"eng\"\r\n\t}\r\n}",
+							"raw": "{\r\n\t\"dmp\": {\r\n\t\t\"created\": \"2022-04-26T01:10:00.000\",\r\n\t\t\"dmp_id\": {\r\n\t\t\t\"identifier\": \"https://doi.org/10.0125/T1\"\r\n\t\t},\r\n\t\t\"modified\": \"2022-04-26T01:10:01.000\",\r\n        \"title\": \"DMP for our new project\"\r\n\t}\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2295,7 +2373,7 @@
 					"response": []
 				},
 				{
-					"name": "Update maDMP with long body",
+					"name": "3. Send a new minimal maDMP.",
 					"event": [
 						{
 							"listen": "test",
@@ -2314,7 +2392,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n\t\"dmp\": {\r\n\t\t\"created\": \"2022-04-25T08:49:42.000\",\r\n\t\t\"dmp_id\": {\r\n\t\t\t\"identifier\": \"https://doi.org/10.0125/12.16.1352\"\r\n\t\t},\r\n\t\t\"modified\": \"2022-04-25T08:56:42.000\",\r\n        \"title\": \"DMP for our new project\",\r\n\t\t\"description\": \"This DMP is for our new project.\",\r\n\t\t\"language\": \"eng\",\r\n\t\t\"contact\": {\r\n\t\t\t\"name\": \"John Smith\",\r\n\t\t\t\"mbox\": \"john.smith@tuwien.ac.at\",\r\n\t\t\t\"contact_id\": {\r\n\t\t\t\t\"identifier\": \"https://www.tiss.tuwien.ac.at/person/2351952424\",\r\n\t\t\t\t\"type\": \"other\"\r\n\t\t\t}\r\n\t\t},\r\n\t\t\"contributor\": [\r\n\t\t\t{\r\n\t\t\t\t\"name\": \"Leo Messi\",\r\n\t\t\t\t\"mbox\": \"leo.messi@barcelona.com\",\r\n\t\t\t\t\"contributor_id\": {\r\n\t\t\t\t\t\"identifier\": \"https://orcid.org/0000-0002-0000-0000\",\r\n\t\t\t\t\t\"type\": \"orcid\"\r\n\t\t\t\t},\r\n\t\t\t\t\"role\": [\r\n\t\t\t\t\t\"ProjectLeader\"\r\n\t\t\t\t]\r\n\t\t\t},\r\n\t\t\t{\r\n\t\t\t\t\"name\": \"Robert Lewandowski\",\r\n\t\t\t\t\"mbox\": \"robert@bayern.de\",\r\n\t\t\t\t\"contributor_id\": {\r\n\t\t\t\t\t\"identifier\": \"https://orcid.org/0000-0002-4929-7875\",\r\n\t\t\t\t\t\"type\": \"orcid\"\r\n\t\t\t\t},\r\n\t\t\t\t\"role\": [\r\n\t\t\t\t\t\"ContactPerson\",\r\n\t\t\t\t\t\"DataManager\"\r\n\t\t\t\t]\r\n\t\t\t},\r\n\t\t\t{\r\n\t\t\t\t\"name\": \"Cristiano Ronaldo\",\r\n\t\t\t\t\"mbox\": \"CR@juve.it\",\r\n\t\t\t\t\"contributor_id\": {\r\n\t\t\t\t\t\"identifier\": \"https://www.tiss.tuwien.ac.at/person/305962565\",\r\n\t\t\t\t\t\"type\": \"other\"\r\n\t\t\t\t},\r\n\t\t\t\t\"role\": [\r\n\t\t\t\t\t\"DataCurator\"\r\n\t\t\t\t]\r\n\t\t\t}\r\n\t\t],\r\n\t\t\"ethical_issues_exist\": \"yes\",\r\n\t\t\"ethical_issues_report\": \"https://docs.google.com/document/d/xyz\",\r\n\t\t\"ethical_issues_description\": \"Ethical issues are handled by ...\",\r\n\t\t\"project\": [\r\n\t\t\t{\r\n\t\t\t\t\"title\": \"openEO - a common, open source interface between Earth Observation data infrastructures and front-end applications\",\r\n\t\t\t\t\"project_id\": \"https://tiss.tuwien.ac.at/api/pdb/rest/project/v3/1428966\",\r\n\t\t\t\t\"project_id_type\": \"HTTP-PDB\",\r\n\t\t\t\t\"start\": \"2017-10-01\",\r\n\t\t\t\t\"end\": \"2020-09-30\",\r\n\t\t\t\t\"description\": \"<p>The capabilities of the latest generation of Earth observation satellites to collect large volumes of diverse and thematically rich data are unprecedented. For exploiting these valuable data sets, many research and industry groups have started to shift their processing into the cloud. Although the functionalities of existing cloud computing solutions largely overlap, there are all custom-made and tailored to the specific data infrastructures. This lack of standards not only makes it hard for end users and application developers to develop generic front-ends, but also to compare the cloud offerings by running the same analysis against different cloud back-ends. To solve this, a common interface that allows end- and intermediate users to query cloud-based back offices and carry out computations on them in a simple way is needed. The openEO project will design such an interface, implement it as an open source community project, bind it to generic analytics front-ends and evaluate it against a set of relevant Earth observation cloud back offices. The openEO interface will consist of three layers of Application Programming Interfaces, namely a core API for finding, accessing, and processing large datasets, a driver APIs to connect to back offices operated by European and worldwide industry, and client APIs for analysing these datasets using R, Python and JavaScript. To demonstrate the capability of the openEO interface, four use cases based chiefly on Sentinel-1 and Sentinel-2 time series will be implemented. openEO will simplify the use of cloud-based processing engines, allow switching between cloud-based back office providers and comparing them, and enable reproducible, open Earth observation science. Thereby, openEO reduces the entry barriers for the adaptation of cloud computing technologies by a broad user community and paves the way for the federation of infrastructure capabilities.</p><p> </p>\",\r\n\t\t\t\t\"funding\": [\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\t\"funder_name\": \"European Commission - Framework Programme\",\r\n\t\t\t\t\t\t\"funder_id\": {\r\n\t\t\t\t\t\t\t\"identifier\": \"\",\r\n\t\t\t\t\t\t\t\"type\": \"other\"\r\n\t\t\t\t\t\t},\r\n\t\t\t\t\t\t\"grant_id\": {\r\n\t\t\t\t\t\t\t\"identifier\": \"EO-2-2017\",\r\n\t\t\t\t\t\t\t\"type\": \"other\"\r\n\t\t\t\t\t\t}\r\n\t\t\t\t\t}\r\n\t\t\t\t]\r\n\t\t\t}\r\n\t\t],\r\n\t\t\"dataset\": [\r\n\t\t\t{\r\n\t\t\t\t\"dataset_id\": {\r\n\t\t\t\t\t\"identifier\": \"https://hdl.handle.net/0000/00.00000\",\r\n\t\t\t\t\t\"type\": \"handle\"\r\n\t\t\t\t},\r\n\t\t\t\t\"title\": \"Client application\",\r\n\t\t\t\t\"personal_data\": \"no\",\r\n\t\t\t\t\"sensitive_data\": \"no\",\r\n\t\t\t\t\"type\": \"Source code\",\r\n\t\t\t\t\"description\": \"Some test scripts\",\r\n\t\t\t\t\"distribution\": [\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\t\"title\": \"Planned distribution\",\r\n\t\t\t\t\t\t\"format\": [],\r\n\t\t\t\t\t\t\"byte_size\": 1000000000,\r\n\t\t\t\t\t\t\"data_access\": \"open\",\r\n                        \"access_url\": \"https://hdl.handle.net/0000\",\r\n\t\t\t\t\t\t\"license\": [\r\n\t\t\t\t\t\t\t{\r\n\t\t\t\t\t\t\t\t\"license_name\": \"The MIT License (MIT)\",\r\n\t\t\t\t\t\t\t\t\"license_ref\": \"http://opensource.org/licenses/mit-license.php\",\r\n\t\t\t\t\t\t\t\t\"start_date\": \"2020-09-30\"\r\n\t\t\t\t\t\t\t}\r\n\t\t\t\t\t\t],\r\n\t\t\t\t\t\t\"host\": {\r\n\t\t\t\t\t\t\t\"title\": \"GitHub\",\r\n\t\t\t\t\t\t\t\"url\": \"https://www.re3data.org/repository/r3d100010375\",\r\n\t\t\t\t\t\t\t\"host_id_type\": \"HTTP-RE3DATA\",\r\n\t\t\t\t\t\t\t\"description\": \"GitHub is the best place to share code with friends, co-workers, classmates, and complete strangers. Over three million people use GitHub to build amazing things together. With the collaborative features of GitHub.com, our desktop and mobile apps, and GitHub Enterprise, it has never been easier for individuals and teams to write better code, faster. Originally founded by Tom Preston-Werner, Chris Wanstrath, and PJ Hyett to simplify sharing code, GitHub has grown into the largest code host in the world.\",\r\n\t\t\t\t\t\t\t\"supports_versioning\": \"yes\",\r\n\t\t\t\t\t\t\t\"storage_type\": \"repository\",\r\n\t\t\t\t\t\t\t\"pid_system\": [\r\n\t\t\t\t\t\t\t\t\"other\"\r\n\t\t\t\t\t\t\t]\r\n\t\t\t\t\t\t},\r\n\t\t\t\t\t\t\"available_until\": \"2030-09-30\"\r\n\t\t\t\t\t}\r\n\t\t\t\t]\r\n\t\t\t},\r\n\t\t\t{\r\n\t\t\t\t\"dataset_id\": {\r\n\t\t\t\t\t\"identifier\": \"https://hdl.handle.net/0000/00.00001\",\r\n\t\t\t\t\t\"type\": \"handle\"\r\n\t\t\t\t},\r\n\t\t\t\t\"title\": \"Image collection\",\r\n\t\t\t\t\"personal_data\": \"no\",\r\n\t\t\t\t\"sensitive_data\": \"yes\",\r\n\t\t\t\t\"type\": \"Images\",\r\n\t\t\t\t\"description\": \"Images of test object X\",\r\n\t\t\t\t\"distribution\": [\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\t\"title\": \"Planned distribution\",\r\n\t\t\t\t\t\t\"format\": [],\r\n                        \"access_url\": \"https://hdl.handle.net/0001\",\r\n\t\t\t\t\t\t\"byte_size\": 50000000000,\r\n\t\t\t\t\t\t\"data_access\": \"closed\"\r\n\t\t\t\t\t}\r\n\t\t\t\t]\r\n\t\t\t},\r\n\t\t\t{\r\n\t\t\t\t\"dataset_id\": {\r\n\t\t\t\t\t\"identifier\": \"https://hdl.handle.net/0000/00.00002\",\r\n\t\t\t\t\t\"type\": \"handle\"\r\n\t\t\t\t},\r\n\t\t\t\t\"title\": \"Interviews\",\r\n\t\t\t\t\"personal_data\": \"yes\",\r\n\t\t\t\t\"sensitive_data\": \"no\",\r\n\t\t\t\t\"type\": \"other\",\r\n\t\t\t\t\"description\": \"Audio recordings with test persons\",\r\n\t\t\t\t\"distribution\": [\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\t\"title\": \"Planned distribution\",\r\n\t\t\t\t\t\t\"format\": [\r\n\t\t\t\t\t\t\t\"audio/mpeg\"\r\n\t\t\t\t\t\t],\r\n\t\t\t\t\t\t\"byte_size\": 439705600,\r\n\t\t\t\t\t\t\"data_access\": \"open\",\r\n                        \"access_url\": \"https://hdl.handle.net/0002\",\r\n\t\t\t\t\t\t\"license\": [\r\n\t\t\t\t\t\t\t{\r\n\t\t\t\t\t\t\t\t\"license_name\": \"Creative Commons Attribution (CC-BY)\",\r\n\t\t\t\t\t\t\t\t\"license_ref\": \"http://creativecommons.org/licenses/by/4.0/\",\r\n\t\t\t\t\t\t\t\t\"start_date\": \"2021-01-01\"\r\n\t\t\t\t\t\t\t}\r\n\t\t\t\t\t\t],\r\n\t\t\t\t\t\t\"host\": {\r\n\t\t\t\t\t\t\t\"title\": \"Zenodo\",\r\n\t\t\t\t\t\t\t\"url\": \"https://www.re3data.org/repository/r3d100010468\",\r\n\t\t\t\t\t\t\t\"host_id_type\": \"HTTP-RE3DATA\",\r\n\t\t\t\t\t\t\t\"description\": \"ZENODO builds and operates a simple and innovative service that enables researchers, scientists, EU projects and institutions to share and showcase multidisciplinary research results (data and publications) that are not part of the existing institutional or subject-based repositories of the research communities.\\nZENODO enables researchers, scientists, EU projects and institutions to:\\neasily share the long tail of small research results in a wide variety of formats including text, spreadsheets, audio, video, and images across all fields of science.\\ndisplay their research results and get credited by making the research results citable and integrate them into existing reporting lines to funding agencies like the European Commission.\\neasily access and reuse shared research results.\",\r\n\t\t\t\t\t\t\t\"supports_versioning\": \"unknown\",\r\n\t\t\t\t\t\t\t\"storage_type\": \"repository\",\r\n\t\t\t\t\t\t\t\"pid_system\": [\r\n\t\t\t\t\t\t\t\t\"doi\"\r\n\t\t\t\t\t\t\t]\r\n\t\t\t\t\t\t},\r\n\t\t\t\t\t\t\"available_until\": \"2031-08-01\"\r\n\t\t\t\t\t}\r\n\t\t\t\t]\r\n\t\t\t}\r\n\t\t]\r\n\t}\r\n}",
+							"raw": "{\r\n\t\"dmp\": {\r\n\t\t\"created\": \"2022-04-26T01:20:00.000\",\r\n\t\t\"dmp_id\": {\r\n\t\t\t\"identifier\": \"https://doi.org/10.0125/T2\"\r\n\t\t},\r\n\t\t\"modified\": \"2022-04-26T01:20:00.000\"\r\n\t}\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2334,7 +2412,7 @@
 					"response": []
 				},
 				{
-					"name": "Update maDMP with short body",
+					"name": "4. Update maDMP with small body content",
 					"event": [
 						{
 							"listen": "test",
@@ -2353,7 +2431,163 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n\t\"dmp\": {\r\n\t\t\"created\": \"2022-04-25T08:49:42.000\",\r\n\t\t\"dmp_id\": {\r\n\t\t\t\"identifier\": \"https://doi.org/10.0125/12.16.1352\"\r\n\t\t},\r\n\t\t\"modified\": \"2022-04-25T08:59:42.000\",\r\n        \"title\": \"DMP for our new project 2\",\r\n\t\t\"description\": \"This DMP is for our new project 2.\",\r\n\t\t\"language\": \"eng\"\r\n\t}\r\n}",
+							"raw": "{\r\n\t\"dmp\": {\r\n\t\t\"created\": \"2022-04-26T01:20:00.000\",\r\n\t\t\"dmp_id\": {\r\n\t\t\t\"identifier\": \"https://doi.org/10.0125/T2\"\r\n\t\t},\r\n\t\t\"modified\": \"2022-04-26T01:20:01.000\",\r\n        \"title\": \"DMP for our new project\",\r\n\t\t\"description\": \"This DMP is for our new project.\",\r\n\t\t\"language\": \"eng\",\r\n\t\t\"contact\": {\r\n\t\t\t\"name\": \"John Smith\",\r\n\t\t\t\"mbox\": \"john.smith@tuwien.ac.at\",\r\n\t\t\t\"contact_id\": {\r\n\t\t\t\t\"identifier\": \"https://www.tiss.tuwien.ac.at/person/2351952424\",\r\n\t\t\t\t\"type\": \"other\"\r\n\t\t\t}\r\n\t\t},\r\n\t\t\"project\": [\r\n\t\t\t{\r\n\t\t\t\t\"title\": \"openEO - a common, open source interface between Earth Observation data infrastructures and front-end applications\",\r\n\t\t\t\t\"project_id\": \"https://tiss.tuwien.ac.at/api/pdb/rest/project/v3/1428966\",\r\n\t\t\t\t\"project_id_type\": \"HTTP-PDB\",\r\n\t\t\t\t\"start\": \"2017-10-01\",\r\n\t\t\t\t\"end\": \"2020-09-30\",\r\n\t\t\t\t\"funding\": [\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\t\"funder_name\": \"European Commission - Framework Programme\",\r\n\t\t\t\t\t\t\"funder_id\": {\r\n\t\t\t\t\t\t\t\"identifier\": \"\",\r\n\t\t\t\t\t\t\t\"type\": \"other\"\r\n\t\t\t\t\t\t},\r\n\t\t\t\t\t\t\"grant_id\": {\r\n\t\t\t\t\t\t\t\"identifier\": \"EO-2-2017\",\r\n\t\t\t\t\t\t\t\"type\": \"other\"\r\n\t\t\t\t\t\t}\r\n\t\t\t\t\t}\r\n\t\t\t\t]\r\n\t\t\t}\r\n\t\t]\r\n\t}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{app_host}}/madmp",
+							"host": [
+								"{{app_host}}"
+							],
+							"path": [
+								"madmp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "5. Send a new minimal maDMP",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"dmp\": {\r\n\t\t\"created\": \"2022-04-26T01:30:00.000\",\r\n\t\t\"dmp_id\": {\r\n\t\t\t\"identifier\": \"https://doi.org/10.0125/T3\"\r\n\t\t},\r\n\t\t\"modified\": \"2022-04-26T01:30:00.000\"\r\n\t}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{app_host}}/madmp",
+							"host": [
+								"{{app_host}}"
+							],
+							"path": [
+								"madmp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "6. Update maDMP with medium body content",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"dmp\": {\r\n\t\t\"created\": \"2022-04-26T01:30:00.000\",\r\n\t\t\"dmp_id\": {\r\n\t\t\t\"identifier\": \"https://doi.org/10.0125/T3\"\r\n\t\t},\r\n\t\t\"modified\": \"2022-04-26T01:30:01.000\",\r\n        \"title\": \"DMP for our new project\",\r\n\t\t\"description\": \"This DMP is for our new project.\",\r\n\t\t\"language\": \"eng\",\r\n\t\t\"contact\": {\r\n\t\t\t\"name\": \"John Smith\",\r\n\t\t\t\"mbox\": \"john.smith@tuwien.ac.at\",\r\n\t\t\t\"contact_id\": {\r\n\t\t\t\t\"identifier\": \"https://www.tiss.tuwien.ac.at/person/2351952424\",\r\n\t\t\t\t\"type\": \"other\"\r\n\t\t\t}\r\n\t\t},\r\n\t\t\"contributor\": [\r\n\t\t\t{\r\n\t\t\t\t\"name\": \"Leo Messi\",\r\n\t\t\t\t\"mbox\": \"leo.messi@barcelona.com\",\r\n\t\t\t\t\"contributor_id\": {\r\n\t\t\t\t\t\"identifier\": \"https://orcid.org/0000-0002-0000-0000\",\r\n\t\t\t\t\t\"type\": \"orcid\"\r\n\t\t\t\t},\r\n\t\t\t\t\"role\": [\r\n\t\t\t\t\t\"ProjectLeader\"\r\n\t\t\t\t]\r\n\t\t\t},\r\n\t\t\t{\r\n\t\t\t\t\"name\": \"Robert Lewandowski\",\r\n\t\t\t\t\"mbox\": \"robert@bayern.de\",\r\n\t\t\t\t\"contributor_id\": {\r\n\t\t\t\t\t\"identifier\": \"https://orcid.org/0000-0002-4929-7875\",\r\n\t\t\t\t\t\"type\": \"orcid\"\r\n\t\t\t\t},\r\n\t\t\t\t\"role\": [\r\n\t\t\t\t\t\"ContactPerson\",\r\n\t\t\t\t\t\"DataManager\"\r\n\t\t\t\t]\r\n\t\t\t},\r\n\t\t\t{\r\n\t\t\t\t\"name\": \"Cristiano Ronaldo\",\r\n\t\t\t\t\"mbox\": \"CR@juve.it\",\r\n\t\t\t\t\"contributor_id\": {\r\n\t\t\t\t\t\"identifier\": \"https://www.tiss.tuwien.ac.at/person/305962565\",\r\n\t\t\t\t\t\"type\": \"other\"\r\n\t\t\t\t},\r\n\t\t\t\t\"role\": [\r\n\t\t\t\t\t\"DataCurator\"\r\n\t\t\t\t]\r\n\t\t\t}\r\n\t\t],\r\n\t\t\"ethical_issues_exist\": \"yes\",\r\n\t\t\"ethical_issues_report\": \"https://docs.google.com/document/d/xyz\",\r\n\t\t\"ethical_issues_description\": \"Ethical issues are handled by ...\",\r\n\t\t\"project\": [\r\n\t\t\t{\r\n\t\t\t\t\"title\": \"openEO - a common, open source interface between Earth Observation data infrastructures and front-end applications\",\r\n\t\t\t\t\"project_id\": \"https://tiss.tuwien.ac.at/api/pdb/rest/project/v3/1428966\",\r\n\t\t\t\t\"project_id_type\": \"HTTP-PDB\",\r\n\t\t\t\t\"start\": \"2017-10-01\",\r\n\t\t\t\t\"end\": \"2020-09-30\",\r\n\t\t\t\t\"description\": \"<p>The capabilities of the latest generation of Earth observation satellites to collect large volumes of diverse and thematically rich data are unprecedented. For exploiting these valuable data sets, many research and industry groups have started to shift their processing into the cloud. Although the functionalities of existing cloud computing solutions largely overlap, there are all custom-made and tailored to the specific data infrastructures. This lack of standards not only makes it hard for end users and application developers to develop generic front-ends, but also to compare the cloud offerings by running the same analysis against different cloud back-ends. To solve this, a common interface that allows end- and intermediate users to query cloud-based back offices and carry out computations on them in a simple way is needed. The openEO project will design such an interface, implement it as an open source community project, bind it to generic analytics front-ends and evaluate it against a set of relevant Earth observation cloud back offices. The openEO interface will consist of three layers of Application Programming Interfaces, namely a core API for finding, accessing, and processing large datasets, a driver APIs to connect to back offices operated by European and worldwide industry, and client APIs for analysing these datasets using R, Python and JavaScript. To demonstrate the capability of the openEO interface, four use cases based chiefly on Sentinel-1 and Sentinel-2 time series will be implemented. openEO will simplify the use of cloud-based processing engines, allow switching between cloud-based back office providers and comparing them, and enable reproducible, open Earth observation science. Thereby, openEO reduces the entry barriers for the adaptation of cloud computing technologies by a broad user community and paves the way for the federation of infrastructure capabilities.</p><p> </p>\",\r\n\t\t\t\t\"funding\": [\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\t\"funder_name\": \"European Commission - Framework Programme\",\r\n\t\t\t\t\t\t\"funder_id\": {\r\n\t\t\t\t\t\t\t\"identifier\": \"\",\r\n\t\t\t\t\t\t\t\"type\": \"other\"\r\n\t\t\t\t\t\t},\r\n\t\t\t\t\t\t\"grant_id\": {\r\n\t\t\t\t\t\t\t\"identifier\": \"EO-2-2017\",\r\n\t\t\t\t\t\t\t\"type\": \"other\"\r\n\t\t\t\t\t\t}\r\n\t\t\t\t\t}\r\n\t\t\t\t]\r\n\t\t\t}\r\n\t\t]\r\n\t}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{app_host}}/madmp",
+							"host": [
+								"{{app_host}}"
+							],
+							"path": [
+								"madmp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "7. Send a new minimal maDMP",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"dmp\": {\r\n\t\t\"created\": \"2022-04-26T01:40:00.000\",\r\n\t\t\"dmp_id\": {\r\n\t\t\t\"identifier\": \"https://doi.org/10.0125/T4\"\r\n\t\t},\r\n\t\t\"modified\": \"2022-04-26T01:40:00.000\"\r\n\t}\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{app_host}}/madmp",
+							"host": [
+								"{{app_host}}"
+							],
+							"path": [
+								"madmp"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "8. Update maDMP with large body content",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n\t\"dmp\": {\r\n\t\t\"created\": \"2022-04-26T01:40:00.000\",\r\n\t\t\"dmp_id\": {\r\n\t\t\t\"identifier\": \"https://doi.org/10.0125/T4\"\r\n\t\t},\r\n\t\t\"modified\": \"2022-04-26T01:40:01.000\",\r\n        \"title\": \"DMP for our new project\",\r\n\t\t\"description\": \"This DMP is for our new project.\",\r\n\t\t\"language\": \"eng\",\r\n\t\t\"contact\": {\r\n\t\t\t\"name\": \"John Smith\",\r\n\t\t\t\"mbox\": \"john.smith@tuwien.ac.at\",\r\n\t\t\t\"contact_id\": {\r\n\t\t\t\t\"identifier\": \"https://www.tiss.tuwien.ac.at/person/2351952424\",\r\n\t\t\t\t\"type\": \"other\"\r\n\t\t\t}\r\n\t\t},\r\n\t\t\"contributor\": [\r\n\t\t\t{\r\n\t\t\t\t\"name\": \"Leo Messi\",\r\n\t\t\t\t\"mbox\": \"leo.messi@barcelona.com\",\r\n\t\t\t\t\"contributor_id\": {\r\n\t\t\t\t\t\"identifier\": \"https://orcid.org/0000-0002-0000-0000\",\r\n\t\t\t\t\t\"type\": \"orcid\"\r\n\t\t\t\t},\r\n\t\t\t\t\"role\": [\r\n\t\t\t\t\t\"ProjectLeader\"\r\n\t\t\t\t]\r\n\t\t\t},\r\n\t\t\t{\r\n\t\t\t\t\"name\": \"Robert Lewandowski\",\r\n\t\t\t\t\"mbox\": \"robert@bayern.de\",\r\n\t\t\t\t\"contributor_id\": {\r\n\t\t\t\t\t\"identifier\": \"https://orcid.org/0000-0002-4929-7875\",\r\n\t\t\t\t\t\"type\": \"orcid\"\r\n\t\t\t\t},\r\n\t\t\t\t\"role\": [\r\n\t\t\t\t\t\"ContactPerson\",\r\n\t\t\t\t\t\"DataManager\"\r\n\t\t\t\t]\r\n\t\t\t},\r\n\t\t\t{\r\n\t\t\t\t\"name\": \"Cristiano Ronaldo\",\r\n\t\t\t\t\"mbox\": \"CR@juve.it\",\r\n\t\t\t\t\"contributor_id\": {\r\n\t\t\t\t\t\"identifier\": \"https://www.tiss.tuwien.ac.at/person/305962565\",\r\n\t\t\t\t\t\"type\": \"other\"\r\n\t\t\t\t},\r\n\t\t\t\t\"role\": [\r\n\t\t\t\t\t\"DataCurator\"\r\n\t\t\t\t]\r\n\t\t\t}\r\n\t\t],\r\n\t\t\"ethical_issues_exist\": \"yes\",\r\n\t\t\"ethical_issues_report\": \"https://docs.google.com/document/d/xyz\",\r\n\t\t\"ethical_issues_description\": \"Ethical issues are handled by ...\",\r\n\t\t\"project\": [\r\n\t\t\t{\r\n\t\t\t\t\"title\": \"openEO - a common, open source interface between Earth Observation data infrastructures and front-end applications\",\r\n\t\t\t\t\"project_id\": \"https://tiss.tuwien.ac.at/api/pdb/rest/project/v3/1428966\",\r\n\t\t\t\t\"project_id_type\": \"HTTP-PDB\",\r\n\t\t\t\t\"start\": \"2017-10-01\",\r\n\t\t\t\t\"end\": \"2020-09-30\",\r\n\t\t\t\t\"description\": \"<p>The capabilities of the latest generation of Earth observation satellites to collect large volumes of diverse and thematically rich data are unprecedented. For exploiting these valuable data sets, many research and industry groups have started to shift their processing into the cloud. Although the functionalities of existing cloud computing solutions largely overlap, there are all custom-made and tailored to the specific data infrastructures. This lack of standards not only makes it hard for end users and application developers to develop generic front-ends, but also to compare the cloud offerings by running the same analysis against different cloud back-ends. To solve this, a common interface that allows end- and intermediate users to query cloud-based back offices and carry out computations on them in a simple way is needed. The openEO project will design such an interface, implement it as an open source community project, bind it to generic analytics front-ends and evaluate it against a set of relevant Earth observation cloud back offices. The openEO interface will consist of three layers of Application Programming Interfaces, namely a core API for finding, accessing, and processing large datasets, a driver APIs to connect to back offices operated by European and worldwide industry, and client APIs for analysing these datasets using R, Python and JavaScript. To demonstrate the capability of the openEO interface, four use cases based chiefly on Sentinel-1 and Sentinel-2 time series will be implemented. openEO will simplify the use of cloud-based processing engines, allow switching between cloud-based back office providers and comparing them, and enable reproducible, open Earth observation science. Thereby, openEO reduces the entry barriers for the adaptation of cloud computing technologies by a broad user community and paves the way for the federation of infrastructure capabilities.</p><p> </p>\",\r\n\t\t\t\t\"funding\": [\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\t\"funder_name\": \"European Commission - Framework Programme\",\r\n\t\t\t\t\t\t\"funder_id\": {\r\n\t\t\t\t\t\t\t\"identifier\": \"\",\r\n\t\t\t\t\t\t\t\"type\": \"other\"\r\n\t\t\t\t\t\t},\r\n\t\t\t\t\t\t\"grant_id\": {\r\n\t\t\t\t\t\t\t\"identifier\": \"EO-2-2017\",\r\n\t\t\t\t\t\t\t\"type\": \"other\"\r\n\t\t\t\t\t\t}\r\n\t\t\t\t\t}\r\n\t\t\t\t]\r\n\t\t\t}\r\n\t\t],\r\n\t\t\"dataset\": [\r\n\t\t\t{\r\n\t\t\t\t\"dataset_id\": {\r\n\t\t\t\t\t\"identifier\": \"https://hdl.handle.net/0000/00.00000\",\r\n\t\t\t\t\t\"type\": \"handle\"\r\n\t\t\t\t},\r\n\t\t\t\t\"title\": \"Client application\",\r\n\t\t\t\t\"personal_data\": \"no\",\r\n\t\t\t\t\"sensitive_data\": \"no\",\r\n\t\t\t\t\"type\": \"Source code\",\r\n\t\t\t\t\"description\": \"Some test scripts\",\r\n\t\t\t\t\"distribution\": [\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\t\"title\": \"Planned distribution\",\r\n\t\t\t\t\t\t\"format\": [],\r\n\t\t\t\t\t\t\"byte_size\": 1000000000,\r\n\t\t\t\t\t\t\"data_access\": \"open\",\r\n                        \"access_url\": \"https://hdl.handle.net/0000\",\r\n\t\t\t\t\t\t\"license\": [\r\n\t\t\t\t\t\t\t{\r\n\t\t\t\t\t\t\t\t\"license_name\": \"The MIT License (MIT)\",\r\n\t\t\t\t\t\t\t\t\"license_ref\": \"http://opensource.org/licenses/mit-license.php\",\r\n\t\t\t\t\t\t\t\t\"start_date\": \"2020-09-30\"\r\n\t\t\t\t\t\t\t}\r\n\t\t\t\t\t\t],\r\n\t\t\t\t\t\t\"host\": {\r\n\t\t\t\t\t\t\t\"title\": \"GitHub\",\r\n\t\t\t\t\t\t\t\"url\": \"https://www.re3data.org/repository/r3d100010375\",\r\n\t\t\t\t\t\t\t\"host_id_type\": \"HTTP-RE3DATA\",\r\n\t\t\t\t\t\t\t\"description\": \"GitHub is the best place to share code with friends, co-workers, classmates, and complete strangers. Over three million people use GitHub to build amazing things together. With the collaborative features of GitHub.com, our desktop and mobile apps, and GitHub Enterprise, it has never been easier for individuals and teams to write better code, faster. Originally founded by Tom Preston-Werner, Chris Wanstrath, and PJ Hyett to simplify sharing code, GitHub has grown into the largest code host in the world.\",\r\n\t\t\t\t\t\t\t\"supports_versioning\": \"yes\",\r\n\t\t\t\t\t\t\t\"storage_type\": \"repository\",\r\n\t\t\t\t\t\t\t\"pid_system\": [\r\n\t\t\t\t\t\t\t\t\"other\"\r\n\t\t\t\t\t\t\t]\r\n\t\t\t\t\t\t},\r\n\t\t\t\t\t\t\"available_until\": \"2030-09-30\"\r\n\t\t\t\t\t}\r\n\t\t\t\t]\r\n\t\t\t},\r\n\t\t\t{\r\n\t\t\t\t\"dataset_id\": {\r\n\t\t\t\t\t\"identifier\": \"https://hdl.handle.net/0000/00.00001\",\r\n\t\t\t\t\t\"type\": \"handle\"\r\n\t\t\t\t},\r\n\t\t\t\t\"title\": \"Image collection\",\r\n\t\t\t\t\"personal_data\": \"no\",\r\n\t\t\t\t\"sensitive_data\": \"yes\",\r\n\t\t\t\t\"type\": \"Images\",\r\n\t\t\t\t\"description\": \"Images of test object X\",\r\n\t\t\t\t\"distribution\": [\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\t\"title\": \"Planned distribution\",\r\n\t\t\t\t\t\t\"format\": [],\r\n                        \"access_url\": \"https://hdl.handle.net/0001\",\r\n\t\t\t\t\t\t\"byte_size\": 50000000000,\r\n\t\t\t\t\t\t\"data_access\": \"closed\"\r\n\t\t\t\t\t}\r\n\t\t\t\t]\r\n\t\t\t},\r\n\t\t\t{\r\n\t\t\t\t\"dataset_id\": {\r\n\t\t\t\t\t\"identifier\": \"https://hdl.handle.net/0000/00.00002\",\r\n\t\t\t\t\t\"type\": \"handle\"\r\n\t\t\t\t},\r\n\t\t\t\t\"title\": \"Interviews\",\r\n\t\t\t\t\"personal_data\": \"yes\",\r\n\t\t\t\t\"sensitive_data\": \"no\",\r\n\t\t\t\t\"type\": \"other\",\r\n\t\t\t\t\"description\": \"Audio recordings with test persons\",\r\n\t\t\t\t\"distribution\": [\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\t\"title\": \"Planned distribution\",\r\n\t\t\t\t\t\t\"format\": [\r\n\t\t\t\t\t\t\t\"audio/mpeg\"\r\n\t\t\t\t\t\t],\r\n\t\t\t\t\t\t\"byte_size\": 439705600,\r\n\t\t\t\t\t\t\"data_access\": \"open\",\r\n                        \"access_url\": \"https://hdl.handle.net/0002\",\r\n\t\t\t\t\t\t\"license\": [\r\n\t\t\t\t\t\t\t{\r\n\t\t\t\t\t\t\t\t\"license_name\": \"Creative Commons Attribution (CC-BY)\",\r\n\t\t\t\t\t\t\t\t\"license_ref\": \"http://creativecommons.org/licenses/by/4.0/\",\r\n\t\t\t\t\t\t\t\t\"start_date\": \"2021-01-01\"\r\n\t\t\t\t\t\t\t}\r\n\t\t\t\t\t\t],\r\n\t\t\t\t\t\t\"host\": {\r\n\t\t\t\t\t\t\t\"title\": \"Zenodo\",\r\n\t\t\t\t\t\t\t\"url\": \"https://www.re3data.org/repository/r3d100010468\",\r\n\t\t\t\t\t\t\t\"host_id_type\": \"HTTP-RE3DATA\",\r\n\t\t\t\t\t\t\t\"description\": \"ZENODO builds and operates a simple and innovative service that enables researchers, scientists, EU projects and institutions to share and showcase multidisciplinary research results (data and publications) that are not part of the existing institutional or subject-based repositories of the research communities.\\nZENODO enables researchers, scientists, EU projects and institutions to:\\neasily share the long tail of small research results in a wide variety of formats including text, spreadsheets, audio, video, and images across all fields of science.\\ndisplay their research results and get credited by making the research results citable and integrate them into existing reporting lines to funding agencies like the European Commission.\\neasily access and reuse shared research results.\",\r\n\t\t\t\t\t\t\t\"supports_versioning\": \"unknown\",\r\n\t\t\t\t\t\t\t\"storage_type\": \"repository\",\r\n\t\t\t\t\t\t\t\"pid_system\": [\r\n\t\t\t\t\t\t\t\t\"doi\"\r\n\t\t\t\t\t\t\t]\r\n\t\t\t\t\t\t},\r\n\t\t\t\t\t\t\"available_until\": \"2031-08-01\"\r\n\t\t\t\t\t}\r\n\t\t\t\t]\r\n\t\t\t}\r\n\t\t]\r\n\t}\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
