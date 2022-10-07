@@ -10,55 +10,52 @@ public class ModelConstants {
         throw new AssertionError();
     }
 
+    // ------------------------------------
+    // Basic
+    // ------------------------------------
     private static final String REGEX_STRING = "^$|^[\\p{IsAlphabetic}\\p{Punct}\\p{Digit}\\p{Blank}\\n]+$";
-
-    // Software agent constants
-    public static final int DATA_SERVICE_TITLE_MIN = 1;
-    public static final int DATA_SERVICE_TITLE_MAX = 64;
-    public static final String DATA_SERVICE_TITLE_REGEX = REGEX_STRING;
-
-    public static final int DATA_SERVICE_ACCESS_RIGHTS_MIN = 1;
-    public static final int DATA_SERVICE_ACCESS_RIGHTS_MAX = 64;
-    public static final String DATA_SERVICE_ACCESS_RIGHTS_REGEX = "^[\\p{IsAlphabetic}\\p{Digit}-]+$";
-
-    public static final int DATA_SERVICE_ENDPOINT_DESCRIPTION_MIN = 0;
-    public static final int DATA_SERVICE_ENDPOINT_DESCRIPTION_MAX = 512;
-    public static final String DATA_SERVICE_ENDPOINT_DESCRIPTION_REGEX = REGEX_STRING;
-
-    // Entity constants
-    public static final int ENTITY_AT_LOCATION_MIN = 1;
-    public static final int ENTITY_AT_LOCATION_MAX = 256;
-    public static final String ENTITY_AT_LOCATION_REGEX = REGEX_STRING;
-
-    public static final int ENTITY_SPECIALIZATION_OF_MIN = 1;
-    public static final int ENTITY_SPECIALIZATION_OF_MAX = 256;
-    public static final String ENTITY_SPECIALIZATION_OF_REGEX = "^[\\p{IsAlphabetic}:_]+$";
-
-    public static final int ENTITY_VALUE_MIN = 0;
-    public static final int ENTITY_VALUE_MAX = 4096;
-    public static final String ENTITY_VALUE_REGEX = REGEX_STRING;
 
     // ISO 8601 Date and Time compliant string
     public final static String DATE_FORMAT_ISO_8601 = "yyyy-MM-dd";
     public final static String DATE_TIME_FORMAT_ISO_8601 = "yyyy-MM-dd'T'HH:mm:ss.SSS";
     public final static DateTimeFormatter DATE_FORMATTER_ISO_8601 = DateTimeFormatter
             .ofPattern(DATE_FORMAT_ISO_8601);
-    public final static DateTimeFormatter DATE_TIME_FORMATTER_ISO_8601 = DateTimeFormatter.ofPattern(
-            DATE_TIME_FORMAT_ISO_8601);
+    public final static DateTimeFormatter DATE_TIME_FORMATTER_ISO_8601 = DateTimeFormatter
+            .ofPattern(DATE_TIME_FORMAT_ISO_8601);
 
-    // Controlled vocabularies for maDMP
-    public static final String REGEX_GRANT_IDENTIFIER_TYPE = "^(url|other)$";
-    public static final String REGEX_METADATA_IDENTIFIER_TYPE = REGEX_GRANT_IDENTIFIER_TYPE;
-    public static final String REGEX_DATA_IDENTIFIER_TYPE = "^(handle|doi|ark|url|other)$";
-    public static final String REGEX_FUNDER_IDENTIFIER_TYPE = "^(fundref|url|other)$";
-    public static final String REGEX_CONTRIBUTOR_IDENTIFIER_TYPE = "^(orcid|isni|openid|other)$";
-    public static final String REGEX_CONTACT_IDENTIFIER_TYPE = "^(orcid|isni|openid|other)$";
-    public static final String REGEX_ALL_IDENTIFIER_TYPES = "^(fundref|orcid|handle|doi|ark|isni|openid|url|other)$";
+    // ------------------------------------
+    // RDM Service
+    // ------------------------------------
+    public static final int RDM_SERVICE_TITLE_MIN = 1;
+    public static final int RDM_SERVICE_TITLE_MAX = 64;
+    public static final String RDM_SERVICE_TITLE_REGEX = REGEX_STRING;
 
-    public static final String REGEX_FUNDING_STATUS = "^(planned|applied|granted|rejected)$";
-    public static final String REGEX_DATA_ACCESS = "^(open|shared|closed)$";
-    public static final String REGEX_YES_NO_UNKNOWN = "^(yes|no|unknown)$";
+    public static final int RDM_SERVICE_ACCESS_RIGHTS_MIN = 1;
+    public static final int RDM_SERVICE_ACCESS_RIGHTS_MAX = 64;
+    public static final String RDM_SERVICE_ACCESS_RIGHTS_REGEX = "^[\\p{IsAlphabetic}\\p{Digit}-]+$";
 
+    public static final int DATA_SERVICE_ENDPOINT_DESCRIPTION_MIN = 0;
+    public static final int DATA_SERVICE_ENDPOINT_DESCRIPTION_MAX = 512;
+    public static final String DATA_SERVICE_ENDPOINT_DESCRIPTION_REGEX = REGEX_STRING;
+
+    // ------------------------------------
+    // Property
+    // ------------------------------------
+    public static final int PROPERTY_AT_LOCATION_MIN = 1;
+    public static final int PROPERTY_AT_LOCATION_MAX = 256;
+    public static final String PROPERTY_AT_LOCATION_REGEX = REGEX_STRING;
+
+    public static final int PROPERTY_SPECIALIZATION_OF_MIN = 1;
+    public static final int PROPERTY_SPECIALIZATION_OF_MAX = 256;
+    public static final String PROPERTY_SPECIALIZATION_OF_REGEX = "^[\\p{IsAlphabetic}:_]+$";
+
+    public static final int PROPERTY_VALUE_MIN = 0;
+    public static final int PROPERTY_VALUE_MAX = 4096;
+    public static final String PROPERTY_VALUE_REGEX = REGEX_STRING;
+
+    // ------------------------------------
+    // Configuration
+    // ------------------------------------
     // Which identifiers can be change?
     public static final List<String> IDENTIFIER_CHANGEABLE_CLASSES = Arrays.asList(new String[] {
             "dmp:identifier",
@@ -88,6 +85,21 @@ public class ModelConstants {
             "securityandprivacy",
             "technicalresource",
     });
+
+    // ------------------------------------
+    // Controlled vocabularies for maDMP
+    // ------------------------------------
+    public static final String REGEX_GRANT_IDENTIFIER_TYPE = "^(url|other)$";
+    public static final String REGEX_METADATA_IDENTIFIER_TYPE = REGEX_GRANT_IDENTIFIER_TYPE;
+    public static final String REGEX_DATA_IDENTIFIER_TYPE = "^(handle|doi|ark|url|other)$";
+    public static final String REGEX_FUNDER_IDENTIFIER_TYPE = "^(fundref|url|other)$";
+    public static final String REGEX_CONTRIBUTOR_IDENTIFIER_TYPE = "^(orcid|isni|openid|other)$";
+    public static final String REGEX_CONTACT_IDENTIFIER_TYPE = "^(orcid|isni|openid|other)$";
+    public static final String REGEX_ALL_IDENTIFIER_TYPES = "^(fundref|orcid|handle|doi|ark|isni|openid|url|other)$";
+
+    public static final String REGEX_FUNDING_STATUS = "^(planned|applied|granted|rejected)$";
+    public static final String REGEX_DATA_ACCESS = "^(open|shared|closed)$";
+    public static final String REGEX_YES_NO_UNKNOWN = "^(yes|no|unknown)$";
 
     // Repository certified
     public static final String REGEX_REPOSITORY_CERTIFIED = "^(din31644|dini-zertifikat|dsa|iso16363|iso16919|trac|wds|coretrustseal)$";

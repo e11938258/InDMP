@@ -30,7 +30,7 @@ public class Grant_id extends Identifier {
     }
 
     @Override
-    public String getClassType() {
+    public String getObjectType() {
         return "grant_id";
     }
 }

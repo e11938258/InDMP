@@ -8,12 +8,12 @@ import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-import at.tuwien.indmp.model.Entity;
-import at.tuwien.indmp.service.EntityService;
+import at.tuwien.indmp.model.Property;
+import at.tuwien.indmp.modul.PropertyModule;
 import at.tuwien.indmp.util.ModelConstants;
 import at.tuwien.indmp.util.Functions;
 
-public class License extends AbstractClassEntity {
+public class License extends AbstractClassObject {
 
     /* Properties */
     @NotNull
@@ -51,7 +51,7 @@ public class License extends AbstractClassEntity {
     }
 
     @Override
-    public String[] getValueNames() {
+    public String[] getPropertyNames() {
         return new String[] {
                 "start_date",
                 "license_ref"
@@ -59,20 +59,24 @@ public class License extends AbstractClassEntity {
     }
 
     @Override
-    public String getClassIdentifier() {
+    public String getObjectIdentifier() {
         return getLicense_ref().toString();
     }
 
     @Override
-    public void build(EntityService entityService, String location) {
+    public void build(PropertyModule propertyModule, String atLocation) {
+        // ------------------------------------
         // Set properties
-        final List<Entity> properties = entityService.findEntities(location, null, null, true);
+        // ------------------------------------
+        final List<Property> properties = propertyModule.findEntities(atLocation, null, null, true);
 
-        Entity p = Functions.findPropertyInList(getClassType(), "start_date", properties);
+        Property p = Functions.findPropertyInList(getObjectType(), "start_date", properties);
         setStart_date(p != null ? LocalDate.parse(p.getValue()) : null);
 
+        // ------------------------------------
         // Set identifier
-        p = Functions.findPropertyInList(getClassType(), "license_ref", properties);
+        // ------------------------------------
+        p = Functions.findPropertyInList(getObjectType(), "license_ref", properties);
         setLicense_ref(URI.create(p.getValue()));
     }
 }

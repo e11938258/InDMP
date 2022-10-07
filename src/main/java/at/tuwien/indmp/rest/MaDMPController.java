@@ -12,8 +12,8 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import at.tuwien.indmp.exception.BadRequestException;
 import at.tuwien.indmp.exception.ForbiddenException;
 import at.tuwien.indmp.exception.NotFoundException;
-import at.tuwien.indmp.model.DataService;
-import at.tuwien.indmp.model.Entity;
+import at.tuwien.indmp.model.RDMService;
+import at.tuwien.indmp.model.Property;
 import at.tuwien.indmp.model.dmp.DMP;
 import at.tuwien.indmp.model.dmp.DMPScheme;
 import at.tuwien.indmp.model.dmp.DMP_id;
@@ -68,14 +68,14 @@ public class MaDMPController {
             @Valid @RequestBody DMPScheme dmpScheme) {
 
         // Get current RDM Service
-        final DataService dataService = dataServiceService.findByAccessRights(principal.getName());
+        final RDMService dataService = dataServiceService.findByAccessRights(principal.getName());
 
         // Identify maDMP
         DMP currentDMP = DMPService.identifyDMP(dmpScheme.getDmp(), dataService);
 
         // Was the DMP found?
         if (currentDMP != null) {
-            log.info("DMP was found, identifier: " + currentDMP.getClassIdentifier() + ". Updating...");
+            log.info("DMP was found, identifier: " + currentDMP.getObjectIdentifier() + ". Updating...");
             // Check maDMP modified property
             DMPService.checkModifiedProperty(currentDMP.getModified(), dmpScheme.getDmp().getModified());
             // Update DMP
@@ -152,10 +152,10 @@ public class MaDMPController {
             @RequestParam(required = true) String identifier,
             @RequestParam(required = true) String created,
             @RequestParam(required = true) String modified,
-            @Valid @RequestBody Entity entity) {
+            @Valid @RequestBody Property entity) {
 
         // Get current RDM Service
-        final DataService dataService = dataServiceService.findByAccessRights(principal.getName());
+        final RDMService dataService = dataServiceService.findByAccessRights(principal.getName());
 
         // Identify maDMP
         final DMP dmp = new DMP(created, modified, new DMP_id(identifier));
@@ -176,7 +176,7 @@ public class MaDMPController {
         }
 
         // Checking validation of properties 
-        if (!entity.getAtLocation().startsWith(dmp.getLocation("")) || entity.getSpecializationOf().contains("dmp:identifier")) {
+        if (!entity.getAtLocation().startsWith(dmp.getAtLocation("")) || entity.getSpecializationOf().contains("dmp:identifier")) {
             throw new ForbiddenException("Invalid property: cannot find location in dmp: " + entity.getAtLocation());
         }
 
@@ -203,10 +203,10 @@ public class MaDMPController {
             @RequestParam(required = true) String identifier,
             @RequestParam(required = true) String created,
             @RequestParam(required = true) String modified,
-            @Valid @RequestBody Entity entity) {
+            @Valid @RequestBody Property entity) {
 
         // Get current RDM Service
-        final DataService dataService = dataServiceService.findByAccessRights(principal.getName());
+        final RDMService dataService = dataServiceService.findByAccessRights(principal.getName());
 
         // Identify maDMP
         final DMP dmp = new DMP(created, modified, new DMP_id(identifier));
@@ -221,7 +221,7 @@ public class MaDMPController {
         }
 
         // Checking validation of properties
-        if (!entity.getAtLocation().startsWith(currentDMP.getLocation(""))) {
+        if (!entity.getAtLocation().startsWith(currentDMP.getAtLocation(""))) {
             throw new ForbiddenException("Invalid property: cannot find location in dmp: " + entity.getAtLocation());
         }
 
@@ -233,7 +233,7 @@ public class MaDMPController {
     }
 
     @Async
-    private void sendDMPToServices(DMP dmp, DataService dataService) {
+    private void sendDMPToServices(DMP dmp, RDMService dataService) {
         // Headers
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -242,7 +242,7 @@ public class MaDMPController {
         final DMPScheme dmpScheme = DMPService.loadWholeDMP(dmp);
 
         // For each service
-        for (DataService service : dataServiceService.getAllDataServices()) {
+        for (RDMService service : dataServiceService.getAllDataServices()) {
             // Except from which information received
             if (!service.equals(dataService)) {
                 try {
@@ -269,12 +269,12 @@ public class MaDMPController {
     @ResponseStatus(HttpStatus.OK)
     @ResponseBody
     @RequestMapping(value = Endpoints.GET_MADMP_IDENTIFIERS, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<Entity> getIdentifierHistory(Principal principal,
+    public List<Property> getIdentifierHistory(Principal principal,
             @RequestParam(required = true) String identifier,
             @RequestParam(required = true) String created) {
 
         // Get current RDM service
-        final DataService dataService = dataServiceService.findByAccessRights(principal.getName());
+        final RDMService dataService = dataServiceService.findByAccessRights(principal.getName());
 
         // Identify maDMP
         final DMP currentDMP = DMPService.identifyDMP(new DMP(created, LocalDateTime.now(), new DMP_id(identifier)),

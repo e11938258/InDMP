@@ -30,7 +30,7 @@ public class Funder_id extends Identifier {
     }
 
     @Override
-    public String getClassType() {
+    public String getObjectType() {
         return "funding";
     }
 }

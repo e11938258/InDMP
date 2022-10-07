@@ -11,13 +11,13 @@ import javax.validation.constraints.Pattern;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-import at.tuwien.indmp.model.DataService;
-import at.tuwien.indmp.model.Entity;
-import at.tuwien.indmp.service.EntityService;
+import at.tuwien.indmp.model.RDMService;
+import at.tuwien.indmp.modul.PropertyModule;
+import at.tuwien.indmp.model.Property;
 import at.tuwien.indmp.util.ModelConstants;
 import at.tuwien.indmp.util.Functions;
 
-public class Distribution extends AbstractClassEntity {
+public class Distribution extends AbstractClassObject {
 
     /* Properties */
     @NotNull
@@ -144,7 +144,7 @@ public class Distribution extends AbstractClassEntity {
     }
 
     @Override
-    public String[] getValueNames() {
+    public String[] getPropertyNames() {
         return new String[] {
                 "data_access",
                 "available_until",
@@ -158,71 +158,82 @@ public class Distribution extends AbstractClassEntity {
     }
 
     @Override
-    public String getClassIdentifier() {
+    public String getObjectIdentifier() {
         return getAccess_url().toString();
     }
 
     @Override
-    public List<Entity> getPropertiesFromNestedClasses(DMP dmp, String location, DataService dataService) {
-        final List<Entity> properties = new ArrayList<>();
+    public List<Property> getPropertiesFromNestedObjects(DMP dmp, String atLocation, RDMService rdmService) {
+        final List<Property> properties = new ArrayList<>();
 
-        // Host
+        // ------------------------------------
+        // Nested object: Host
+        // ------------------------------------
         if (getHost() != null) {
-            properties.addAll(getHost().getProperties(dmp, getLocation(location), dataService));
+            properties.addAll(getHost().getProperties(dmp, getAtLocation(atLocation), rdmService));
         }
 
-        // License
+        // ------------------------------------
+        // Nested object: License
+        // ------------------------------------
         for (License i : getLicense()) {
-            properties.addAll(i.getProperties(dmp, getLocation(location), dataService));
+            properties.addAll(i.getProperties(dmp, getAtLocation(atLocation), rdmService));
         }
 
         return properties;
     }
 
     @Override
-    public void build(EntityService entityService, String location) {
+    public void build(PropertyModule propertyModule, String atLocation) {
+        // ------------------------------------
         // Set properties
-        final List<Entity> properties = entityService.findEntities(location, null, null, true);
+        // ------------------------------------
+        final List<Property> properties = propertyModule.findEntities(atLocation, null, null, true);
 
-        Entity p = Functions.findPropertyInList(getClassType(), "data_access", properties);
+        Property p = Functions.findPropertyInList(getObjectType(), "data_access", properties);
         setData_access(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList(getClassType(), "available_until", properties);
+        p = Functions.findPropertyInList(getObjectType(), "available_until", properties);
         setAvailable_until(p != null ? LocalDate.parse(p.getValue()) : null);
 
-        p = Functions.findPropertyInList(getClassType(), "byte_size", properties);
+        p = Functions.findPropertyInList(getObjectType(), "byte_size", properties);
         setByte_size(p != null ? Long.valueOf(p.getValue()) : null);
 
-        p = Functions.findPropertyInList(getClassType(), "description", properties);
+        p = Functions.findPropertyInList(getObjectType(), "description", properties);
         setDescription(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList(getClassType(), "download_url", properties);
+        p = Functions.findPropertyInList(getObjectType(), "download_url", properties);
         setDownload_url(p != null ? URI.create(p.getValue()) : null);
 
-        p = Functions.findPropertyInList(getClassType(), "format", properties);
+        p = Functions.findPropertyInList(getObjectType(), "format", properties);
         setFormat(p != null
                 ? Arrays.asList(p.getValue().replace("[", "").replace("]", "").replace(" ", "").split(",", -1))
                 : null);
 
-        p = Functions.findPropertyInList(getClassType(), "title", properties);
+        p = Functions.findPropertyInList(getObjectType(), "title", properties);
         setTitle(p != null ? p.getValue() : null);
 
+        // ------------------------------------
         // Set identifier
-        p = Functions.findPropertyInList(getClassType(), "access_url", properties);
+        // ------------------------------------
+        p = Functions.findPropertyInList(getObjectType(), "access_url", properties);
         setAccess_url(URI.create(p.getValue()));
 
-        // Nested classes
-        // Host
-        for (Entity property : entityService.findAllEntities(location, "host:url", true)) {
+        // ------------------------------------
+        // Nested object: Set host
+        // ------------------------------------
+        for (Property property : propertyModule.findAllEntities(atLocation, "host:url", true)) {
             host = new Host();
-            host.build(entityService, location + "/" + property.getValue());
+            host.build(propertyModule, atLocation + "/" + property.getValue());
             setHost(host);
         }
 
-        // License
-        for (Entity property : entityService.findAllEntities(location, "license:license_ref", true)) {
+        // ------------------------------------
+        // Nested object: Set license
+        // ------------------------------------
+        for (Property property : propertyModule.findAllEntities(atLocation, "license:license_ref", true)) {
             final License i = new License();
-            i.build(entityService, location + "/" + property.getValue());
+            i.build(propertyModule, atLocation + "/" + property.getValue());
             license.add(i);
         }
     }

@@ -8,12 +8,12 @@ import java.util.List;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
-import at.tuwien.indmp.model.Entity;
-import at.tuwien.indmp.service.EntityService;
+import at.tuwien.indmp.model.Property;
+import at.tuwien.indmp.modul.PropertyModule;
 import at.tuwien.indmp.util.ModelConstants;
 import at.tuwien.indmp.util.Functions;
 
-public class Host extends AbstractClassEntity {
+public class Host extends AbstractClassObject {
 
     /* Properties */
     private String availability;
@@ -153,7 +153,7 @@ public class Host extends AbstractClassEntity {
     }
 
     @Override
-    public String[] getValueNames() {
+    public String[] getPropertyNames() {
         return new String[] {
                 "availability",
                 "backup_frequency",
@@ -170,49 +170,53 @@ public class Host extends AbstractClassEntity {
     }
 
     @Override
-    public String getClassIdentifier() {
+    public String getObjectIdentifier() {
         return getUrl().toString();
     }
 
     @Override
-    public void build(EntityService entityService, String location) {
+    public void build(PropertyModule propertyModule, String atLocation) {
+        // ------------------------------------
         // Set properties
-        final List<Entity> properties = entityService.findEntities(location, null, null, true);
+        // ------------------------------------
+        final List<Property> properties = propertyModule.findEntities(atLocation, null, null, true);
 
-        Entity p = Functions.findPropertyInList(getClassType(), "availability", properties);
+        Property p = Functions.findPropertyInList(getObjectType(), "availability", properties);
         setAvailability(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList(getClassType(), "backup_frequency", properties);
+        p = Functions.findPropertyInList(getObjectType(), "backup_frequency", properties);
         setBackup_frequency(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList(getClassType(), "backup_type", properties);
+        p = Functions.findPropertyInList(getObjectType(), "backup_type", properties);
         setBackup_type(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList(getClassType(), "certified_with", properties);
+        p = Functions.findPropertyInList(getObjectType(), "certified_with", properties);
         setCertified_with(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList(getClassType(), "description", properties);
+        p = Functions.findPropertyInList(getObjectType(), "description", properties);
         setDescription(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList(getClassType(), "geo_location", properties);
+        p = Functions.findPropertyInList(getObjectType(), "geo_location", properties);
         setGeo_location(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList(getClassType(), "pid_system", properties);
+        p = Functions.findPropertyInList(getObjectType(), "pid_system", properties);
         setPid_system(p != null
                 ? Arrays.asList(p.getValue().replace("[", "").replace("]", "").replace(" ", "").split(",", -1))
                 : null);
 
-        p = Functions.findPropertyInList(getClassType(), "storage_type", properties);
+        p = Functions.findPropertyInList(getObjectType(), "storage_type", properties);
         setStorage_type(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList(getClassType(), "support_versioning", properties);
+        p = Functions.findPropertyInList(getObjectType(), "support_versioning", properties);
         setSupport_versioning(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList(getClassType(), "title", properties);
+        p = Functions.findPropertyInList(getObjectType(), "title", properties);
         setTitle(p != null ? p.getValue() : null);
 
+        // ------------------------------------
         // Set identifier
-        p = Functions.findPropertyInList(getClassType(), "url", properties);
+        // ------------------------------------
+        p = Functions.findPropertyInList(getObjectType(), "url", properties);
         setUrl(URI.create(p.getValue()));
     }
 }

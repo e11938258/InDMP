@@ -6,12 +6,12 @@ import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
-import at.tuwien.indmp.model.DataService;
-import at.tuwien.indmp.model.Entity;
-import at.tuwien.indmp.service.EntityService;
+import at.tuwien.indmp.model.RDMService;
+import at.tuwien.indmp.modul.PropertyModule;
+import at.tuwien.indmp.model.Property;
 import at.tuwien.indmp.util.Functions;
 
-public class Contributor extends AbstractClassEntity {
+public class Contributor extends AbstractClassObject {
 
     /* Properties */
     private String mbox;
@@ -70,7 +70,7 @@ public class Contributor extends AbstractClassEntity {
     }
 
     @Override
-    public String[] getValueNames() {
+    public String[] getPropertyNames() {
         return new String[] {
                 "mbox",
                 "name",
@@ -79,34 +79,38 @@ public class Contributor extends AbstractClassEntity {
     }
 
     @Override
-    public String getClassIdentifier() {
-        return getContributor_id().getClassIdentifier();
+    public String getObjectIdentifier() {
+        return getContributor_id().getObjectIdentifier();
     }
 
     @Override
-    public List<Entity> getPropertiesFromIdentifier(DMP dmp, String location, DataService dataService) {
-        return getContributor_id().getProperties(dmp, location, dataService);
+    public List<Property> getPropertiesFromIdentifier(DMP dmp, String atLocation, RDMService rdmService) {
+        return getContributor_id().getProperties(dmp, atLocation, rdmService);
     }
 
     @Override
-    public void build(EntityService entityService, String location) {
+    public void build(PropertyModule propertyModule, String atLocation) {
+        // ------------------------------------
         // Set properties
-        final List<Entity> properties = entityService.findEntities(location, null, null, true);
+        // ------------------------------------
+        final List<Property> properties = propertyModule.findEntities(atLocation, null, null, true);
 
-        Entity p = Functions.findPropertyInList(getClassType(), "mbox", properties);
+        Property p = Functions.findPropertyInList(getObjectType(), "mbox", properties);
         setMbox(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList(getClassType(), "name", properties);
+        p = Functions.findPropertyInList(getObjectType(), "name", properties);
         setName(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList(getClassType(), "role", properties);
+        p = Functions.findPropertyInList(getObjectType(), "role", properties);
         setRole(p != null
                 ? Arrays.asList(p.getValue().replace("[", "").replace("]", "").replace(" ", "").split(",", -1))
                 : null);
 
+        // ------------------------------------
         // Set identifier
-        final Entity identifier = Functions.findPropertyInList(getClassType(), "identifier", properties);
-        final Entity type = Functions.findPropertyInList(getClassType(), "type", properties);
+        // ------------------------------------
+        final Property identifier = Functions.findPropertyInList(getObjectType(), "identifier", properties);
+        final Property type = Functions.findPropertyInList(getObjectType(), "type", properties);
         setContributor_id(new Contributor_id(identifier.getValue(), type.getValue()));
     }
 }

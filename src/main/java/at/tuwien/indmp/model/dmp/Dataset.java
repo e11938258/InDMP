@@ -10,13 +10,13 @@ import javax.validation.constraints.Pattern;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-import at.tuwien.indmp.model.DataService;
-import at.tuwien.indmp.model.Entity;
-import at.tuwien.indmp.service.EntityService;
+import at.tuwien.indmp.model.RDMService;
+import at.tuwien.indmp.modul.PropertyModule;
+import at.tuwien.indmp.model.Property;
 import at.tuwien.indmp.util.ModelConstants;
 import at.tuwien.indmp.util.Functions;
 
-public class Dataset extends AbstractClassEntity {
+public class Dataset extends AbstractClassObject {
 
     /* Properties */
     private List<String> data_quality_assurance = new ArrayList<>();
@@ -198,7 +198,7 @@ public class Dataset extends AbstractClassEntity {
     }
 
     @Override
-    public String[] getValueNames() {
+    public String[] getPropertyNames() {
         return new String[] {
                 "data_quality_assurance",
                 "description",
@@ -214,110 +214,132 @@ public class Dataset extends AbstractClassEntity {
     }
 
     @Override
-    public String getClassIdentifier() {
-        return getDataset_id().getClassIdentifier();
+    public String getObjectIdentifier() {
+        return getDataset_id().getObjectIdentifier();
     }
 
     @Override
-    public List<Entity> getPropertiesFromIdentifier(DMP dmp, String location, DataService dataService) {
-        return getDataset_id().getProperties(dmp, location, dataService);
+    public List<Property> getPropertiesFromIdentifier(DMP dmp, String atLocation, RDMService rdmService) {
+        return getDataset_id().getProperties(dmp, atLocation, rdmService);
     }
 
     @Override
-    public List<Entity> getPropertiesFromNestedClasses(DMP dmp, String location, DataService dataService) {
-        final List<Entity> properties = new ArrayList<>();
+    public List<Property> getPropertiesFromNestedObjects(DMP dmp, String atLocation, RDMService rdmService) {
+        final List<Property> properties = new ArrayList<>();
 
-        // Distribution
+        // ------------------------------------
+        // Nested object: Distribution
+        // ------------------------------------
         for (Distribution i : getDistribution()) {
-            properties.addAll(i.getProperties(dmp, getLocation(location), dataService));
-            properties.addAll(i.getPropertiesFromNestedClasses(dmp, getLocation(location), dataService));
+            properties.addAll(i.getProperties(dmp, getAtLocation(atLocation), rdmService));
+            properties.addAll(i.getPropertiesFromNestedObjects(dmp, getAtLocation(atLocation), rdmService));
         }
-        // Metadata
+        
+        // ------------------------------------
+        // Nested object: Metadata
+        // ------------------------------------
         for (Metadata i : getMetadata()) {
-            properties.addAll(i.getProperties(dmp, getLocation(location), dataService));
+            properties.addAll(i.getProperties(dmp, getAtLocation(atLocation), rdmService));
         }
-        // Security and privacy
+
+        // ------------------------------------
+        // Nested object: Security and privacy
+        // ------------------------------------
         for (SecurityAndPrivacy i : getSecurity_and_privacy()) {
-            properties.addAll(i.getProperties(dmp, getLocation(location), dataService));
+            properties.addAll(i.getProperties(dmp, getAtLocation(atLocation), rdmService));
         }
-        // Technical resource
+
+        // ------------------------------------
+        // Nested object: Technical resource
+        // ------------------------------------
         for (TechnicalResource i : getTechnical_resource()) {
-            properties.addAll(i.getProperties(dmp, getLocation(location), dataService));
+            properties.addAll(i.getProperties(dmp, getAtLocation(atLocation), rdmService));
         }
 
         return properties;
     }
 
     @Override
-    public void build(EntityService entityService, String location) {
+    public void build(PropertyModule propertyModule, String atLocation) {
+        // ------------------------------------
         // Set properties
-        final List<Entity> properties = entityService.findEntities(location, null, null, true);
+        // ------------------------------------
+        final List<Property> properties = propertyModule.findEntities(atLocation, null, null, true);
 
-        Entity p = Functions.findPropertyInList(getClassType(), "data_quality_assurance", properties);
+        Property p = Functions.findPropertyInList(getObjectType(), "data_quality_assurance", properties);
         setData_quality_assurance(p != null
                 ? Arrays.asList(p.getValue().replace("[", "").replace("]", "").replace(" ", "").split(",", -1))
                 : null);
 
-        p = Functions.findPropertyInList(getClassType(), "description", properties);
+        p = Functions.findPropertyInList(getObjectType(), "description", properties);
         setDescription(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList(getClassType(), "issued", properties);
+        p = Functions.findPropertyInList(getObjectType(), "issued", properties);
         setIssued(p != null ? LocalDate.parse(p.getValue()) : null);
 
-        p = Functions.findPropertyInList(getClassType(), "keyword", properties);
+        p = Functions.findPropertyInList(getObjectType(), "keyword", properties);
         setKeyword(p != null
                 ? Arrays.asList(p.getValue().replace("[", "").replace("]", "").replace(" ", "").split(",", -1))
                 : null);
 
-        p = Functions.findPropertyInList(getClassType(), "language", properties);
+        p = Functions.findPropertyInList(getObjectType(), "language", properties);
         setLanguage(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList(getClassType(), "personal_data", properties);
+        p = Functions.findPropertyInList(getObjectType(), "personal_data", properties);
         setPersonal_data(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList(getClassType(), "preservation_statement", properties);
+        p = Functions.findPropertyInList(getObjectType(), "preservation_statement", properties);
         setPreservation_statement(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList(getClassType(), "sensitive_data", properties);
+        p = Functions.findPropertyInList(getObjectType(), "sensitive_data", properties);
         setSensitive_data(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList(getClassType(), "title", properties);
+        p = Functions.findPropertyInList(getObjectType(), "title", properties);
         setTitle(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList(getClassType(), "dtype", properties);
+        p = Functions.findPropertyInList(getObjectType(), "dtype", properties);
         setType(p != null ? p.getValue() : null);
 
+        // ------------------------------------
         // Set identifier
-        final Entity identifier = Functions.findPropertyInList(getClassType(), "identifier", properties);
-        final Entity type = Functions.findPropertyInList(getClassType(), "type", properties);
+        // ------------------------------------
+        final Property identifier = Functions.findPropertyInList(getObjectType(), "identifier", properties);
+        final Property type = Functions.findPropertyInList(getObjectType(), "type", properties);
         dataset_id = new Dataset_id(identifier.getValue(), type.getValue());
 
-        // Nested classes
-        // Distribution
-        for (Entity property : entityService.findAllEntities(location, "distribution:access_url", true)) {
+        // ------------------------------------
+        // Nested object: Set distribution
+        // ------------------------------------
+        for (Property property : propertyModule.findAllEntities(atLocation, "distribution:access_url", true)) {
             final Distribution i = new Distribution();
-            i.build(entityService, location + "/" + property.getValue());
+            i.build(propertyModule, atLocation + "/" + property.getValue());
             distribution.add(i);
         }
 
-        // Metadata
-        for (Entity property : entityService.findAllEntities(location, "metadata:metadata_standard_id", true)) {
+        // ------------------------------------
+        // Nested object: Metadata
+        // ------------------------------------
+        for (Property property : propertyModule.findAllEntities(atLocation, "metadata:metadata_standard_id", true)) {
             final Metadata i = new Metadata();
-            i.build(entityService, location + "/" + property.getValue());
+            i.build(propertyModule, atLocation + "/" + property.getValue());
             metadata.add(i);
         }
 
-        // Security and privacy
-        for (Entity property : entityService.findAllEntities(location, "securityandprivacy:title", true)) {
+        // ------------------------------------
+        // Nested object: Security and privacy
+        // ------------------------------------
+        for (Property property : propertyModule.findAllEntities(atLocation, "securityandprivacy:title", true)) {
             final SecurityAndPrivacy i = new SecurityAndPrivacy();
-            i.build(entityService, location + "/" + property.getValue());
+            i.build(propertyModule, atLocation + "/" + property.getValue());
             security_and_privacy.add(i);
         }
 
-        // Technical resource
-        for (Entity property : entityService.findAllEntities(location, "techicalresource:name", true)) {
+        // ------------------------------------
+        // Nested object: Technical resource
+        // ------------------------------------
+        for (Property property : propertyModule.findAllEntities(atLocation, "techicalresource:name", true)) {
             final TechnicalResource i = new TechnicalResource();
-            i.build(entityService, location + "/" + property.getValue());
+            i.build(propertyModule, atLocation + "/" + property.getValue());
             technical_resource.add(i);
         }
 

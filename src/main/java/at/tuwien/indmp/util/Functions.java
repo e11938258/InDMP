@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import at.tuwien.indmp.model.Activity;
-import at.tuwien.indmp.model.Entity;
+import at.tuwien.indmp.model.Property;
 import at.tuwien.indmp.model.dmp.DMP;
 
 public class Functions {
@@ -23,9 +23,9 @@ public class Functions {
      * @param entities
      * @return
      */
-    public static Entity findPropertyInList(String classType, String name, List<Entity> entities) {
+    public static Property findPropertyInList(String classType, String name, List<Property> entities) {
         final String propertyName = classType + ":" + name;
-        final List<Entity> results = entities.stream().filter(p -> p.getSpecializationOf().equals(propertyName))
+        final List<Property> results = entities.stream().filter(p -> p.getSpecializationOf().equals(propertyName))
                 .collect(Collectors.toList());
         if(results.size() == 1) {
             return results.get(0);
@@ -36,7 +36,7 @@ public class Functions {
 
     /**
      * 
-     * Create a new entity
+     * Create a new property
      * 
      * @param dmp
      * @param location
@@ -44,13 +44,14 @@ public class Functions {
      * @param value
      * @return
      */
-    public static Entity createEntity(DMP dmp, String location, String propertyName, String value) {
+    public static Property createProperty(DMP dmp, String location, String propertyName, String value) {
         // Create a new activity
         final Activity activity = new Activity(Timestamp.valueOf(dmp.getModified()));
-        // Add a new entity
-        final Entity entity = new Entity(location, propertyName, value, activity);
-        // Set entity to activity
-        activity.setGenerated(entity);
-        return entity;
+        // Add a new property
+        final Property property = new Property(location, propertyName, value, activity);
+        // Set property to activity
+        activity.setGenerated(property);
+        // Return the property
+        return property;
     }
 }

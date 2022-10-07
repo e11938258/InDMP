@@ -2,7 +2,7 @@ package at.tuwien.indmp.rest;
 
 import javax.validation.Valid;
 
-import at.tuwien.indmp.model.DataService;
+import at.tuwien.indmp.model.RDMService;
 import at.tuwien.indmp.service.DataServiceService;
 import at.tuwien.indmp.util.Endpoints;
 
@@ -32,7 +32,7 @@ public class DataServiceController {
      */
     @ResponseStatus(HttpStatus.CREATED)
     @RequestMapping(value = Endpoints.CREATE_DATA_SERVICE, method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-    public void createNewRDMService(@Valid @RequestBody DataService dataService) {
+    public void createNewRDMService(@Valid @RequestBody RDMService dataService) {
         dataServiceService.persist(dataService);
     }
 }

@@ -30,7 +30,7 @@ public class Metadata_standard_id extends Identifier {
     }
 
     @Override
-    public String getClassType() {
+    public String getObjectType() {
         return "metadata";
     }
 }

@@ -1,9 +1,9 @@
-package at.tuwien.indmp.service;
+package at.tuwien.indmp.modul;
 
 import at.tuwien.indmp.dao.DataServiceDao;
 import at.tuwien.indmp.exception.ConflictException;
 import at.tuwien.indmp.exception.NotFoundException;
-import at.tuwien.indmp.model.DataService;
+import at.tuwien.indmp.model.RDMService;
 
 import java.util.List;
 import java.util.Objects;
@@ -18,12 +18,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class DataServiceService {
+public class RDMServiceModule {
 
     @Autowired
     private DataServiceDao dataServiceDao;
 
-    private final Logger log = LoggerFactory.getLogger(DataServiceService.class);
+    private final Logger log = LoggerFactory.getLogger(RDMServiceModule.class);
 
     /**
      * 
@@ -32,7 +32,7 @@ public class DataServiceService {
      * @param dataService
      */
     @Transactional
-    public void persist(DataService dataService) {
+    public void persist(RDMService dataService) {
         Objects.requireNonNull(dataService);
         if (!existsByAccessRights(dataService.getAccessRights())) {
             dataServiceDao.persist(dataService);
@@ -62,7 +62,7 @@ public class DataServiceService {
      * @return
      */
     @Transactional(readOnly = true)
-    public DataService findByAccessRights(String accessRights) {
+    public RDMService findByAccessRights(String accessRights) {
         try {
             return dataServiceDao.findByAccessRights(accessRights);
         } catch (NoResultException | EmptyResultDataAccessException ex) {
@@ -78,7 +78,7 @@ public class DataServiceService {
      * @return
      */
     @Transactional(readOnly = true)
-    public List<DataService> getAllDataServices() {
+    public List<RDMService> getAllDataServices() {
         return dataServiceDao.findAll();
     }
 
@@ -88,7 +88,7 @@ public class DataServiceService {
      * 
      */
     @Transactional
-    public void update(DataService dataService) {
+    public void update(RDMService dataService) {
         dataServiceDao.update(dataService);
     }
 }

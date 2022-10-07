@@ -4,11 +4,11 @@ import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
-import at.tuwien.indmp.model.Entity;
-import at.tuwien.indmp.service.EntityService;
+import at.tuwien.indmp.model.Property;
+import at.tuwien.indmp.modul.PropertyModule;
 import at.tuwien.indmp.util.Functions;
 
-public class TechnicalResource extends AbstractClassEntity {
+public class TechnicalResource extends AbstractClassObject {
 
     /* Properties */
     private String description;
@@ -44,7 +44,7 @@ public class TechnicalResource extends AbstractClassEntity {
     }
 
     @Override
-    public String[] getValueNames() {
+    public String[] getPropertyNames() {
         return new String[] {
                 "description",
                 "name"
@@ -52,20 +52,24 @@ public class TechnicalResource extends AbstractClassEntity {
     }
 
     @Override
-    public String getClassIdentifier() {
+    public String getObjectIdentifier() {
         return getName();
     }
 
     @Override
-    public void build(EntityService entityService, String location) {
+    public void build(PropertyModule propertyModule, String atLocation) {
+        // ------------------------------------
         // Set properties
-        final List<Entity> properties = entityService.findEntities(location, null, null, true);
+        // ------------------------------------
+        final List<Property> properties = propertyModule.findEntities(atLocation, null, null, true);
 
-        Entity p = Functions.findPropertyInList(getClassType(), "description", properties);
+        Property p = Functions.findPropertyInList(getObjectType(), "description", properties);
         setDescription(p != null ? p.getValue() : null);
 
+        // ------------------------------------
         // Set identifier
-        p = Functions.findPropertyInList(getClassType(),"name", properties);
+        // ------------------------------------
+        p = Functions.findPropertyInList(getObjectType(),"name", properties);
         setName(p.getValue());
     }
 }

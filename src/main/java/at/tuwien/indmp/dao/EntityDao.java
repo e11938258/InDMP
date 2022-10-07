@@ -13,13 +13,13 @@ import javax.persistence.criteria.Root;
 import org.springframework.stereotype.Repository;
 
 import at.tuwien.indmp.model.Activity;
-import at.tuwien.indmp.model.Entity;
+import at.tuwien.indmp.model.Property;
 
 @Repository
-public class EntityDao extends AbstractDao<Entity> {
+public class EntityDao extends AbstractDao<Property> {
 
     public EntityDao() {
-        super(Entity.class);
+        super(Property.class);
     }
 
     /**
@@ -31,11 +31,11 @@ public class EntityDao extends AbstractDao<Entity> {
      * @param value
      * @return
      */
-    public Entity findEntity(String atLocation, String specializationOf, String value) {
+    public Property findEntity(String atLocation, String specializationOf, String value) {
         final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        final CriteriaQuery<Entity> criteriaQuery = criteriaBuilder.createQuery(Entity.class);
-        final Root<Entity> root = criteriaQuery.from(Entity.class);
-        final Join<Entity, Activity> activity = root.join("wasGeneratedBy", JoinType.INNER);
+        final CriteriaQuery<Property> criteriaQuery = criteriaBuilder.createQuery(Property.class);
+        final Root<Property> root = criteriaQuery.from(Property.class);
+        final Join<Property, Activity> activity = root.join("wasGeneratedBy", JoinType.INNER);
         criteriaQuery.select(root).distinct(true);
 
         // Conditions
@@ -73,12 +73,12 @@ public class EntityDao extends AbstractDao<Entity> {
      * @param onlyActive
      * @return
      */
-    public List<Entity> findEntities(String atLocation, String specializationOf, String value, boolean onlyActive) {
+    public List<Property> findEntities(String atLocation, String specializationOf, String value, boolean onlyActive) {
 
         final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        final CriteriaQuery<Entity> criteriaQuery = criteriaBuilder.createQuery(Entity.class);
-        final Root<Entity> root = criteriaQuery.from(Entity.class);
-        final Join<Entity, Activity> activity = root.join("wasGeneratedBy", JoinType.INNER);
+        final CriteriaQuery<Property> criteriaQuery = criteriaBuilder.createQuery(Property.class);
+        final Root<Property> root = criteriaQuery.from(Property.class);
+        final Join<Property, Activity> activity = root.join("wasGeneratedBy", JoinType.INNER);
         criteriaQuery.select(root).distinct(true);
 
         // Conditions
@@ -116,13 +116,13 @@ public class EntityDao extends AbstractDao<Entity> {
      * @param onlyActive
      * @return
      */
-    public List<Entity> findAllEntities(String atLocation, String specializationOf, boolean onlyActive) {
+    public List<Property> findAllEntities(String atLocation, String specializationOf, boolean onlyActive) {
         Objects.requireNonNull(atLocation);
 
         final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        final CriteriaQuery<Entity> criteriaQuery = criteriaBuilder.createQuery(Entity.class);
-        final Root<Entity> root = criteriaQuery.from(Entity.class);
-        final Join<Entity, Activity> activity = root.join("wasGeneratedBy", JoinType.INNER);
+        final CriteriaQuery<Property> criteriaQuery = criteriaBuilder.createQuery(Property.class);
+        final Root<Property> root = criteriaQuery.from(Property.class);
+        final Join<Property, Activity> activity = root.join("wasGeneratedBy", JoinType.INNER);
         criteriaQuery.select(root).distinct(true);
 
         // Conditions

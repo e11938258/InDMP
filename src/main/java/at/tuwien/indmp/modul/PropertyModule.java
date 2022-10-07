@@ -1,10 +1,10 @@
-package at.tuwien.indmp.service;
+package at.tuwien.indmp.modul;
 
 import at.tuwien.indmp.dao.ActivityDao;
 import at.tuwien.indmp.dao.EntityDao;
 import at.tuwien.indmp.model.Activity;
-import at.tuwien.indmp.model.DataService;
-import at.tuwien.indmp.model.Entity;
+import at.tuwien.indmp.model.RDMService;
+import at.tuwien.indmp.model.Property;
 
 import java.sql.Timestamp;
 import java.time.LocalDateTime;
@@ -21,7 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-public class EntityService {
+public class PropertyModule {
 
     @Autowired
     private EntityDao entityDao;
@@ -30,9 +30,9 @@ public class EntityService {
     private ActivityDao activityDao;
 
     @Autowired
-    private DataServiceService dataServiceService; // Update
+    private RDMServiceModule rdmServiceModule; // Update
 
-    private final Logger log = LoggerFactory.getLogger(EntityService.class);
+    private final Logger log = LoggerFactory.getLogger(PropertyModule.class);
 
     /**
      *
@@ -42,29 +42,29 @@ public class EntityService {
      * @param dataService
      */
     @Transactional
-    public void persist(List<Entity> entities, DataService dataService) {
+    public void persist(List<Property> entities, RDMService dataService) {
         Objects.requireNonNull(entities, "List with entities is null.");
         // For each entity
-        for (Entity entity : entities) {
+        for (Property entity : entities) {
             persist(entity, dataService);
         }
     }
 
-    private void persist(Entity entity, DataService dataService) {
+    private void persist(Property entity, RDMService dataService) {
         Objects.requireNonNull(entity, "Entity is null.");
         Objects.requireNonNull(dataService, "Service is null.");
 
         log.info("Persisting a new entity: " + entity.toString());
 
         // Add references
-        entity.getWasGeneratedBy().setWasAssociatedWith(dataService);
-        dataService.add(entity.getWasGeneratedBy());
+        entity.getWasGeneratedBy().setWasStartedBy(dataService);
+        dataService.addStartRelation(entity.getWasGeneratedBy());
         // Persist the new activity
         activityDao.persist(entity.getWasGeneratedBy());
         // Persist the new entity
         entityDao.persist(entity);
         // Update the RDM service
-        dataServiceService.update(dataService);
+        rdmServiceModule.update(dataService);
     }
 
     /**
@@ -77,7 +77,7 @@ public class EntityService {
      * @return
      */
     @Transactional(readOnly = true)
-    public Entity findEntity(String atLocation, String specializationOf, String value) {
+    public Property findEntity(String atLocation, String specializationOf, String value) {
         try {
             return entityDao.findEntity(atLocation, specializationOf, value);
         } catch (NoResultException | EmptyResultDataAccessException ex) {
@@ -94,7 +94,7 @@ public class EntityService {
      * @return
      */
     @Transactional(readOnly = true)
-    public List<Entity> findEntities(String atLocation, String specializationOf, String value, boolean onlyActive) {
+    public List<Property> findEntities(String atLocation, String specializationOf, String value, boolean onlyActive) {
         return entityDao.findEntities(atLocation, specializationOf, value, onlyActive);
     }
 
@@ -107,7 +107,7 @@ public class EntityService {
      * @return
      */
     @Transactional(readOnly = true)
-    public List<Entity> findAllEntities(String atLocation, String specializationOf, boolean onlyActive) {
+    public List<Property> findAllEntities(String atLocation, String specializationOf, boolean onlyActive) {
         return entityDao.findAllEntities(atLocation, specializationOf, onlyActive);
     }
 
@@ -119,11 +119,11 @@ public class EntityService {
      * @param dataService
      */
     @Transactional
-    public void deactivateAndCreateEntities(List<Entity> entities, DataService dataService) {
+    public void deactivateAndCreateEntities(List<Property> entities, RDMService dataService) {
         Objects.requireNonNull(entities, "List with entities is null.");
 
         // For each entity
-        for (Entity entity : entities) {
+        for (Property entity : entities) {
             deactivateAndCreateEntity(entity, dataService);
         }
     }
@@ -136,12 +136,12 @@ public class EntityService {
      * @param dataService
      */
     @Transactional
-    public void deactivateAndCreateEntity(Entity entity, DataService dataService) {
+    public void deactivateAndCreateEntity(Property entity, RDMService dataService) {
         Objects.requireNonNull(entity, "Entity is null.");
         Objects.requireNonNull(dataService, "Data service is null.");
 
         // Find current record
-        final Entity currentEntity = findEntity(entity.getAtLocation(), entity.getSpecializationOf(), null);
+        final Property currentEntity = findEntity(entity.getAtLocation(), entity.getSpecializationOf(), null);
 
         // If entity exists
         if (currentEntity != null) {
@@ -158,7 +158,7 @@ public class EntityService {
         }
     }
 
-    private void deactivate(Entity entity, Timestamp endTime) {
+    private void deactivate(Property entity, Timestamp endTime) {
         Objects.requireNonNull(entity, "The current entity is null.");
 
         // End previous activity
@@ -180,9 +180,9 @@ public class EntityService {
         Objects.requireNonNull(currentLocation, "New atLocation is null.");
 
         // Change class identifiers
-        List<Entity> entities = findAllEntities(currentLocation, null, false);
+        List<Property> entities = findAllEntities(currentLocation, null, false);
         // For each entity update location
-        for (final Entity entity : entities) {
+        for (final Property entity : entities) {
             log.info("Changing the location for " + entity.toString());
             entity.setAtLocation(entity.getAtLocation().replace(currentLocation, newLocation));
             entityDao.update(entity);
@@ -200,10 +200,10 @@ public class EntityService {
         Objects.requireNonNull(currentLocation, "Current location is null.");
 
         // Find all entities
-        List<Entity> entities = findAllEntities(currentLocation, null, true);
+        List<Property> entities = findAllEntities(currentLocation, null, true);
 
         // Deactivate them
-        for (final Entity entity : entities) {
+        for (final Property entity : entities) {
             deactivate(entity, Timestamp.valueOf(endTime));
         }
     }

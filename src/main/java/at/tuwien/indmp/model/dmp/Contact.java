@@ -4,12 +4,12 @@ import java.util.List;
 
 import javax.validation.constraints.NotNull;
 
-import at.tuwien.indmp.model.DataService;
-import at.tuwien.indmp.model.Entity;
-import at.tuwien.indmp.service.EntityService;
+import at.tuwien.indmp.model.RDMService;
+import at.tuwien.indmp.modul.PropertyModule;
+import at.tuwien.indmp.model.Property;
 import at.tuwien.indmp.util.Functions;
 
-public class Contact extends AbstractClassEntity {
+public class Contact extends AbstractClassObject {
 
     /* Properties */
     @NotNull
@@ -58,7 +58,7 @@ public class Contact extends AbstractClassEntity {
     }
 
     @Override
-    public String[] getValueNames() {
+    public String[] getPropertyNames() {
         return new String[] {
                 "mbox",
                 "name",
@@ -66,29 +66,33 @@ public class Contact extends AbstractClassEntity {
     }
 
     @Override
-    public String getClassIdentifier() {
-        return getContact_id().getClassIdentifier();
+    public String getObjectIdentifier() {
+        return getContact_id().getObjectIdentifier();
     }
 
     @Override
-    public List<Entity> getPropertiesFromIdentifier(DMP dmp, String reference, DataService dataService) {
-        return getContact_id().getProperties(dmp, reference, dataService);
+    public List<Property> getPropertiesFromIdentifier(DMP dmp, String reference, RDMService rdmService) {
+        return getContact_id().getProperties(dmp, reference, rdmService);
     }
 
     @Override
-    public void build(EntityService entityService, String location) {
+    public void build(PropertyModule propertyModule, String atLocation) {
+        // ------------------------------------
         // Set properties
-        final List<Entity> properties = entityService.findEntities(location, null, null, true);
+        // ------------------------------------
+        final List<Property> properties = propertyModule.findEntities(atLocation, null, null, true);
 
-        Entity p = Functions.findPropertyInList(getClassType(), "mbox", properties);
+        Property p = Functions.findPropertyInList(getObjectType(), "mbox", properties);
         setMbox(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList(getClassType(), "name", properties);
+        p = Functions.findPropertyInList(getObjectType(), "name", properties);
         setName(p != null ? p.getValue() : null);
 
+        // ------------------------------------
         // Set identifier
-        final Entity identifier = Functions.findPropertyInList(getClassType(), "identifier", properties);
-        final Entity type = Functions.findPropertyInList(getClassType(), "type", properties);
+        // ------------------------------------
+        final Property identifier = Functions.findPropertyInList(getObjectType(), "identifier", properties);
+        final Property type = Functions.findPropertyInList(getObjectType(), "type", properties);
         contact_id = new Contact_id(identifier.getValue(), type.getValue());
     }
 }

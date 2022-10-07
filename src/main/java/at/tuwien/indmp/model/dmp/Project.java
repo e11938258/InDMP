@@ -8,13 +8,13 @@ import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-import at.tuwien.indmp.model.DataService;
-import at.tuwien.indmp.model.Entity;
-import at.tuwien.indmp.service.EntityService;
+import at.tuwien.indmp.model.RDMService;
+import at.tuwien.indmp.modul.PropertyModule;
+import at.tuwien.indmp.model.Property;
 import at.tuwien.indmp.util.ModelConstants;
 import at.tuwien.indmp.util.Functions;
 
-public class Project extends AbstractClassEntity {
+public class Project extends AbstractClassObject {
 
     /* Properties */
     private String description;
@@ -85,7 +85,7 @@ public class Project extends AbstractClassEntity {
     }
 
     @Override
-    public String[] getValueNames() {
+    public String[] getPropertyNames() {
         return new String[] {
                 "description",
                 "end",
@@ -95,46 +95,53 @@ public class Project extends AbstractClassEntity {
     }
 
     @Override
-    public String getClassIdentifier() {
+    public String getObjectIdentifier() {
         return getTitle();
     }
 
     @Override
-    public List<Entity> getPropertiesFromNestedClasses(DMP dmp, String location, DataService dataService) {
-        final List<Entity> properties = new ArrayList<>();
+    public List<Property> getPropertiesFromNestedObjects(DMP dmp, String atLocation, RDMService rdmService) {
+        final List<Property> properties = new ArrayList<>();
 
-        // Funding
+        // ------------------------------------
+        // Nested objects: Funding
+        // ------------------------------------
         for (Funding i : getFunding()) {
-            properties.addAll(i.getProperties(dmp, getLocation(location), dataService));
-            properties.addAll(i.getPropertiesFromNestedClasses(dmp, getLocation(location), dataService));
+            properties.addAll(i.getProperties(dmp, getAtLocation(atLocation), rdmService));
+            properties.addAll(i.getPropertiesFromNestedObjects(dmp, getAtLocation(atLocation), rdmService));
         }
 
         return properties;
     }
 
     @Override
-    public void build(EntityService entityService, String location) {
+    public void build(PropertyModule propertyModule, String atLocation) {
+        // ------------------------------------
         // Set properties
-        final List<Entity> properties = entityService.findEntities(location, null, null, true);
+        // ------------------------------------
+        final List<Property> properties = propertyModule.findEntities(atLocation, null, null, true);
 
-        Entity p = Functions.findPropertyInList(getClassType(), "description", properties);
+        Property p = Functions.findPropertyInList(getObjectType(), "description", properties);
         setDescription(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList(getClassType(), "end", properties);
+        p = Functions.findPropertyInList(getObjectType(), "end", properties);
         setEnd(p != null ? LocalDate.parse(p.getValue()) : null);
 
-        p = Functions.findPropertyInList(getClassType(), "start", properties);
+        p = Functions.findPropertyInList(getObjectType(), "start", properties);
         setStart(p != null ? LocalDate.parse(p.getValue()) : null);
 
+        // ------------------------------------
         // Set identifier
-        p = Functions.findPropertyInList(getClassType(), "title", properties);
+        // ------------------------------------
+        p = Functions.findPropertyInList(getObjectType(), "title", properties);
         setTitle(p.getValue());
 
-        // Nested classes
-        // Funding
-        for (Entity property : entityService.findAllEntities(location, "funding:identifier", true)) {
+        // ------------------------------------
+        // Nested objects: Funding
+        // ------------------------------------
+        for (Property property : propertyModule.findAllEntities(atLocation, "funding:identifier", true)) {
             final Funding i = new Funding();
-            i.build(entityService, location + "/" + property.getValue());
+            i.build(propertyModule, atLocation + "/" + property.getValue());
             funding.add(i);
         }
     }

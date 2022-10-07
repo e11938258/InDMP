@@ -3,6 +3,7 @@ package at.tuwien.indmp.model;
 import java.io.Serializable;
 
 import javax.persistence.Column;
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -18,12 +19,14 @@ import at.tuwien.indmp.util.ModelConstants;
 
 /**
  * 
+ * Property class
+ * 
  * https://www.w3.org/TR/2013/REC-prov-o-20130430/#Entity
  * 
  */
-@javax.persistence.Entity
-@Table(name = "entity")
-public class Entity implements Serializable {
+@Entity
+@Table(name = "property")
+public class Property implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,28 +35,28 @@ public class Entity implements Serializable {
     private Long id; // Just database identifier
 
     @Column(name = "at_location", nullable = false)
-    @Size(min = ModelConstants.ENTITY_AT_LOCATION_MIN, max = ModelConstants.ENTITY_AT_LOCATION_MAX)
-    @Pattern(regexp = ModelConstants.ENTITY_AT_LOCATION_REGEX)
+    @Size(min = ModelConstants.PROPERTY_AT_LOCATION_MIN, max = ModelConstants.PROPERTY_AT_LOCATION_MAX)
+    @Pattern(regexp = ModelConstants.PROPERTY_AT_LOCATION_REGEX)
     private String atLocation; // https://www.w3.org/TR/2013/REC-prov-o-20130430/#atLocation
 
     @Column(name = "specialization_of", nullable = false)
-    @Size(min = ModelConstants.ENTITY_SPECIALIZATION_OF_MIN, max = ModelConstants.ENTITY_SPECIALIZATION_OF_MAX)
-    @Pattern(regexp = ModelConstants.ENTITY_SPECIALIZATION_OF_REGEX)
+    @Size(min = ModelConstants.PROPERTY_SPECIALIZATION_OF_MIN, max = ModelConstants.PROPERTY_SPECIALIZATION_OF_MAX)
+    @Pattern(regexp = ModelConstants.PROPERTY_SPECIALIZATION_OF_REGEX)
     private String specializationOf; // https://www.w3.org/TR/2013/REC-prov-o-20130430/#specializationOf
 
     @Column(nullable = false)
-    @Size(min = ModelConstants.ENTITY_VALUE_MIN, max = ModelConstants.ENTITY_VALUE_MAX)
-    @Pattern(regexp = ModelConstants.ENTITY_VALUE_REGEX)
+    @Size(min = ModelConstants.PROPERTY_VALUE_MIN, max = ModelConstants.PROPERTY_VALUE_MAX)
+    @Pattern(regexp = ModelConstants.PROPERTY_VALUE_REGEX)
     private String value; // https://www.w3.org/TR/2013/REC-prov-o-20130430/#value
 
     @OneToOne
     @JoinColumn(name = "was_generated_by", referencedColumnName = "id")
     private Activity wasGeneratedBy; // https://www.w3.org/TR/2013/REC-prov-o-20130430/#wasGeneratedBy
 
-    public Entity() {
+    public Property() {
     }
 
-    public Entity(String atLocation, String specializationOf, String value, Activity wasGeneratedBy) {
+    public Property(String atLocation, String specializationOf, String value, Activity wasGeneratedBy) {
         this.atLocation = atLocation;
         this.specializationOf = specializationOf;
         this.value = value;
@@ -102,14 +105,6 @@ public class Entity implements Serializable {
         this.wasGeneratedBy = wasGeneratedBy;
     }
 
-    public boolean hasSameValue(Entity entity) {
-        return getValue().equals(entity.getValue());
-    }
-
-    public boolean hasSameService(DataService dataService) {
-        return getWasGeneratedBy().getWasAssociatedWith().equals(dataService);
-    }
-
     @Override
     public String toString() {
         return "{" +
@@ -119,5 +114,18 @@ public class Entity implements Serializable {
                 ", value='" + getValue() + "'" +
                 ", wasGeneratedBy='" + getWasGeneratedBy() + "'" +
                 "}";
+    }
+
+    /* Non-standard */
+
+    /**
+     * 
+     * Has the property same value?
+     * 
+     * @param entity
+     * @return
+     */
+    public boolean hasSameValue(Property entity) {
+        return getValue().equals(entity.getValue());
     }
 }

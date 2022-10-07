@@ -2,7 +2,7 @@ package at.tuwien.indmp.model.dmp;
 
 import javax.validation.constraints.NotNull;
 
-public abstract class Identifier extends AbstractEntity {
+public abstract class Identifier extends AbstractObject {
 
     @NotNull
     private String identifier;
@@ -22,23 +22,23 @@ public abstract class Identifier extends AbstractEntity {
     }
 
     @Override
-    public String getClassIdentifier() {
+    public String getObjectIdentifier() {
         return this.identifier;
     }
 
     @Override
-    public abstract String getClassType();
+    public abstract String getObjectType();
 
     @Override
     public Object[] getValues() {
         return new Object[] {
-                getClassIdentifier(),
+                getObjectIdentifier(),
                 getType(),
         };
     }
 
     @Override
-    public String[] getValueNames() {
+    public String[] getPropertyNames() {
         return new String[] {
                 "identifier",
                 "type",
@@ -48,7 +48,7 @@ public abstract class Identifier extends AbstractEntity {
     @Override
     public String toString() {
         return "{" +
-                " identifier='" + getClassIdentifier() + "'" +
+                " identifier='" + getObjectIdentifier() + "'" +
                 ", type='" + getType() + "'" +
                 "}";
     }

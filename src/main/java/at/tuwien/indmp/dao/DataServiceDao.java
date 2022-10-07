@@ -10,13 +10,13 @@ import javax.persistence.criteria.Root;
 
 import org.springframework.stereotype.Repository;
 
-import at.tuwien.indmp.model.DataService;
+import at.tuwien.indmp.model.RDMService;
 
 @Repository
-public class DataServiceDao extends AbstractDao<DataService> {
+public class DataServiceDao extends AbstractDao<RDMService> {
 
     public DataServiceDao() {
-        super(DataService.class);
+        super(RDMService.class);
     }
 
     /**
@@ -25,10 +25,10 @@ public class DataServiceDao extends AbstractDao<DataService> {
      * 
      * @return
      */
-    public List<DataService> findAll() {
+    public List<RDMService> findAll() {
         final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        final CriteriaQuery<DataService> criteriaQuery = criteriaBuilder.createQuery(DataService.class);
-        final Root<DataService> root = criteriaQuery.from(DataService.class);
+        final CriteriaQuery<RDMService> criteriaQuery = criteriaBuilder.createQuery(RDMService.class);
+        final Root<RDMService> root = criteriaQuery.from(RDMService.class);
         criteriaQuery.select(root).distinct(true);
         return entityManager.createQuery(criteriaQuery).getResultList();
     }
@@ -40,12 +40,12 @@ public class DataServiceDao extends AbstractDao<DataService> {
      * @param accessRights
      * @return
      */
-    public DataService findByAccessRights(String accessRights) {
+    public RDMService findByAccessRights(String accessRights) {
         Objects.requireNonNull(accessRights);
 
         final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        final CriteriaQuery<DataService> criteriaQuery = criteriaBuilder.createQuery(DataService.class);
-        final Root<DataService> root = criteriaQuery.from(DataService.class);
+        final CriteriaQuery<RDMService> criteriaQuery = criteriaBuilder.createQuery(RDMService.class);
+        final Root<RDMService> root = criteriaQuery.from(RDMService.class);
         criteriaQuery.select(root).distinct(true);
 
         // Conditions

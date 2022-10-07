@@ -6,13 +6,13 @@ import java.util.List;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
-import at.tuwien.indmp.model.DataService;
-import at.tuwien.indmp.model.Entity;
-import at.tuwien.indmp.service.EntityService;
+import at.tuwien.indmp.model.RDMService;
+import at.tuwien.indmp.modul.PropertyModule;
+import at.tuwien.indmp.model.Property;
 import at.tuwien.indmp.util.ModelConstants;
 import at.tuwien.indmp.util.Functions;
 
-public class Funding extends AbstractClassEntity {
+public class Funding extends AbstractClassObject {
 
     /* Properties */
     @Pattern(regexp = ModelConstants.REGEX_FUNDING_STATUS)
@@ -59,54 +59,65 @@ public class Funding extends AbstractClassEntity {
     }
 
     @Override
-    public String[] getValueNames() {
+    public String[] getPropertyNames() {
         return new String[] {
                 "funding_status",
         };
     }
 
     @Override
-    public String getClassIdentifier() {
-        return getFunder_id().getClassIdentifier();
+    public String getObjectIdentifier() {
+        return getFunder_id().getObjectIdentifier();
     }
 
     @Override
-    public List<Entity> getPropertiesFromIdentifier(DMP dmp, String location, DataService dataService) {
-        return getFunder_id().getProperties(dmp, location, dataService);
+    public List<Property> getPropertiesFromIdentifier(DMP dmp, String atLocation, RDMService rdmService) {
+        return getFunder_id().getProperties(dmp, atLocation, rdmService);
     }
 
     @Override
-    public List<Entity> getPropertiesFromNestedClasses(DMP dmp, String location, DataService dataService) {
-        final List<Entity> properties = new ArrayList<>();
-        // Grant
+    public List<Property> getPropertiesFromNestedObjects(DMP dmp, String atLocation, RDMService rdmService) {
+        final List<Property> properties = new ArrayList<>();
+        
+        // ------------------------------------
+        // Nested object: Grant id
+        // ------------------------------------
         if (getGrant_id() != null) {
-            properties.addAll(getGrant_id().getProperties(dmp, getLocation(location), dataService));
+            properties.addAll(getGrant_id().getProperties(dmp, getAtLocation(atLocation), rdmService));
         }
 
         return properties;
     }
 
     @Override
-    public void build(EntityService entityService, String location) {
+    public void build(PropertyModule propertyModule, String atLocation) {
+        // ------------------------------------
         // Set properties
-        final List<Entity> properties = entityService.findEntities(location, null, null, true);
+        // ------------------------------------
+        final List<Property> properties = propertyModule.findEntities(atLocation, null, null, true);
 
-        Entity p = Functions.findPropertyInList(getClassType(), "funding_status", properties);
+        Property p = Functions.findPropertyInList(getObjectType(), "funding_status", properties);
         setFunding_status(p != null ? p.getValue() : null);
 
+        // ------------------------------------
         // Set identifier
-        Entity identifier = Functions.findPropertyInList(getClassType(), "identifier", properties);
-        Entity type = Functions.findPropertyInList(getClassType(), "type", properties);
+        // ------------------------------------
+        Property identifier = Functions.findPropertyInList(getObjectType(), "identifier", properties);
+        Property type = Functions.findPropertyInList(getObjectType(), "type", properties);
         funder_id = new Funder_id(identifier.getValue(), type.getValue());
 
-        // Set grant id
-        for (Entity property : entityService.findAllEntities(location, "grant_id:identifier", true)) {
+        // ------------------------------------
+        // Nested object: Set grant id
+        // ------------------------------------
+        for (Property property : propertyModule.findAllEntities(atLocation, "grant_id:identifier", true)) {
             // Set properties
-            final List<Entity> grantProperties = entityService.findEntities(location + "/" + property.getValue(), null, null, true);
+            final List<Property> grantProperties = propertyModule.findEntities(atLocation + "/" + property.getValue(), null, null, true);
 
+            // Set identifier
             identifier = Functions.findPropertyInList("grant_id", "identifier", grantProperties);
             type = Functions.findPropertyInList("grant_id", "type", grantProperties);
 
+            // Set the grant id object
             setGrant_id(new Grant_id(identifier.getValue(), type.getValue()));
         }
     }

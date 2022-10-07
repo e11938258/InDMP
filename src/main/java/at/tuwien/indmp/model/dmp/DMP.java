@@ -11,13 +11,13 @@ import javax.validation.constraints.Pattern;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-import at.tuwien.indmp.model.DataService;
-import at.tuwien.indmp.model.Entity;
-import at.tuwien.indmp.service.EntityService;
+import at.tuwien.indmp.model.RDMService;
+import at.tuwien.indmp.modul.PropertyModule;
+import at.tuwien.indmp.model.Property;
 import at.tuwien.indmp.util.ModelConstants;
 import at.tuwien.indmp.util.Functions;
 
-public class DMP extends AbstractClassEntity {
+public class DMP extends AbstractClassObject {
 
     /* Properties */
     @NotNull
@@ -229,7 +229,7 @@ public class DMP extends AbstractClassEntity {
     }
 
     @Override
-    public String[] getValueNames() {
+    public String[] getPropertyNames() {
         return new String[] {
                 "created",
                 "description",
@@ -242,40 +242,54 @@ public class DMP extends AbstractClassEntity {
     }
 
     @Override
-    public String getClassIdentifier() {
-        return getDmp_id().getClassIdentifier();
+    public String getObjectIdentifier() {
+        return getDmp_id().getObjectIdentifier();
     }
 
     @Override
-    public List<Entity> getPropertiesFromIdentifier(DMP dmp, String location, DataService dataService) {
-        return dmp_id.getProperties(dmp, location, dataService);
+    public List<Property> getPropertiesFromIdentifier(DMP dmp, String atLocation, RDMService rdmService) {
+        return dmp_id.getProperties(dmp, atLocation, rdmService);
     }
 
     @Override
-    public List<Entity> getPropertiesFromNestedClasses(DMP dmp, String location, DataService dataService) {
-        final List<Entity> properties = new ArrayList<>();
+    public List<Property> getPropertiesFromNestedObjects(DMP dmp, String atLocation, RDMService rdmService) {
+        final List<Property> properties = new ArrayList<>();
 
-        // Contact
+        // ------------------------------------
+        // Nested object: Contact
+        // ------------------------------------
         if (getContact() != null) {
-            properties.addAll(getContact().getProperties(dmp, getLocation(location), dataService));
+            properties.addAll(getContact().getProperties(dmp, getAtLocation(atLocation), rdmService));
         }
-        // Contributor
+
+        // ------------------------------------
+        // Nested object: Contributor
+        // ------------------------------------
         for (Contributor i : getContributor()) {
-            properties.addAll(i.getProperties(dmp, getLocation(location), dataService));
+            properties.addAll(i.getProperties(dmp, getAtLocation(atLocation), rdmService));
         }
-        // Cost
+
+        // ------------------------------------
+        // Nested object: Cost
+        // ------------------------------------
         for (Cost i : getCost()) {
-            properties.addAll(i.getProperties(dmp, getLocation(location), dataService));
+            properties.addAll(i.getProperties(dmp, getAtLocation(atLocation), rdmService));
         }
-        // Dataset
+
+        // ------------------------------------
+        // Nested object: Dataset
+        // ------------------------------------
         for (Dataset i : getDataset()) {
-            properties.addAll(i.getProperties(dmp, getLocation(location), dataService));
-            properties.addAll(i.getPropertiesFromNestedClasses(dmp, getLocation(location), dataService));
+            properties.addAll(i.getProperties(dmp, getAtLocation(atLocation), rdmService));
+            properties.addAll(i.getPropertiesFromNestedObjects(dmp, getAtLocation(atLocation), rdmService));
         }
-        // Project
+
+        // ------------------------------------
+        // Nested object: Project
+        // ------------------------------------
         for (Project i : getProject()) {
-            properties.addAll(i.getProperties(dmp, getLocation(location), dataService));
-            properties.addAll(i.getPropertiesFromNestedClasses(dmp, getLocation(location), dataService));
+            properties.addAll(i.getProperties(dmp, getAtLocation(atLocation), rdmService));
+            properties.addAll(i.getPropertiesFromNestedObjects(dmp, getAtLocation(atLocation), rdmService));
         }
 
         return properties;
@@ -283,83 +297,100 @@ public class DMP extends AbstractClassEntity {
 
     @JsonIgnore
     @Override
-    public List<Entity> getProperties(DMP dmp, String location, DataService dataService) {
-        final List<Entity> properties = super.getProperties(dmp, location, dataService);
+    public List<Property> getProperties(DMP dmp, String atLocation, RDMService rdmService) {
+        final List<Property> properties = super.getProperties(dmp, atLocation, rdmService);
+
+        // ------------------------------------
         // Add modified date every time
-        properties.add(Functions.createEntity(dmp, getLocation(location), getClassType() + ":modified",
+        // ------------------------------------
+        properties.add(Functions.createProperty(dmp, getAtLocation(atLocation), getObjectType() + ":modified",
                 ModelConstants.DATE_TIME_FORMATTER_ISO_8601.format(getModified())));
+
         return properties;
     }
 
     @Override
-    public void build(EntityService entityService, String location) {
+    public void build(PropertyModule propertyModule, String atLocation) {
+        // ------------------------------------
         // Set properties
-        final List<Entity> properties = entityService.findEntities(location, null, null, true);
+        // ------------------------------------
+        final List<Property> properties = propertyModule.findEntities(atLocation, null, null, true);
 
-        Entity p = Functions.findPropertyInList(getClassType(), "created", properties);
+        Property p = Functions.findPropertyInList(getObjectType(), "created", properties);
         setCreated(p != null ? LocalDateTime.parse(p.getValue()) : null);
 
-        p = Functions.findPropertyInList(getClassType(), "description", properties);
+        p = Functions.findPropertyInList(getObjectType(), "description", properties);
         setDescription(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList(getClassType(), "ethical_issues_description", properties);
+        p = Functions.findPropertyInList(getObjectType(), "ethical_issues_description", properties);
         setEthical_issues_description(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList(getClassType(), "ethical_issues_exist", properties);
+        p = Functions.findPropertyInList(getObjectType(), "ethical_issues_exist", properties);
         setEthical_issues_exist(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList(getClassType(), "ethical_issues_report", properties);
+        p = Functions.findPropertyInList(getObjectType(), "ethical_issues_report", properties);
         setEthical_issues_report(p != null ? URI.create(p.getValue()) : null);
 
-        p = Functions.findPropertyInList(getClassType(), "language", properties);
+        p = Functions.findPropertyInList(getObjectType(), "language", properties);
         setLanguage(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList(getClassType(), "modified", properties);
+        p = Functions.findPropertyInList(getObjectType(), "modified", properties);
         setModified(p != null ? LocalDateTime.parse(p.getValue()) : null);
 
-        p = Functions.findPropertyInList(getClassType(), "title", properties);
+        p = Functions.findPropertyInList(getObjectType(), "title", properties);
         setTitle(p != null ? p.getValue() : null);
 
+        // ------------------------------------
         // Set identifier
-        final Entity identifier = Functions.findPropertyInList(getClassType(), "identifier", properties);
-        final Entity type = Functions.findPropertyInList(getClassType(), "type", properties);
+        // ------------------------------------
+        final Property identifier = Functions.findPropertyInList(getObjectType(), "identifier", properties);
+        final Property type = Functions.findPropertyInList(getObjectType(), "type", properties);
         dmp_id = new DMP_id(identifier.getValue());
         if (type != null) {
             dmp_id.setType(type.getValue());
         }
 
-        // Nested classes
-        // Contact
-        for (Entity property : entityService.findAllEntities(location, "contact:identifier", true)) {
+        // ------------------------------------
+        // Nested object: Build contact
+        // ------------------------------------
+        for (Property property : propertyModule.findAllEntities(atLocation, "contact:identifier", true)) {
             contact = new Contact();
-            contact.build(entityService, location + "/" + property.getValue());
+            contact.build(propertyModule, atLocation + "/" + property.getValue());
         }
 
-        // Contributor
-        for (Entity property : entityService.findAllEntities(location, "contributor:identifier", true)) {
+        // ------------------------------------
+        // Nested object: Build contributor
+        // ------------------------------------
+        for (Property property : propertyModule.findAllEntities(atLocation, "contributor:identifier", true)) {
             final Contributor i = new Contributor();
-            i.build(entityService, location + "/" + property.getValue());
+            i.build(propertyModule, atLocation + "/" + property.getValue());
             contributor.add(i);
         }
 
-        // Cost
-        for (Entity property : entityService.findAllEntities(location, "cost:title", true)) {
+        // ------------------------------------
+        // Nested object: Build cost
+        // ------------------------------------
+        for (Property property : propertyModule.findAllEntities(atLocation, "cost:title", true)) {
             final Cost i = new Cost();
-            i.build(entityService, location + "/" + property.getValue());
+            i.build(propertyModule, atLocation + "/" + property.getValue());
             cost.add(i);
         }
 
-        // Project
-        for (Entity property : entityService.findAllEntities(location, "project:title", true)) {
+        // ------------------------------------
+        // Nested object: Build project
+        // ------------------------------------
+        for (Property property : propertyModule.findAllEntities(atLocation, "project:title", true)) {
             final Project i = new Project();
-            i.build(entityService, location + "/" + property.getValue());
+            i.build(propertyModule, atLocation + "/" + property.getValue());
             project.add(i);
         }
 
-        // Dataset
-        for (Entity property : entityService.findAllEntities(location, "dataset:identifier", true)) {
+        // ------------------------------------
+        // Nested object: Build dataset
+        // ------------------------------------
+        for (Property property : propertyModule.findAllEntities(atLocation, "dataset:identifier", true)) {
             final Dataset i = new Dataset();
-            i.build(entityService, location + "/" + property.getValue());
+            i.build(propertyModule, atLocation + "/" + property.getValue());
             dataset.add(i);
         }
 
