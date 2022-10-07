@@ -155,7 +155,7 @@ public class PropertyModule {
         Objects.requireNonNull(rdmService, "RDM service is null.");
 
         // Find the current property record
-        final Property currentProperty = findProperty(property.getAtLocation(), property.getSpecializationOf(), null, true);
+        final Property currentProperty = findProperty(property.getAtLocation(), property.getSpecializationOf(), null, false);
 
         // If the property exists
         if (currentProperty != null) {

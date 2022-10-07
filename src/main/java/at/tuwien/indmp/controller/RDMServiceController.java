@@ -51,7 +51,7 @@ public class RDMServiceController {
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(value = Endpoints.READ_RDM_SERVICES, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<RDMService> readRdmServices() {
-        return rdmServiceModule.getRDMServices();
+        return rdmServiceModule.getRDMServices(false);
     }
 
     /**

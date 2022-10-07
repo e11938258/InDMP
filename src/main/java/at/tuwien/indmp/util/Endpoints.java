@@ -7,11 +7,11 @@ public class Endpoints {
     }
 
     // maDMP REST API
-    public static final String UPDATE_MADMP = "/madmp"; // PUT
+    public static final String MODIFY_MADMP_INFORMATION = "/madmp"; // PUT
+    public static final String UPDATE_MADMP_OBJECT_IDENTIFIER = "/madmp/object/identifier"; // PUT
+    public static final String REMOVE_MADMP_OBJECT = "/madmp/object/remove"; // PUT
     public static final String GET_MADMP = "/madmp"; // GET
-    public static final String UPDATE_MADMP_IDENTIFIER = "/madmp/identifier"; // PUT
-    public static final String GET_MADMP_IDENTIFIERS = "/madmp/identifier/history"; // GET
-    public static final String DELETE_MADMP_INSTANCE = "/madmp/instance/delete"; // PUT
+    public static final String GET_PROVENANCE_INFORMATION = "/madmp/provenance"; // GET
 
     // RDM service REST API
     public static final String CREATE_RDM_SERVICE = "/service"; // POST

@@ -24,7 +24,7 @@ public class Functions {
      * @param value
      * @return
      */
-    public static Property createProperty(DMP dmp, String atLocation, String specializationOf, String value) {
+    public static Property propertyMaker(DMP dmp, String atLocation, String specializationOf, String value) {
         // Create a new activity
         final Activity activity = new Activity(Timestamp.valueOf(dmp.getModified()));
 

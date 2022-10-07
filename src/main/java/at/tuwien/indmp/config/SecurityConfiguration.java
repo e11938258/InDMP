@@ -15,10 +15,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         http.csrf().disable()
                 .authorizeRequests(authz -> authz
                         // maDMP endpoints
-                        .antMatchers(HttpMethod.PUT, Endpoints.UPDATE_MADMP, Endpoints.UPDATE_MADMP_IDENTIFIER,
-                                Endpoints.DELETE_MADMP_INSTANCE)
+                        .antMatchers(HttpMethod.PUT, Endpoints.MODIFY_MADMP_INFORMATION, Endpoints.UPDATE_MADMP_OBJECT_IDENTIFIER,
+                                Endpoints.REMOVE_MADMP_OBJECT)
                         .hasAuthority("SCOPE_update")
-                        .antMatchers(HttpMethod.GET, Endpoints.GET_MADMP_IDENTIFIERS).hasAuthority("SCOPE_update")
+                        .antMatchers(HttpMethod.GET, Endpoints.GET_PROVENANCE_INFORMATION).hasAuthority("SCOPE_update")
                         // Services endpoints
                         .antMatchers("/system/**").hasAuthority("SCOPE_update")
                         // Other

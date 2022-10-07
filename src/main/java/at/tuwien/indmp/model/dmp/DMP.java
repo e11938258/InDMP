@@ -61,7 +61,7 @@ public class DMP extends AbstractClassObject {
 
     /**
      * 
-     * Minimal maDMP
+     * Mandatory maDMP properties
      * 
      * @param created
      * @param modified
@@ -75,7 +75,7 @@ public class DMP extends AbstractClassObject {
 
     /**
      * 
-     * Minimal maDMP
+     * Mandatory maDMP properties
      * 
      * @param created
      * @param modified
@@ -303,7 +303,7 @@ public class DMP extends AbstractClassObject {
         // ------------------------------------
         // Add modified date every time
         // ------------------------------------
-        properties.add(Functions.createProperty(dmp, getAtLocation(atLocation), getObjectType() + ":modified",
+        properties.add(Functions.propertyMaker(dmp, getAtLocation(atLocation), getObjectType() + ":modified",
                 ModelConstants.DATE_TIME_FORMATTER_ISO_8601.format(getModified())));
 
         return properties;

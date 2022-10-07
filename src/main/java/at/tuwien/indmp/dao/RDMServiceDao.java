@@ -11,6 +11,7 @@ import javax.persistence.criteria.Root;
 import org.springframework.stereotype.Repository;
 
 import at.tuwien.indmp.model.RDMService;
+import at.tuwien.indmp.util.RDMServiceState;
 
 @Repository
 public class RDMServiceDao extends AbstractDao<RDMService> {
@@ -21,16 +22,25 @@ public class RDMServiceDao extends AbstractDao<RDMService> {
 
     /**
      * 
-     * Find all rdm services
+     * Find all RDM services
      * 
+     * @param onlyActive
      * @return
      */
-    public List<RDMService> findAll() {
+    public List<RDMService> findAll(boolean onlyActive) {
 
         final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         final CriteriaQuery<RDMService> criteriaQuery = criteriaBuilder.createQuery(RDMService.class);
         final Root<RDMService> root = criteriaQuery.from(RDMService.class);
         criteriaQuery.select(root).distinct(true);
+
+        // ------------------------------------
+        // Conditions
+        // ------------------------------------
+        if (onlyActive) {
+            Predicate predicate = criteriaBuilder.notEqual(root.get("state"), RDMServiceState.TERMINATED);
+            criteriaQuery.where(predicate);
+        }
 
         return entityManager.createQuery(criteriaQuery).getResultList();
     }

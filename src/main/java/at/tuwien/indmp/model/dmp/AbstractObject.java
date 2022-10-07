@@ -121,7 +121,7 @@ public abstract class AbstractObject {
             if (values[i] != null && !values[i].equals("[]")) {
                 
                 // Create a new property instance
-                final Property property = Functions.createProperty(dmp, getAtLocation(atLocation),
+                final Property property = Functions.propertyMaker(dmp, getAtLocation(atLocation),
                         getSpecializationOf(propertyNames[i]), values[i].toString());
                 
                 // The integration service checks whether the RDM service has the right to change the property or it is a new DMP.

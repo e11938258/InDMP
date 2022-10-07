@@ -1,6 +1,7 @@
 package at.tuwien.indmp.modul;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -113,9 +114,10 @@ public class DMPModule {
                             // 3.2.2.2.2 Else
 
                             // 3.2.2.2.2.1 The integration service corrects the maDMP identifier in storage.
-                            // changeIdentifier(dmp, Functions.createProperty(dmp,
-                            // creationProperties.get(0).getAtLocation(),"dmp:identifier",
-                            // dmp.getObjectIdentifier()), rdmService);
+                            final Property newIdentifier = Functions.propertyMaker(dmp,
+                                    creationProperties.get(0).getAtLocation(), "dmp:identifier",
+                                    dmp.getObjectIdentifier());
+                            changeObjectIdentifier(dmp, newIdentifier, rdmService);
                         }
                     }
                 }
@@ -161,7 +163,7 @@ public class DMPModule {
         final LocalDateTime originalModified = LocalDateTime.parse(originalModifiedProperty.getValue());
 
         // Is the old version of the DMP?
-        if (originalModified.isAfter(dmp.getModified())) {
+        if (dmp.getModified() == null || originalModified.isAfter(dmp.getModified())) {
             throw new ConflictException("There is a newer version of maDMP.");
         }
     }
@@ -175,12 +177,12 @@ public class DMPModule {
      */
     public DMPScheme loadWholeDMP(DMP dmp) {
         // Build DMP
-        final DMP wholeDMP = new DMP();
-        wholeDMP.build(propertyModule, dmp.getAtLocation(""));
+        final DMP fullDMP = new DMP();
+        fullDMP.build(propertyModule, dmp.getAtLocation(""));
 
         // Return in the DMP scheme
         final DMPScheme dmpScheme = new DMPScheme();
-        dmpScheme.setDmp(wholeDMP);
+        dmpScheme.setDmp(fullDMP);
         return dmpScheme;
     }
 
@@ -239,7 +241,7 @@ public class DMPModule {
                     // identifier and creates a new record with the received value
                     final String oldLocation = currentIdentifier.getAtLocation();
                     final String location = oldLocation.replace(currentIdentifier.getValue(), property.getValue());
-                    final Property newIdentifier = Functions.createProperty(dmp, oldLocation,
+                    final Property newIdentifier = Functions.propertyMaker(dmp, oldLocation,
                             currentIdentifier.getSpecializationOf(), property.getValue());
                     propertyModule.terminateAndCreateProperty(newIdentifier, rdmService);
 
@@ -323,32 +325,34 @@ public class DMPModule {
         }
     }
 
-    // /**
-    // *
-    // * Load DMP identifiers with history
-    // *
-    // * @param dmp
-    // * @return
-    // */
-    // public List<Property> loadIdentifierHistory(DMP dmp) {
-    // Objects.requireNonNull(dmp);
+    /**
+     * 
+     * Get all maDMP identifiers
+     * 
+     * @return
+     */
+    public List<Property> getAllMaDMPs() {
+        return propertyModule.findProperties(null, "dmp:identifier", null, true);
+    }
 
-    // final List<Property> entities = new ArrayList<>();
-
-    // // For each changeable class identifier
-    // for (String specializationOf : ModelConstants.IDENTIFIER_CHANGEABLE_CLASSES)
-    // {
-    // entities.addAll(propertyModule.findAllEntities(dmp.getAtLocation(""),
-    // specializationOf, false));
-    // }
-
-    // return entities;
-    // }
+    /**
+     *
+     * Get the provenance information
+     *
+     * @param dmp
+     * @param property
+     * @return
+     */
+    public List<Property> getProvenanceInformation(DMP dmp, Property property) {
+        Objects.requireNonNull(dmp);
+        Objects.requireNonNull(property);
+        return propertyModule.findAllProperties(dmp.getAtLocation(""), property.getSpecializationOf(), false);
+    }
 
     /* Private */
 
     private void checkMinimalDMP(DMP dmp) {
-        if (dmp == null || dmp.getCreated() == null || dmp.getModified() == null || dmp.getDmp_id() == null
+        if (dmp == null || dmp.getCreated() == null || dmp.getDmp_id() == null
                 || dmp.getDmp_id().getObjectIdentifier() == null
                 || dmp.getDmp_id().getObjectIdentifier().length() == 0) {
             // 2. If the maDMP does not contain a mandatory properties

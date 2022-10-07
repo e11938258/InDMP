@@ -1,6 +1,8 @@
 package at.tuwien.indmp.controller;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
+import java.util.List;
 
 import javax.validation.Valid;
 
@@ -33,6 +35,7 @@ import at.tuwien.indmp.model.dmp.DMP_id;
 import at.tuwien.indmp.modul.DMPModule;
 import at.tuwien.indmp.modul.RDMServiceModule;
 import at.tuwien.indmp.util.Endpoints;
+import at.tuwien.indmp.util.RDMServiceState;
 
 @RestController
 public class MaDMPController {
@@ -56,7 +59,7 @@ public class MaDMPController {
      * @param dmpScheme
      */
     @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(value = Endpoints.UPDATE_MADMP, method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = Endpoints.MODIFY_MADMP_INFORMATION, method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
     public void updateMaDMP(Principal principal, @Valid @RequestBody DMPScheme dmpScheme) {
 
         // 5. UC8: Identify RDM service
@@ -80,7 +83,7 @@ public class MaDMPController {
         }
 
         // 9. UC9: Synchronize changes with RDM services
-        sendDMPToServices(dmpScheme.getDmp(), rdmService);
+        sendMaDMPToAllActiveServices(dmpScheme.getDmp(), rdmService);
     }
 
     /**
@@ -94,7 +97,7 @@ public class MaDMPController {
      * @param property
      */
     @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(value = Endpoints.UPDATE_MADMP_IDENTIFIER, method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = Endpoints.UPDATE_MADMP_OBJECT_IDENTIFIER, method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
     public void changeIdentifier(final Principal principal,
             @RequestParam(required = true) String identifier,
             @RequestParam(required = true) String created,
@@ -133,7 +136,7 @@ public class MaDMPController {
             dmpModule.changeObjectIdentifier(dmp, property, rdmService);
 
             // 8.4 UC9: Synchronize changes with RDM services
-            sendDMPToServices(dmp, rdmService);
+            sendMaDMPToAllActiveServices(dmp, rdmService);
         }
 
     }
@@ -149,7 +152,7 @@ public class MaDMPController {
      * @param property
      */
     @ResponseStatus(HttpStatus.OK)
-    @RequestMapping(value = Endpoints.DELETE_MADMP_INSTANCE, method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = Endpoints.REMOVE_MADMP_OBJECT, method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
     public void deleteInstance(Principal principal,
             @RequestParam(required = true) String identifier,
             @RequestParam(required = true) String created,
@@ -191,116 +194,185 @@ public class MaDMPController {
             dmpModule.deleteInstance(dmp, property, rdmService);
 
             // 8.4 UC9: Synchronize changes with RDM services
-            sendDMPToServices(dmp, rdmService);
+            sendMaDMPToAllActiveServices(dmp, rdmService);
         }
     }
 
-    // /**
-    // *
-    // * Get maDMP
-    // *
-    // * @param principal
-    // * @param identifier
-    // * @param created
-    // * @param modified
-    // * @return
-    // */
-    // @ResponseStatus(HttpStatus.OK)
-    // @RequestMapping(value = Endpoints.GET_MADMP, method = RequestMethod.GET,
-    // produces = MediaType.APPLICATION_JSON_VALUE)
-    // public DMPScheme getMaDMP(Principal principal,
-    // @RequestParam(required = true) String identifier,
-    // @RequestParam(required = true) String created,
-    // @RequestParam(required = true) @JsonFormat(pattern =
-    // ModelConstants.DATE_TIME_FORMAT_ISO_8601) String modified) {
+    /**
+     *
+     * UC4: Get the maDMP
+     *
+     * @param principal
+     * @param identifier
+     * @param created
+     * @param modified
+     * @return
+     */
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(value = Endpoints.GET_MADMP, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public DMPScheme getMaDMP(Principal principal,
+            @RequestParam(required = true) String identifier,
+            @RequestParam(required = true) String created,
+            @RequestParam(required = false) String modified) {
 
-    // // Get current RDM Service
-    // rdmServiceModule.findByAccessRights(principal.getName());
+        // 3. UC8: Identify RDM service
+        final RDMService rdmService = rdmServiceModule.findByAccessRights(principal.getName());
 
-    // try {
-    // // If modified is null...
-    // LocalDateTime modifiedProperty;
-    // if (modified == null) {
-    // modifiedProperty = LocalDateTime.now();
-    // } else {
-    // modifiedProperty = LocalDateTime.parse(modified);
-    // }
+        // 4. The integration service creates a maDMP representation with the received
+        // values
+        final DMP dmp = new DMP(created, modified, new DMP_id(identifier));
 
-    // // Identify maDMP
-    // final DMP dmpMinimum = dmpModule.validateAndIdentifyMaDMP(new DMP(created,
-    // modifiedProperty, new DMP_id(identifier)),
-    // null);
+        // 5. UC7: Validate and identify maDMP
+        dmpModule.validateAndIdentifyMaDMP(dmp, rdmService);
 
-    // // Return current version of maDMP if found
-    // if (dmpMinimum != null) {
-    // return dmpModule.loadWholeDMP(dmpMinimum);
-    // } else {
-    // throw new NotFoundException("DMP not found, identifier: " + identifier);
-    // }
-    // } catch (DateTimeParseException ex) {
-    // throw new BadRequestException("Wrong time format");
-    // }
-    // }
+        // 6. If maDMP is new
+        if (!dmp.isNew()) {
+            // 6.1 The integration service returns an error message to the RDM service and
+            // terminates the process.
+            throw new NotFoundException("It is not possible to get the maDMP for the new one.");
+        } else {
+            // 7.1 The integration service loads the properties based on the defined time.
+            // If the parameter is null, it returns the current maDMP
+            // TODO: Support modified property
+            return dmpModule.loadWholeDMP(dmp);
+        }
+    }
 
-    // /**
-    // *
-    // * Get history of identifiers
-    // *
-    // * @param principal
-    // * @param identifier
-    // * @param created
-    // * @return
-    // */
-    // @ResponseStatus(HttpStatus.OK)
-    // @ResponseBody
-    // @RequestMapping(value = Endpoints.GET_MADMP_IDENTIFIERS, method =
-    // RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
-    // public List<Property> getIdentifierHistory(Principal principal,
-    // @RequestParam(required = true) String identifier,
-    // @RequestParam(required = true) String created) {
+    /**
+     *
+     * UC5: Get provenance information
+     *
+     * @param principal
+     * @param identifier
+     * @param created
+     * @param property
+     * @return
+     */
+    @ResponseStatus(HttpStatus.OK)
+    @RequestMapping(value = Endpoints.GET_PROVENANCE_INFORMATION, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    public List<Property> getProvenanceInformation(Principal principal,
+            @RequestParam(required = true) String identifier,
+            @RequestParam(required = true) String created,
+            @Valid @RequestBody Property property) {
 
-    // // Get current RDM service
-    // final RDMService dataService =
-    // rdmServiceModule.findByAccessRights(principal.getName());
+        // 3. UC8: Identify RDM service
+        final RDMService rdmService = rdmServiceModule.findByAccessRights(principal.getName());
 
-    // // Identify maDMP
-    // final DMP currentDMP = dmpModule.validateAndIdentifyMaDMP(new DMP(created,
-    // LocalDateTime.now(), new DMP_id(identifier)),
-    // dataService);
+        // 4. The integration service creates a maDMP representation with the received
+        // values
+        final DMP dmp = new DMP(created, LocalDateTime.now(), new DMP_id(identifier));
 
-    // // Return identifier history if found
-    // if (currentDMP != null) {
-    // return dmpModule.loadIdentifierHistory(currentDMP);
-    // } else {
-    // throw new NotFoundException("DMP not found, identifier: " + identifier);
-    // }
-    // }
+        // 5. UC7: Validate and identify maDMP
+        dmpModule.validateAndIdentifyMaDMP(dmp, rdmService);
+
+        // 6. The integration service loads all stored values for a given property of the particular maDMP.
+        return dmpModule.getProvenanceInformation(dmp, property);
+    }
 
     /* Private */
 
+    /**
+     * 
+     * UC9: Synchronize changes with RDM services
+     * 
+     * @param dmp
+     * @param rdmService
+     */
     @Async
-    private void sendDMPToServices(DMP dmp, RDMService dataService) {
-        // Headers
-        HttpHeaders headers = new HttpHeaders();
+    private void sendMaDMPToAllActiveServices(DMP dmp, RDMService rdmService) {
+        // Set http headers
+        final HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        // Load whole dmp
+        // 1. The integration service will generate a new customized maDMP with all
+        // currently valid properties for the particular DMP.
         final DMPScheme dmpScheme = dmpModule.loadWholeDMP(dmp);
 
-        // For each service
-        for (RDMService service : rdmServiceModule.getAllRDMServices()) {
-            // Except from which information received
-            if (!service.equals(dataService)) {
+        // 2. The integration service loads all RDM services that are not in the
+        // terminated state and did not send the change.
+        // 3. For each RDM service
+        for (RDMService service : rdmServiceModule.getRDMServices(true)) {
+            // 2. (Except from which information received)
+            if (!service.equals(rdmService)) {
                 try {
-                    log.info("Sending a new version of maDMP to " + service.getEndpointURL());
+                    // 3.1 The integration service sends a message with the generated maDMP to the
+                    // RDM service.
                     final HttpEntity<DMPScheme> request = new HttpEntity<>(dmpScheme, headers);
                     final RestTemplate restTemplate = new RestTemplate();
                     restTemplate.exchange(service.getEndpointURL(), HttpMethod.PUT, request, String.class);
+                    log.debug("Sending a new version of maDMP to " + service.getEndpointURL());
+
+                    // 3.3.1 If the service RDM state is unavailable
+                    if (service.getState().equals(RDMServiceState.UNAVAILABLE)) {
+                        // 3.3.1.1 The integration service changes the state of the RDM service to
+                        // unsynchronized
+                        rdmServiceModule.setState(service, RDMServiceState.UNSYNCHRONIZED);
+                    }
+
+                    // 3.3.2 If the service RDM state is unsynchronized
+                    if (service.getState().equals(RDMServiceState.UNSYNCHRONIZED)) {
+                        // 3.3.2.1 UC10 Synchronize all maDMPs
+                        synchronizeAllMaDMP(service);
+                    }
+
                 } catch (RestClientException ex) {
+                    // 3.2 If the RDM service is not available
                     log.error("Error when sending maDMP to service: " + ex.getMessage());
+
+                    // 3.2.1 The integration service changes the state of the RDM service to
+                    // unavailable
+                    rdmServiceModule.setState(service, RDMServiceState.UNAVAILABLE);
                 }
             }
         }
+    }
+
+    /**
+     * 
+     * UC10: Synchronize all maDMPs
+     * 
+     * @param rdmService
+     */
+    @Async
+    private void synchronizeAllMaDMP(RDMService rdmService) {
+        // 1. The integration service loads all maDMP identifiers.
+        final List<Property> identifiers = dmpModule.getAllMaDMPs();
+
+        // 2. For each maDMP identifier
+        for (Property identifier : identifiers) {
+
+            // Set http headers
+            final HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+
+            // 2.1 The integration service will generate a new customized maDMP with all
+            // currently valid properties for the particular maDMP
+            final DMPScheme dmpScheme = dmpModule
+                    .loadWholeDMP(new DMP(LocalDateTime.now(), LocalDateTime.now(), new DMP_id(identifier.getValue())));
+
+            try {
+                // 2.2 The integration service sends a message with the generated maDMP to the
+                // RDM service
+                final HttpEntity<DMPScheme> request = new HttpEntity<>(dmpScheme, headers);
+                final RestTemplate restTemplate = new RestTemplate();
+                restTemplate.exchange(rdmService.getEndpointURL(), HttpMethod.PUT, request, String.class);
+                log.debug("Sending a new version of maDMP to " + rdmService.getEndpointURL());
+            } catch (RestClientException ex) {
+                // 2.3 If the RDM service is not available
+                log.error("Error when sending maDMP to service: " + ex.getMessage());
+
+                // 2.3.1 The integration service changes the state of the RDM service to
+                // unavailable
+                rdmServiceModule.setState(rdmService, RDMServiceState.UNAVAILABLE);
+
+                // 2.3.2 The integration service terminates the process.
+                break;
+            }
+
+        }
+
+        // 3. The integration service changes the state of the RDM serviceto active
+        rdmServiceModule.setState(rdmService, RDMServiceState.ACTIVE);
     }
 
 }

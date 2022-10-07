@@ -4,6 +4,7 @@ import at.tuwien.indmp.dao.RDMServiceDao;
 import at.tuwien.indmp.exception.ConflictException;
 import at.tuwien.indmp.exception.NotFoundException;
 import at.tuwien.indmp.model.RDMService;
+import at.tuwien.indmp.util.RDMServiceState;
 
 import java.util.List;
 import java.util.Objects;
@@ -66,11 +67,12 @@ public class RDMServiceModule {
      * 
      * Get all RDM services
      * 
+     * @param onlyActive
      * @return
      */
     @Transactional(readOnly = true)
-    public List<RDMService> getRDMServices() {
-        return rdmServiceDao.findAll();
+    public List<RDMService> getRDMServices(boolean onlyActive) {
+        return rdmServiceDao.findAll(onlyActive);
     }
 
     /**
@@ -79,7 +81,21 @@ public class RDMServiceModule {
      * 
      */
     public void update(RDMService rdmService) {
+        Objects.requireNonNull(rdmService);
         rdmServiceDao.update(rdmService);
+    }
+
+    /**
+     * 
+     * Set the state of the RDM service
+     * 
+     * @param state
+     */
+    public void setState(RDMService rdmService, RDMServiceState state) {
+        Objects.requireNonNull(rdmService);
+        Objects.requireNonNull(state);
+        rdmService.setState(state);
+        update(rdmService);
     }
 
     /* Private */
