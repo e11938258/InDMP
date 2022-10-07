@@ -90,19 +90,19 @@ public class Cost extends AbstractClassObject {
         // ------------------------------------
         final List<Property> properties = propertyModule.findEntities(atLocation, null, null, true);
 
-        Property p = Functions.findPropertyInList(getObjectType(), "currency_code", properties);
+        Property p = Functions.findPropertyInList(getSpecializationOf("currency_code"), properties);
         setCurrency_code(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList(getObjectType(), "description", properties);
+        p = Functions.findPropertyInList(getSpecializationOf("description"), properties);
         setDescription(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList(getObjectType(), "value", properties);
+        p = Functions.findPropertyInList(getSpecializationOf("value"), properties);
         setValue(p != null ? Double.parseDouble(p.getValue()) : null);
 
         // ------------------------------------
         // Set identifier
         // ------------------------------------
-        p = Functions.findPropertyInList(getObjectType(), "title", properties);
+        p = Functions.findPropertyInList(getSpecializationOf("title"), properties);
         setTitle(p != null ? p.getValue() : null);
     }
 }

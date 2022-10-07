@@ -121,19 +121,19 @@ public class Project extends AbstractClassObject {
         // ------------------------------------
         final List<Property> properties = propertyModule.findEntities(atLocation, null, null, true);
 
-        Property p = Functions.findPropertyInList(getObjectType(), "description", properties);
+        Property p = Functions.findPropertyInList(getSpecializationOf("description"), properties);
         setDescription(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList(getObjectType(), "end", properties);
+        p = Functions.findPropertyInList(getSpecializationOf("end"), properties);
         setEnd(p != null ? LocalDate.parse(p.getValue()) : null);
 
-        p = Functions.findPropertyInList(getObjectType(), "start", properties);
+        p = Functions.findPropertyInList(getSpecializationOf("start"), properties);
         setStart(p != null ? LocalDate.parse(p.getValue()) : null);
 
         // ------------------------------------
         // Set identifier
         // ------------------------------------
-        p = Functions.findPropertyInList(getObjectType(), "title", properties);
+        p = Functions.findPropertyInList(getSpecializationOf("title"), properties);
         setTitle(p.getValue());
 
         // ------------------------------------

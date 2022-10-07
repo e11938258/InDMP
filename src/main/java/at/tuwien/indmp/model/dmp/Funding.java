@@ -96,14 +96,14 @@ public class Funding extends AbstractClassObject {
         // ------------------------------------
         final List<Property> properties = propertyModule.findEntities(atLocation, null, null, true);
 
-        Property p = Functions.findPropertyInList(getObjectType(), "funding_status", properties);
+        Property p = Functions.findPropertyInList(getSpecializationOf("funding_status"), properties);
         setFunding_status(p != null ? p.getValue() : null);
 
         // ------------------------------------
         // Set identifier
         // ------------------------------------
-        Property identifier = Functions.findPropertyInList(getObjectType(), "identifier", properties);
-        Property type = Functions.findPropertyInList(getObjectType(), "type", properties);
+        Property identifier = Functions.findPropertyInList(getSpecializationOf("identifier"), properties);
+        Property type = Functions.findPropertyInList(getSpecializationOf("type"), properties);
         funder_id = new Funder_id(identifier.getValue(), type.getValue());
 
         // ------------------------------------
@@ -114,8 +114,8 @@ public class Funding extends AbstractClassObject {
             final List<Property> grantProperties = propertyModule.findEntities(atLocation + "/" + property.getValue(), null, null, true);
 
             // Set identifier
-            identifier = Functions.findPropertyInList("grant_id", "identifier", grantProperties);
-            type = Functions.findPropertyInList("grant_id", "type", grantProperties);
+            identifier = Functions.findPropertyInList("grant_id:identifier", grantProperties);
+            type = Functions.findPropertyInList("grant_id:type", grantProperties);
 
             // Set the grant id object
             setGrant_id(new Grant_id(identifier.getValue(), type.getValue()));

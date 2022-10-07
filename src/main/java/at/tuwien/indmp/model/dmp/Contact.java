@@ -82,17 +82,17 @@ public class Contact extends AbstractClassObject {
         // ------------------------------------
         final List<Property> properties = propertyModule.findEntities(atLocation, null, null, true);
 
-        Property p = Functions.findPropertyInList(getObjectType(), "mbox", properties);
+        Property p = Functions.findPropertyInList(getSpecializationOf("mbox"), properties);
         setMbox(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList(getObjectType(), "name", properties);
+        p = Functions.findPropertyInList(getSpecializationOf("name"), properties);
         setName(p != null ? p.getValue() : null);
 
         // ------------------------------------
         // Set identifier
         // ------------------------------------
-        final Property identifier = Functions.findPropertyInList(getObjectType(), "identifier", properties);
-        final Property type = Functions.findPropertyInList(getObjectType(), "type", properties);
+        final Property identifier = Functions.findPropertyInList(getSpecializationOf("identifier"), properties);
+        final Property type = Functions.findPropertyInList(getSpecializationOf("type"), properties);
         contact_id = new Contact_id(identifier.getValue(), type.getValue());
     }
 }

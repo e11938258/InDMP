@@ -181,42 +181,42 @@ public class Host extends AbstractClassObject {
         // ------------------------------------
         final List<Property> properties = propertyModule.findEntities(atLocation, null, null, true);
 
-        Property p = Functions.findPropertyInList(getObjectType(), "availability", properties);
+        Property p = Functions.findPropertyInList(getSpecializationOf("availability"),properties);
         setAvailability(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList(getObjectType(), "backup_frequency", properties);
+        p = Functions.findPropertyInList(getSpecializationOf("backup_frequency"), properties);
         setBackup_frequency(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList(getObjectType(), "backup_type", properties);
+        p = Functions.findPropertyInList(getSpecializationOf("backup_type"), properties);
         setBackup_type(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList(getObjectType(), "certified_with", properties);
+        p = Functions.findPropertyInList(getSpecializationOf("certified_with"), properties);
         setCertified_with(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList(getObjectType(), "description", properties);
+        p = Functions.findPropertyInList(getSpecializationOf("description"), properties);
         setDescription(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList(getObjectType(), "geo_location", properties);
+        p = Functions.findPropertyInList(getSpecializationOf("geo_location"), properties);
         setGeo_location(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList(getObjectType(), "pid_system", properties);
+        p = Functions.findPropertyInList(getSpecializationOf("pid_system"), properties);
         setPid_system(p != null
                 ? Arrays.asList(p.getValue().replace("[", "").replace("]", "").replace(" ", "").split(",", -1))
                 : null);
 
-        p = Functions.findPropertyInList(getObjectType(), "storage_type", properties);
+        p = Functions.findPropertyInList(getSpecializationOf("storage_type"), properties);
         setStorage_type(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList(getObjectType(), "support_versioning", properties);
+        p = Functions.findPropertyInList(getSpecializationOf("support_versioning"), properties);
         setSupport_versioning(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList(getObjectType(), "title", properties);
+        p = Functions.findPropertyInList(getSpecializationOf("title"), properties);
         setTitle(p != null ? p.getValue() : null);
 
         // ------------------------------------
         // Set identifier
         // ------------------------------------
-        p = Functions.findPropertyInList(getObjectType(), "url", properties);
+        p = Functions.findPropertyInList(getSpecializationOf("url"), properties);
         setUrl(URI.create(p.getValue()));
     }
 }

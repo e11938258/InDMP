@@ -128,40 +128,6 @@ public class DMPModule {
         }
     }
 
-    private void checkMinimalDMP(DMP dmp) {
-        if (dmp == null || dmp.getCreated() == null || dmp.getModified() == null || dmp.getDmp_id() == null
-                || dmp.getDmp_id().getObjectIdentifier() == null
-                || dmp.getDmp_id().getObjectIdentifier().length() == 0) {
-            log.error("Missing minimum maDMP.");
-            throw new BadRequestException("Missing minimum maDMP.");
-        }
-    }
-
-    private List<Property> findByCreationDate(String creationDate) {
-        return propertyModule.findEntities(null, "dmp:created", creationDate, true);
-    }
-
-    private DMP findByIdentifier(String identifier) {
-        final Property entity = propertyModule.findEntity(null, "dmp:identifier", identifier);
-        if (entity != null) {
-            return loadMinimalDMP(entity.getAtLocation());
-        } else {
-            return null;
-        }
-    }
-
-    private DMP loadMinimalDMP(String atLocation) {
-        // Find mandatory properties
-        final List<Property> properties = propertyModule.findEntities(atLocation, null, null, true);
-        final String created = Functions.findPropertyInList("dmp", "created", properties).getValue();
-        final String modified = Functions.findPropertyInList("dmp", "modified", properties).getValue();
-        final String identifier = Functions.findPropertyInList("dmp", "identifier", properties).getValue();
-
-        // Create a new minimal DMP
-        final DMP_id dmp_id = new DMP_id(identifier);
-        return new DMP(LocalDateTime.parse(created), LocalDateTime.parse(modified), dmp_id);
-    }
-
     /**
      * 
      * Check if modified property is newer than the stored one, but not future
@@ -306,20 +272,6 @@ public class DMPModule {
         }
     }
 
-    private boolean hasRights(Property entity, RDMService dataService) {
-        // for (String right : dataService.getRights()) {
-        //     if (entity.getSpecializationOf().contains(right)) {
-        //         return true;
-        //     }
-        // }
-        return false;
-    }
-
-    private void updateModified(DMP dmp, RDMService dataService) {
-        propertyModule.deactivateAndCreateEntity(Functions.findPropertyInList("dmp", "modified",
-                dmp.getProperties(dmp, "", dataService)), dataService);
-    }
-
     /**
      *
      * Load DMP identifiers with history
@@ -339,4 +291,55 @@ public class DMPModule {
 
         return entities;
     }
+
+    /* Private */
+
+    private void checkMinimalDMP(DMP dmp) {
+        if (dmp == null || dmp.getCreated() == null || dmp.getModified() == null || dmp.getDmp_id() == null
+                || dmp.getDmp_id().getObjectIdentifier() == null
+                || dmp.getDmp_id().getObjectIdentifier().length() == 0) {
+            log.error("Missing minimum maDMP.");
+            throw new BadRequestException("Missing minimum maDMP.");
+        }
+    }
+
+    private List<Property> findByCreationDate(String creationDate) {
+        return propertyModule.findEntities(null, "dmp:created", creationDate, true);
+    }
+
+    private DMP findByIdentifier(String identifier) {
+        final Property entity = propertyModule.findEntity(null, "dmp:identifier", identifier);
+        if (entity != null) {
+            return loadMinimalDMP(entity.getAtLocation());
+        } else {
+            return null;
+        }
+    }
+
+    private DMP loadMinimalDMP(String atLocation) {
+        // Find mandatory properties
+        final List<Property> properties = propertyModule.findEntities(atLocation, null, null, true);
+        final String created = Functions.findPropertyInList("dmp", "created", properties).getValue();
+        final String modified = Functions.findPropertyInList("dmp", "modified", properties).getValue();
+        final String identifier = Functions.findPropertyInList("dmp", "identifier", properties).getValue();
+
+        // Create a new minimal DMP
+        final DMP_id dmp_id = new DMP_id(identifier);
+        return new DMP(LocalDateTime.parse(created), LocalDateTime.parse(modified), dmp_id);
+    }
+
+    private boolean hasRights(Property entity, RDMService dataService) {
+        for (String right : dataService.getRights()) {
+            if (entity.getSpecializationOf().contains(right)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void updateModified(DMP dmp, RDMService dataService) {
+        propertyModule.deactivateAndCreateEntity(Functions.findPropertyInList("dmp", "modified",
+                dmp.getProperties(dmp, "", dataService)), dataService);
+    }
+
 }

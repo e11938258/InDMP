@@ -2,6 +2,7 @@ package at.tuwien.indmp.modul;
 
 import at.tuwien.indmp.dao.ActivityDao;
 import at.tuwien.indmp.dao.PropertyDao;
+import at.tuwien.indmp.dao.RDMServiceDao;
 import at.tuwien.indmp.model.Activity;
 import at.tuwien.indmp.model.RDMService;
 import at.tuwien.indmp.model.Property;
@@ -30,7 +31,7 @@ public class PropertyModule {
     private ActivityDao activityDao;
 
     @Autowired
-    private RDMServiceModule rdmServiceModule; // Update
+    private RDMServiceDao rdmServiceDao;
 
     private final Logger log = LoggerFactory.getLogger(PropertyModule.class);
 
@@ -48,23 +49,6 @@ public class PropertyModule {
         for (Property entity : entities) {
             persist(entity, dataService);
         }
-    }
-
-    private void persist(Property entity, RDMService dataService) {
-        Objects.requireNonNull(entity, "Entity is null.");
-        Objects.requireNonNull(dataService, "Service is null.");
-
-        log.info("Persisting a new entity: " + entity.toString());
-
-        // Add references
-        entity.getWasGeneratedBy().setWasStartedBy(dataService);
-        dataService.addStartRelation(entity.getWasGeneratedBy());
-        // Persist the new activity
-        activityDao.persist(entity.getWasGeneratedBy());
-        // Persist the new entity
-        entityDao.persist(entity);
-        // Update the RDM service
-        rdmServiceModule.update(dataService);
     }
 
     /**
@@ -158,15 +142,6 @@ public class PropertyModule {
         }
     }
 
-    private void deactivate(Property entity, Timestamp endTime) {
-        Objects.requireNonNull(entity, "The current entity is null.");
-
-        // End previous activity
-        final Activity currentActivity = entity.getWasGeneratedBy();
-        currentActivity.setEndedAtTime(endTime);
-        activityDao.update(currentActivity);
-    }
-
     /**
      *
      * Change atLocation after identifier change
@@ -206,5 +181,33 @@ public class PropertyModule {
         for (final Property entity : entities) {
             deactivate(entity, Timestamp.valueOf(endTime));
         }
+    }
+
+    /* Private */
+
+    private void persist(Property entity, RDMService dataService) {
+        Objects.requireNonNull(entity, "Entity is null.");
+        Objects.requireNonNull(dataService, "Service is null.");
+
+        log.info("Persisting a new entity: " + entity.toString());
+
+        // Add references
+        entity.getWasGeneratedBy().setWasStartedBy(dataService);
+        dataService.addStartRelation(entity.getWasGeneratedBy());
+        // Persist the new activity
+        activityDao.persist(entity.getWasGeneratedBy());
+        // Persist the new entity
+        entityDao.persist(entity);
+        // Update the RDM service
+        rdmServiceDao.update(dataService);
+    }
+
+    private void deactivate(Property entity, Timestamp endTime) {
+        Objects.requireNonNull(entity, "The current entity is null.");
+
+        // End previous activity
+        final Activity currentActivity = entity.getWasGeneratedBy();
+        currentActivity.setEndedAtTime(endTime);
+        activityDao.update(currentActivity);
     }
 }

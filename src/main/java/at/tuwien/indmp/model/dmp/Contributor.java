@@ -95,13 +95,13 @@ public class Contributor extends AbstractClassObject {
         // ------------------------------------
         final List<Property> properties = propertyModule.findEntities(atLocation, null, null, true);
 
-        Property p = Functions.findPropertyInList(getObjectType(), "mbox", properties);
+        Property p = Functions.findPropertyInList(getSpecializationOf("mbox"), properties);
         setMbox(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList(getObjectType(), "name", properties);
+        p = Functions.findPropertyInList(getSpecializationOf("name"), properties);
         setName(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList(getObjectType(), "role", properties);
+        p = Functions.findPropertyInList(getSpecializationOf("role"), properties);
         setRole(p != null
                 ? Arrays.asList(p.getValue().replace("[", "").replace("]", "").replace(" ", "").split(",", -1))
                 : null);
@@ -109,8 +109,8 @@ public class Contributor extends AbstractClassObject {
         // ------------------------------------
         // Set identifier
         // ------------------------------------
-        final Property identifier = Functions.findPropertyInList(getObjectType(), "identifier", properties);
-        final Property type = Functions.findPropertyInList(getObjectType(), "type", properties);
+        final Property identifier = Functions.findPropertyInList(getSpecializationOf("identifier"), properties);
+        final Property type = Functions.findPropertyInList(getSpecializationOf("type"), properties);
         setContributor_id(new Contributor_id(identifier.getValue(), type.getValue()));
     }
 }

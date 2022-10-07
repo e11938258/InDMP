@@ -84,17 +84,17 @@ public class Metadata extends AbstractClassObject {
         // ------------------------------------
         final List<Property> properties = propertyModule.findEntities(atLocation, null, null, true);
 
-        Property p = Functions.findPropertyInList(getObjectType(), "description", properties);
+        Property p = Functions.findPropertyInList(getSpecializationOf("description"), properties);
         setDescription(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList(getObjectType(), "language", properties);
+        p = Functions.findPropertyInList(getSpecializationOf("language"), properties);
         setLanguage(p != null ? p.getValue() : null);
 
         // ------------------------------------
         // Set identifier
         // ------------------------------------
-        final Property identifier = Functions.findPropertyInList(getObjectType(), "identifier", properties);
-        final Property type = Functions.findPropertyInList(getObjectType(), "type", properties);
+        final Property identifier = Functions.findPropertyInList(getSpecializationOf("identifier"), properties);
+        final Property type = Functions.findPropertyInList(getSpecializationOf("type"), properties);
         metadata_standard_id = new Metadata_standard_id(identifier.getValue(), type.getValue());
     }
 }

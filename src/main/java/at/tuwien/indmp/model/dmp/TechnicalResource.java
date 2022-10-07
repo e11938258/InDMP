@@ -63,13 +63,13 @@ public class TechnicalResource extends AbstractClassObject {
         // ------------------------------------
         final List<Property> properties = propertyModule.findEntities(atLocation, null, null, true);
 
-        Property p = Functions.findPropertyInList(getObjectType(), "description", properties);
+        Property p = Functions.findPropertyInList(getSpecializationOf("description"), properties);
         setDescription(p != null ? p.getValue() : null);
 
         // ------------------------------------
         // Set identifier
         // ------------------------------------
-        p = Functions.findPropertyInList(getObjectType(),"name", properties);
+        p = Functions.findPropertyInList(getSpecializationOf("name"), properties);
         setName(p.getValue());
     }
 }

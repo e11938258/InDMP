@@ -70,13 +70,13 @@ public class License extends AbstractClassObject {
         // ------------------------------------
         final List<Property> properties = propertyModule.findEntities(atLocation, null, null, true);
 
-        Property p = Functions.findPropertyInList(getObjectType(), "start_date", properties);
+        Property p = Functions.findPropertyInList(getSpecializationOf("start_date"), properties);
         setStart_date(p != null ? LocalDate.parse(p.getValue()) : null);
 
         // ------------------------------------
         // Set identifier
         // ------------------------------------
-        p = Functions.findPropertyInList(getObjectType(), "license_ref", properties);
+        p = Functions.findPropertyInList(getSpecializationOf("license_ref"), properties);
         setLicense_ref(URI.create(p.getValue()));
     }
 }

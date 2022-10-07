@@ -3,7 +3,7 @@ package at.tuwien.indmp.rest;
 import javax.validation.Valid;
 
 import at.tuwien.indmp.model.RDMService;
-import at.tuwien.indmp.service.DataServiceService;
+import at.tuwien.indmp.modul.RDMServiceModule;
 import at.tuwien.indmp.util.Endpoints;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class DataServiceController {
 
     @Autowired
-    private DataServiceService dataServiceService;
+    private RDMServiceModule rdmServiceModule;
 
     public DataServiceController() {
     }

@@ -1,6 +1,6 @@
 package at.tuwien.indmp.model;
 
-import java.time.LocalDate;
+import java.sql.Timestamp;
 
 import javax.persistence.Entity;
 import javax.persistence.Column;
@@ -31,11 +31,11 @@ public class Activity extends AbstractEntity {
     @Column(name = "started_at_time", nullable = false)
     @NotNull
     @JsonFormat(pattern = ModelConstants.DATE_TIME_FORMAT_ISO_8601)
-    private LocalDate startedAtTime; // https://www.w3.org/TR/2013/REC-prov-o-20130430/#startedAtTime
+    private Timestamp startedAtTime; // https://www.w3.org/TR/2013/REC-prov-o-20130430/#startedAtTime
 
     @Column(name = "ended_at_time")
     @JsonFormat(pattern = ModelConstants.DATE_TIME_FORMAT_ISO_8601)
-    private LocalDate endedAtTime; // https://www.w3.org/TR/2013/REC-prov-o-20130430/#endedAtTime
+    private Timestamp endedAtTime; // https://www.w3.org/TR/2013/REC-prov-o-20130430/#endedAtTime
 
     @OneToOne(mappedBy = "wasGeneratedBy")
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
@@ -54,23 +54,23 @@ public class Activity extends AbstractEntity {
     public Activity() {
     }
 
-    public Activity(LocalDate startedAtTime) {
+    public Activity(Timestamp startedAtTime) {
         this.startedAtTime = startedAtTime;
     }
 
-    public LocalDate getStartedAtTime() {
+    public Timestamp getStartedAtTime() {
         return this.startedAtTime;
     }
 
-    public void setStartedAtTime(LocalDate startedAtTime) {
+    public void setStartedAtTime(Timestamp startedAtTime) {
         this.startedAtTime = startedAtTime;
     }
 
-    public LocalDate getEndedAtTime() {
+    public Timestamp getEndedAtTime() {
         return this.endedAtTime;
     }
 
-    public void setEndedAtTime(LocalDate endedAtTime) {
+    public void setEndedAtTime(Timestamp endedAtTime) {
         this.endedAtTime = endedAtTime;
     }
 

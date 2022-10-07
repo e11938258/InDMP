@@ -16,42 +16,41 @@ public class Functions {
 
     /**
      * 
-     * Find property in the list of entities
-     * 
-     * @param classType
-     * @param name
-     * @param entities
-     * @return
-     */
-    public static Property findPropertyInList(String classType, String name, List<Property> entities) {
-        final String propertyName = classType + ":" + name;
-        final List<Property> results = entities.stream().filter(p -> p.getSpecializationOf().equals(propertyName))
-                .collect(Collectors.toList());
-        if(results.size() == 1) {
-            return results.get(0);
-        } else {
-            return null;
-        }
-    }
-
-    /**
-     * 
      * Create a new property
      * 
      * @param dmp
-     * @param location
-     * @param propertyName
+     * @param atLocation
+     * @param specializationOf
      * @param value
      * @return
      */
-    public static Property createProperty(DMP dmp, String location, String propertyName, String value) {
+    public static Property createProperty(DMP dmp, String atLocation, String specializationOf, String value) {
         // Create a new activity
         final Activity activity = new Activity(Timestamp.valueOf(dmp.getModified()));
         // Add a new property
-        final Property property = new Property(location, propertyName, value, activity);
+        final Property property = new Property(atLocation, specializationOf, value, activity);
         // Set property to activity
         activity.setGenerated(property);
         // Return the property
         return property;
+    }
+
+    /**
+     * 
+     * Find property in the list of properties
+     * 
+     * @param specializationOf
+     * @param properties
+     * @return
+     */
+    public static Property findPropertyInList(String specializationOf, List<Property> properties) {
+        final List<Property> results = properties.stream()
+                .filter(p -> p.getSpecializationOf().equals(specializationOf))
+                .collect(Collectors.toList());
+        if (results.size() == 1) {
+            return results.get(0);
+        } else {
+            return null;
+        }
     }
 }

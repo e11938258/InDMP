@@ -41,19 +41,6 @@ public class RDMServiceModule {
         }
     }
 
-    @Transactional(readOnly = true)
-    private boolean existsByAccessRights(String accessRights) {
-        try {
-            if (dataServiceDao.findByAccessRights(accessRights) != null) {
-                return true;
-            } else {
-                return false;
-            }
-        } catch (NoResultException | EmptyResultDataAccessException ex) {
-            return false;
-        }
-    }
-
     /**
      * 
      * Find the service by access rights
@@ -90,5 +77,20 @@ public class RDMServiceModule {
     @Transactional
     public void update(RDMService dataService) {
         dataServiceDao.update(dataService);
+    }
+
+    /* Private */
+
+    @Transactional(readOnly = true)
+    private boolean existsByAccessRights(String accessRights) {
+        try {
+            if (dataServiceDao.findByAccessRights(accessRights) != null) {
+                return true;
+            } else {
+                return false;
+            }
+        } catch (NoResultException | EmptyResultDataAccessException ex) {
+            return false;
+        }
     }
 }

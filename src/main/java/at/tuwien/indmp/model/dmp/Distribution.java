@@ -190,33 +190,33 @@ public class Distribution extends AbstractClassObject {
         // ------------------------------------
         final List<Property> properties = propertyModule.findEntities(atLocation, null, null, true);
 
-        Property p = Functions.findPropertyInList(getObjectType(), "data_access", properties);
+        Property p = Functions.findPropertyInList(getSpecializationOf("data_access"), properties);
         setData_access(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList(getObjectType(), "available_until", properties);
+        p = Functions.findPropertyInList(getSpecializationOf("available_until"), properties);
         setAvailable_until(p != null ? LocalDate.parse(p.getValue()) : null);
 
-        p = Functions.findPropertyInList(getObjectType(), "byte_size", properties);
+        p = Functions.findPropertyInList(getSpecializationOf("byte_size"), properties);
         setByte_size(p != null ? Long.valueOf(p.getValue()) : null);
 
-        p = Functions.findPropertyInList(getObjectType(), "description", properties);
+        p = Functions.findPropertyInList(getSpecializationOf("description"), properties);
         setDescription(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList(getObjectType(), "download_url", properties);
+        p = Functions.findPropertyInList(getSpecializationOf("download_url"), properties);
         setDownload_url(p != null ? URI.create(p.getValue()) : null);
 
-        p = Functions.findPropertyInList(getObjectType(), "format", properties);
+        p = Functions.findPropertyInList(getSpecializationOf("format"), properties);
         setFormat(p != null
                 ? Arrays.asList(p.getValue().replace("[", "").replace("]", "").replace(" ", "").split(",", -1))
                 : null);
 
-        p = Functions.findPropertyInList(getObjectType(), "title", properties);
+        p = Functions.findPropertyInList(getSpecializationOf("title"), properties);
         setTitle(p != null ? p.getValue() : null);
 
         // ------------------------------------
         // Set identifier
         // ------------------------------------
-        p = Functions.findPropertyInList(getObjectType(), "access_url", properties);
+        p = Functions.findPropertyInList(getSpecializationOf("access_url"), properties);
         setAccess_url(URI.create(p.getValue()));
 
         // ------------------------------------

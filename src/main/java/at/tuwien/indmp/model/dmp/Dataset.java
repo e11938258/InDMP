@@ -266,45 +266,45 @@ public class Dataset extends AbstractClassObject {
         // ------------------------------------
         final List<Property> properties = propertyModule.findEntities(atLocation, null, null, true);
 
-        Property p = Functions.findPropertyInList(getObjectType(), "data_quality_assurance", properties);
+        Property p = Functions.findPropertyInList(getSpecializationOf("data_quality_assurance"), properties);
         setData_quality_assurance(p != null
                 ? Arrays.asList(p.getValue().replace("[", "").replace("]", "").replace(" ", "").split(",", -1))
                 : null);
 
-        p = Functions.findPropertyInList(getObjectType(), "description", properties);
+        p = Functions.findPropertyInList(getSpecializationOf("description"), properties);
         setDescription(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList(getObjectType(), "issued", properties);
+        p = Functions.findPropertyInList(getSpecializationOf("issued"), properties);
         setIssued(p != null ? LocalDate.parse(p.getValue()) : null);
 
-        p = Functions.findPropertyInList(getObjectType(), "keyword", properties);
+        p = Functions.findPropertyInList(getSpecializationOf("keyword"), properties);
         setKeyword(p != null
                 ? Arrays.asList(p.getValue().replace("[", "").replace("]", "").replace(" ", "").split(",", -1))
                 : null);
 
-        p = Functions.findPropertyInList(getObjectType(), "language", properties);
+        p = Functions.findPropertyInList(getSpecializationOf("language"), properties);
         setLanguage(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList(getObjectType(), "personal_data", properties);
+        p = Functions.findPropertyInList(getSpecializationOf("personal_data"), properties);
         setPersonal_data(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList(getObjectType(), "preservation_statement", properties);
+        p = Functions.findPropertyInList(getSpecializationOf("preservation_statement"), properties);
         setPreservation_statement(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList(getObjectType(), "sensitive_data", properties);
+        p = Functions.findPropertyInList(getSpecializationOf("sensitive_data"), properties);
         setSensitive_data(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList(getObjectType(), "title", properties);
+        p = Functions.findPropertyInList(getSpecializationOf("title"), properties);
         setTitle(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList(getObjectType(), "dtype", properties);
+        p = Functions.findPropertyInList(getSpecializationOf("dtype"), properties);
         setType(p != null ? p.getValue() : null);
 
         // ------------------------------------
         // Set identifier
         // ------------------------------------
-        final Property identifier = Functions.findPropertyInList(getObjectType(), "identifier", properties);
-        final Property type = Functions.findPropertyInList(getObjectType(), "type", properties);
+        final Property identifier = Functions.findPropertyInList(getSpecializationOf("identifier"), properties);
+        final Property type = Functions.findPropertyInList(getSpecializationOf("type"), properties);
         dataset_id = new Dataset_id(identifier.getValue(), type.getValue());
 
         // ------------------------------------

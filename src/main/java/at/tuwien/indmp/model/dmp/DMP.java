@@ -316,35 +316,35 @@ public class DMP extends AbstractClassObject {
         // ------------------------------------
         final List<Property> properties = propertyModule.findEntities(atLocation, null, null, true);
 
-        Property p = Functions.findPropertyInList(getObjectType(), "created", properties);
+        Property p = Functions.findPropertyInList(getSpecializationOf("created"), properties);
         setCreated(p != null ? LocalDateTime.parse(p.getValue()) : null);
 
-        p = Functions.findPropertyInList(getObjectType(), "description", properties);
+        p = Functions.findPropertyInList(getSpecializationOf("description"), properties);
         setDescription(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList(getObjectType(), "ethical_issues_description", properties);
+        p = Functions.findPropertyInList(getSpecializationOf("ethical_issues_description"), properties);
         setEthical_issues_description(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList(getObjectType(), "ethical_issues_exist", properties);
+        p = Functions.findPropertyInList(getSpecializationOf("ethical_issues_exist"), properties);
         setEthical_issues_exist(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList(getObjectType(), "ethical_issues_report", properties);
+        p = Functions.findPropertyInList(getSpecializationOf("ethical_issues_report"), properties);
         setEthical_issues_report(p != null ? URI.create(p.getValue()) : null);
 
-        p = Functions.findPropertyInList(getObjectType(), "language", properties);
+        p = Functions.findPropertyInList(getSpecializationOf("language"), properties);
         setLanguage(p != null ? p.getValue() : null);
 
-        p = Functions.findPropertyInList(getObjectType(), "modified", properties);
+        p = Functions.findPropertyInList(getSpecializationOf("modified"), properties);
         setModified(p != null ? LocalDateTime.parse(p.getValue()) : null);
 
-        p = Functions.findPropertyInList(getObjectType(), "title", properties);
+        p = Functions.findPropertyInList(getSpecializationOf("title"), properties);
         setTitle(p != null ? p.getValue() : null);
 
         // ------------------------------------
         // Set identifier
         // ------------------------------------
-        final Property identifier = Functions.findPropertyInList(getObjectType(), "identifier", properties);
-        final Property type = Functions.findPropertyInList(getObjectType(), "type", properties);
+        final Property identifier = Functions.findPropertyInList(getSpecializationOf("identifier"), properties);
+        final Property type = Functions.findPropertyInList(getSpecializationOf("type"), properties);
         dmp_id = new DMP_id(identifier.getValue());
         if (type != null) {
             dmp_id.setType(type.getValue());
