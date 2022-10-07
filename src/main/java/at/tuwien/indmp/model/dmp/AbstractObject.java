@@ -7,8 +7,8 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 
 import at.tuwien.indmp.exception.ForbiddenException;
-import at.tuwien.indmp.model.RDMService;
 import at.tuwien.indmp.model.Property;
+import at.tuwien.indmp.model.RDMService;
 import at.tuwien.indmp.util.Functions;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -114,15 +114,17 @@ public abstract class AbstractObject {
             throw new ForbiddenException("Lengths are not same!");
         }
 
-        // 6.1 For each property from received maDMP
+        // For each property from the maDMP
         for (int i = 0; i < values.length; i++) {
+
             // If value is not null
             if (values[i] != null && !values[i].equals("[]")) {
+                
                 // Create a new property instance
                 final Property property = Functions.createProperty(dmp, getAtLocation(atLocation),
                         getSpecializationOf(propertyNames[i]), values[i].toString());
-                // 6.1.1 6.1.2 If RDM service has the right to change the property
-                // 7. 7.1 All properties from maDMP are stored.
+                
+                // The integration service checks whether the RDM service has the right to change the property or it is a new DMP.
                 if (dmp.isNew() || rdmService.hasPropertyRight(property)) {
                     properties.add(property);
                 }

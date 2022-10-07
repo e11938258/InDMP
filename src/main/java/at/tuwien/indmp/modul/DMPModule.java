@@ -1,23 +1,10 @@
 package at.tuwien.indmp.modul;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
 import javax.validation.Valid;
-
-import at.tuwien.indmp.exception.BadRequestException;
-import at.tuwien.indmp.exception.ConflictException;
-import at.tuwien.indmp.exception.ForbiddenException;
-import at.tuwien.indmp.exception.NotFoundException;
-import at.tuwien.indmp.model.RDMService;
-import at.tuwien.indmp.model.Property;
-import at.tuwien.indmp.model.dmp.DMP;
-import at.tuwien.indmp.model.dmp.DMPScheme;
-import at.tuwien.indmp.model.dmp.DMP_id;
-import at.tuwien.indmp.util.ModelConstants;
-import at.tuwien.indmp.util.Functions;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,14 +12,22 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import at.tuwien.indmp.exception.BadRequestException;
+import at.tuwien.indmp.exception.ConflictException;
+import at.tuwien.indmp.exception.ForbiddenException;
+import at.tuwien.indmp.exception.NotFoundException;
+import at.tuwien.indmp.model.Property;
+import at.tuwien.indmp.model.RDMService;
+import at.tuwien.indmp.model.dmp.DMP;
+import at.tuwien.indmp.model.dmp.DMPScheme;
+import at.tuwien.indmp.util.Functions;
+import at.tuwien.indmp.util.ModelConstants;
+
 @Service
 public class DMPModule {
 
     @Value("${identification.by-creation-only}")
     private boolean byCreationOnly;
-
-    @Value("${identification.auto-correction}")
-    private boolean autoCorrection;
 
     @Value("${identification.by-identifier-only}")
     private boolean byIdentifierOnly;
@@ -44,19 +39,19 @@ public class DMPModule {
 
     /**
      * 
-     * Create a new DMP
+     * Create a new DMP with all properties
      * 
      * @param dmp
      * @param dataService
      */
     public void create(DMP dmp, RDMService dataService) {
-        if (findByIdentifier(dmp.getObjectIdentifier()) == null) {
-            // Get properties from new DMP
+        if (findMaDMPIdentifier(dmp.getObjectIdentifier()) == null) {
+            // Get all properties from the new DMP
             final List<Property> properties = dmp.getProperties(dmp, "", dataService);
             properties.addAll(dmp.getPropertiesFromNestedObjects(dmp, "", dataService));
 
-            // Persist the properties
-            propertyModule.persist(properties, dataService);
+            // Persist all properties
+            propertyModule.persistList(properties, dataService);
         } else {
             throw new ConflictException("DMP is already created.");
         }
@@ -64,63 +59,87 @@ public class DMPModule {
 
     /**
      * 
-     * Identify DMP by creation date and identifier
+     * UC7: Validation and identification of the received maDMP.
      * 
      * @param dmp
-     * @param dataService
+     * @param rdmService
      * @return minimum of DMP
      */
-    public DMP identifyDMP(@Valid DMP dmp, RDMService dataService) {
-        // Check minimal DMP
+    public void validateAndIdentifyMaDMP(@Valid DMP dmp, RDMService rdmService) {
+        // 1. The integration service checks whether the maDMP contains the mandatory
+        // properties.
         checkMinimalDMP(dmp);
-        // Is creation date same as modification date?
-        DMP currentDMP = null;
-        if (dmp.isNew()) {
-            return null; // New DMP
-        } else {
-            // Identify by creation date
-            List<Property> currentCreationDates = findByCreationDate(dmp.getCreatedInString());
-            // Identified by creation date?
-            if (currentCreationDates.size() > 0) {
-                // Find DMP Identifier
-                currentDMP = findByIdentifier(dmp.getDmp_id().getIdentifier());
-                // Identifier found?
-                if (currentDMP != null) {
-                    return currentDMP;
-                } else if (currentCreationDates.size() == 1) { // Just one creation date?
-                    // Load details by creation date
-                    currentDMP = loadMinimalDMP(currentCreationDates.get(0).getAtLocation());
-                    // Auto correction enabled?
-                    if (autoCorrection && dataService != null) {
-                        changeIdentifiers(dmp, Functions.createProperty(currentDMP, currentDMP.getAtLocation(""),
-                                "dmp:identifier", dmp.getObjectIdentifier()), dataService);
-                    }
 
-                    // Identification by creation date only?
-                    if (byCreationOnly) {
-                        return currentDMP;
+        // 2. If the modified property is future
+        if (dmp.getModified().isAfter(LocalDateTime.now())) {
+            // 2.1 The integration service returns an error message to the RDM service and
+            // terminates the process
+            log.error("The wrong modified property.");
+            throw new BadRequestException("The wrong modified property.");
+        }
+
+        // 3. If the property created is not the same as modified
+        if (!dmp.isNew()) {
+            // 3.1 The integration service tries to identify the maDMP using the property
+            // created.
+            List<Property> creationProperties = findCreationProperties(dmp.getCreatedInString());
+
+            // 3.2 If maDMP was identified
+            if (creationProperties.size() > 0) {
+
+                // 3.2.1 The integration service tries to identify the maDMP using the
+                // identifier
+                final Property madmpIdentifier = findMaDMPIdentifier(dmp.getDmp_id().getIdentifier());
+
+                // 3.2.2 If maDMP was not identified by the identifier
+                if (madmpIdentifier == null) {
+
+                    // 3.2.2.1 If multiple creation dates were found
+                    if (creationProperties.size() > 1) {
+                        // 3.2.2.1.1 The integration service returns an error message to the RDM service
+                        // and terminates the process
+                        log.error("Multiple creation dates");
+                        throw new NotFoundException("Multiple creation dates");
                     } else {
-                        log.error("DMP not found by identifier " + dmp.getObjectIdentifier() + ", creation date: "
-                                + currentDMP.getCreated().toString());
-                        throw new NotFoundException("DMP not found by identifier.");
+                        // 3.2.2.2 Else
+
+                        // 3.2.2.2.1 If identification only by creation is not allowed
+                        if (!byCreationOnly) {
+                            // 3.2.2.2.1.1 The integration service returns an error message to the RDM
+                            // service and terminates the process.
+                            log.error("DMP not found by identifier.");
+                            throw new NotFoundException("DMP not found by identifier.");
+                        } else {
+                            // 3.2.2.2.2 Else
+
+                            // 3.2.2.2.2.1 The integration service corrects the maDMP identifier in storage.
+                            // changeIdentifier(dmp, Functions.createProperty(dmp,
+                            // creationProperties.get(0).getAtLocation(),"dmp:identifier",
+                            // dmp.getObjectIdentifier()), rdmService);
+                        }
                     }
-                } else {
-                    log.error("Multiple creation dates");
-                    throw new NotFoundException("Multiple creation dates");
                 }
             } else {
-                // Identify by DMP Identifier
-                currentDMP = findByIdentifier(dmp.getDmp_id().getIdentifier());
-                // Identified by DMP identifier?
-                if (currentDMP != null) {
-                    // Identification by identifier only?
-                    if (byIdentifierOnly) {
-                        return currentDMP;
-                    } else {
-                        log.error("DMP not found by creation date, identifier: " + currentDMP.getObjectIdentifier());
+                // 3.3 Else
+
+                // 3.3.1 The integration service identifies the maDMP using an identifier.
+                final Property madmpIdentifier = findMaDMPIdentifier(dmp.getDmp_id().getIdentifier());
+
+                // 3.3.2 If maDMP was identified
+                if (madmpIdentifier != null) {
+
+                    // 3.3.2.1 If maDMP identification only by identifier is not allowed
+                    if (!byIdentifierOnly) {
+                        // 3.3.2.1.1 The integration service returns an error message to the RDM service
+                        // and terminates the process.
+                        log.error("DMP not found by creation date.");
                         throw new NotFoundException("DMP not found by creation date.");
                     }
                 } else {
+                    // 3.3.3 Else
+
+                    // 3.3.3.1 The integration service returns an error message to the RDM service
+                    // and terminates the process
                     log.error("DMP not found by either identifier or creation date.");
                     throw new NotFoundException("DMP not found by either identifier or creation date.");
                 }
@@ -130,17 +149,20 @@ public class DMPModule {
 
     /**
      * 
-     * Check if modified property is newer than the stored one, but not future
+     * Check if modified property is newer than the stored one
      * 
-     * @param originModified
-     * @param newModified
+     * @param dmp
      * 
      */
-    public void checkModifiedProperty(LocalDateTime originModified, LocalDateTime newModified) {
-        if (originModified.equals(newModified) || originModified.isAfter(newModified)) {
+    public void checkModifiedProperty(DMP dmp) {
+        // Load the original modified property
+        final Property originalModifiedProperty = propertyModule.findProperty(dmp.getAtLocation(""), "dmp:modified",
+                null, true);
+        final LocalDateTime originalModified = LocalDateTime.parse(originalModifiedProperty.getValue());
+
+        // Is the old version of the DMP?
+        if (originalModified.isAfter(dmp.getModified())) {
             throw new ConflictException("There is a newer version of maDMP.");
-        } else if (LocalDateTime.now().isBefore(newModified)) {
-            throw new ForbiddenException("Cannot use future time.");
         }
     }
 
@@ -164,133 +186,164 @@ public class DMPModule {
 
     /**
      * 
-     * Update dmp
+     * Update the dmp
      * 
-     * @param currentDMP
      * @param dmp
-     * @param dataService
+     * @param rdmService
      */
-    public void update(DMP dmp, RDMService dataService) {
-        // Get properties from new DMP
-        final List<Property> properties = dmp.getProperties(dmp, "", dataService);
-        properties.addAll(dmp.getPropertiesFromNestedObjects(dmp, "", dataService));
+    public void update(DMP dmp, RDMService rdmService) {
+        // Get properties from the DMP
+        final List<Property> properties = dmp.getProperties(dmp, "", rdmService);
+        properties.addAll(dmp.getPropertiesFromNestedObjects(dmp, "", rdmService));
 
         // Set new properties
-        propertyModule.deactivateAndCreateEntities(properties, dataService);
+        propertyModule.terminateAndCreateProperties(properties, rdmService);
     }
 
     /**
      *
-     * Change identifier
-     *
-     * @param dmp         is the new DMP
-     * @param entity
-     * @param dataService
-     */
-    public void changeIdentifiers(DMP dmp, Property entity, RDMService dataService) {
-        Objects.requireNonNull(dmp, "DMP is null.");
-        Objects.requireNonNull(entity, "Identifier is null.");
-        Objects.requireNonNull(dataService, "Service is null.");
-
-        // Is the identifier changeable for the this class?
-        if (ModelConstants.IDENTIFIER_CHANGEABLE_CLASSES.contains(entity.getSpecializationOf())) {
-
-            // Has service rights to update?
-            if (hasRights(entity, dataService)) {
-
-                // Find identifier
-                final Property currentIdentifier = propertyModule.findEntity(entity.getAtLocation(),
-                        entity.getSpecializationOf(), null);
-
-                // Found?
-                if (currentIdentifier != null) {
-                    // Change the modified property
-                    updateModified(dmp, dataService);
-
-                    // Create a new location
-                    final String oldLocation = currentIdentifier.getAtLocation();
-                    final String location = oldLocation.replace(currentIdentifier.getValue(), entity.getValue());
-
-                    // Update entity
-                    propertyModule.deactivateAndCreateEntity(
-                            Functions.createProperty(dmp, oldLocation, currentIdentifier.getSpecializationOf(),
-                                    entity.getValue()),
-                            dataService);
-
-                    // Change nested locations
-                    propertyModule.changeNestedEntities(oldLocation, location);
-                } else {
-                    log.error("Cannot find identifier at location " + entity.getAtLocation());
-                    throw new NotFoundException("Cannot find identifier at location " + entity.getAtLocation());
-                }
-            } else {
-                log.error("Service does not have rights to update the identifier in this class.");
-                throw new ForbiddenException("Service does not have rights to update the identifier in this class.");
-            }
-        } else {
-            log.error("Cannot change " + entity.getSpecializationOf());
-            throw new BadRequestException("Cannot change " + entity.getSpecializationOf());
-        }
-    }
-
-    /**
-     *
-     * Delete instance
-     *
-     * @param entidmpty
-     * @param entity
-     * @param dataService
-     */
-    public void deleteInstance(DMP dmp, Property entity, RDMService dataService) {
-        Objects.requireNonNull(entity, "Entity is null.");
-
-        // Removable class?
-        if (ModelConstants.REMOVABLE_CLASSES.contains(entity.getSpecializationOf())) {
-
-            // Has service rights to delete?
-            if (hasRights(entity, dataService)) {
-
-                // Find location
-                final List<Property> entities = propertyModule.findEntities(entity.getAtLocation(), null, null, true);
-
-                if (entities.size() > 0) {
-                    // Change the modified property
-                    updateModified(dmp, dataService);
-                    // Remove entities
-                    propertyModule.removeAllNestedEntities(entity.getAtLocation(), dmp.getModified());
-                } else {
-                    log.error("Cannot find location " + entity.getAtLocation());
-                    throw new NotFoundException("Cannot find location " + entity.getAtLocation());
-                }
-            } else {
-                log.error("Service does not have rights to delete the class.");
-                throw new ForbiddenException("Service does not have rights to delete the class.");
-            }
-        } else {
-            log.error("Cannot delete " + entity.getSpecializationOf());
-            throw new BadRequestException("Cannot delete " + entity.getSpecializationOf());
-        }
-    }
-
-    /**
-     *
-     * Load DMP identifiers with history
+     * Change the object identifier
      *
      * @param dmp
-     * @return
+     * @param property
+     * @param rdmService
      */
-    public List<Property> loadIdentifierHistory(DMP dmp) {
-        Objects.requireNonNull(dmp);
+    public void changeObjectIdentifier(DMP dmp, Property property, RDMService rdmService) {
+        Objects.requireNonNull(dmp, "DMP is null.");
+        Objects.requireNonNull(property, "Identifier is null.");
+        Objects.requireNonNull(rdmService, "Service is null.");
 
-        final List<Property> entities = new ArrayList<>();
+        // 8.3 If (the message contains the correct information and) the identifier is
+        // changeable
+        if (ModelConstants.IDENTIFIER_CHANGEABLE_CLASSES.contains(property.getSpecializationOf())) {
 
-        // For each changeable class identifier
-        for (String specializationOf : ModelConstants.IDENTIFIER_CHANGEABLE_CLASSES) {
-            entities.addAll(propertyModule.findAllEntities(dmp.getAtLocation(""), specializationOf, false));
+            // 8.3.1 The integration service checks whether the RDM service has the right to
+            // change this property (identifier).
+            // 8.3.2 If the RDM service has the right to change the property
+            if (rdmService.getPropertyRights().contains(property.getSpecializationOf())) {
+
+                // 8.3.2.1 The integration service finds the stored identifier.
+                final Property currentIdentifier = propertyModule.findProperty(property.getAtLocation(),
+                        property.getSpecializationOf(), null, true);
+
+                // 8.3.2.2 If the identifier was found and the values are different
+                if (currentIdentifier != null && !currentIdentifier.getValue().equals(property.getValue())) {
+
+                    // 8.3.2.2.1 The integration service terminates the previous value of the
+                    // property modified and creates a new record with the received value
+                    final List<Property> properties = dmp.getProperties(dmp, "", rdmService);
+                    final Property modifiedProperty = Functions.findPropertyInList("dmp:modified", properties);
+                    propertyModule.terminateAndCreateProperty(modifiedProperty, rdmService);
+
+                    // 8.3.2.2.2 The integration service terminates the previous value of the
+                    // identifier and creates a new record with the received value
+                    final String oldLocation = currentIdentifier.getAtLocation();
+                    final String location = oldLocation.replace(currentIdentifier.getValue(), property.getValue());
+                    final Property newIdentifier = Functions.createProperty(dmp, oldLocation,
+                            currentIdentifier.getSpecializationOf(), property.getValue());
+                    propertyModule.terminateAndCreateProperty(newIdentifier, rdmService);
+
+                    // 8.3.2.2.3 The integration service changes all references to this identifier
+                    propertyModule.changeNestedProperties(oldLocation, location);
+                } else {
+                    log.error("Cannot find identifier at location " + property.getAtLocation());
+                    throw new NotFoundException("Cannot find identifier at location " + property.getAtLocation());
+                }
+            } else {
+                log.error("Service does not have rights to update the identifier in the object.");
+                throw new BadRequestException("Service does not have rights to update the identifier in the object.");
+            }
+        } else {
+            log.error("Cannot change " + property.getSpecializationOf());
+            throw new ForbiddenException("Cannot change " + property.getSpecializationOf());
+
         }
-
-        return entities;
     }
+
+    /**
+     *
+     * Delete the maDMP object by identifier property
+     *
+     * @param dmp
+     * @param property
+     * @param rdmService
+     */
+    public void deleteInstance(DMP dmp, Property property, RDMService rdmService) {
+        Objects.requireNonNull(dmp, "DMP is null.");
+        Objects.requireNonNull(property, "Identifier is null.");
+        Objects.requireNonNull(rdmService, "Service is null.");
+
+        // 8.3 If (the message contains the correct information and) the object is
+        // removable
+        if (ModelConstants.REMOVABLE_CLASSES.contains(property.getSpecializationOf())) {
+
+            // 8.3.1 The integration service finds all active properties belonging to the
+            // object.
+            final List<Property> objectProperties = propertyModule.findProperties(property.getAtLocation(), null, null,
+                    true);
+            final Property objectIdentifier = Functions.findPropertyInList(property.getSpecializationOf(),
+                    objectProperties);
+
+            // 8.3.2 If the active identifier was found
+            if (objectIdentifier != null) {
+
+                // 8.3.2.1 The integration service finds all active properties depending on the
+                // object.
+                final List<Property> properties = propertyModule.findAllProperties(property.getAtLocation(), null,
+                        true);
+
+                // 8.3.2.2 The integration service checks whether the RDM service has the right
+                // to modify all properties of the object as well as of objects that are
+                // dependent to it
+                for (final Property p : properties) {
+                    if (!rdmService.getPropertyRights().contains(p.getSpecializationOf())) {
+                        log.error("The RDM service does not have the right to delete " + p.getSpecializationOf());
+                        throw new BadRequestException(
+                                "The RDM service does not have the right to delete " + p.getSpecializationOf());
+                    }
+                }
+
+                // 8.3.2.3 If the RDM service has the right to remove all properties
+
+                // 8.3.2.3.1 The integration service terminates the previous value of the
+                // property modified and creates a new record with the received value.
+                final List<Property> dmpProperties = dmp.getProperties(dmp, "", rdmService);
+                final Property modifiedProperty = Functions.findPropertyInList("dmp:modified", dmpProperties);
+                propertyModule.terminateAndCreateProperty(modifiedProperty, rdmService);
+
+                // 8.3.2.3.2 The integration service terminates all properties of dependent
+                // objects
+                // 8.3.2.3.3 The integration service terminates all properties of the object
+                propertyModule.terminateAllProperties(property.getAtLocation(), dmp.getModified(), rdmService);
+
+            } else {
+                log.error("Object not found.");
+                throw new BadRequestException("Object not found.");
+            }
+        }
+    }
+
+    // /**
+    // *
+    // * Load DMP identifiers with history
+    // *
+    // * @param dmp
+    // * @return
+    // */
+    // public List<Property> loadIdentifierHistory(DMP dmp) {
+    // Objects.requireNonNull(dmp);
+
+    // final List<Property> entities = new ArrayList<>();
+
+    // // For each changeable class identifier
+    // for (String specializationOf : ModelConstants.IDENTIFIER_CHANGEABLE_CLASSES)
+    // {
+    // entities.addAll(propertyModule.findAllEntities(dmp.getAtLocation(""),
+    // specializationOf, false));
+    // }
+
+    // return entities;
+    // }
 
     /* Private */
 
@@ -298,48 +351,20 @@ public class DMPModule {
         if (dmp == null || dmp.getCreated() == null || dmp.getModified() == null || dmp.getDmp_id() == null
                 || dmp.getDmp_id().getObjectIdentifier() == null
                 || dmp.getDmp_id().getObjectIdentifier().length() == 0) {
-            log.error("Missing minimum maDMP.");
-            throw new BadRequestException("Missing minimum maDMP.");
+            // 2. If the maDMP does not contain a mandatory properties
+            // 2.1 The integration service returns an error message to the RDM service and
+            // terminates the process.
+            log.error("Missing the mandatory maDMP properties.");
+            throw new BadRequestException("Missing the mandatory maDMP properties.");
         }
     }
 
-    private List<Property> findByCreationDate(String creationDate) {
-        return propertyModule.findEntities(null, "dmp:created", creationDate, true);
+    private List<Property> findCreationProperties(String creationDate) {
+        return propertyModule.findProperties(null, "dmp:created", creationDate, true);
     }
 
-    private DMP findByIdentifier(String identifier) {
-        final Property entity = propertyModule.findEntity(null, "dmp:identifier", identifier);
-        if (entity != null) {
-            return loadMinimalDMP(entity.getAtLocation());
-        } else {
-            return null;
-        }
-    }
-
-    private DMP loadMinimalDMP(String atLocation) {
-        // Find mandatory properties
-        final List<Property> properties = propertyModule.findEntities(atLocation, null, null, true);
-        final String created = Functions.findPropertyInList("dmp", "created", properties).getValue();
-        final String modified = Functions.findPropertyInList("dmp", "modified", properties).getValue();
-        final String identifier = Functions.findPropertyInList("dmp", "identifier", properties).getValue();
-
-        // Create a new minimal DMP
-        final DMP_id dmp_id = new DMP_id(identifier);
-        return new DMP(LocalDateTime.parse(created), LocalDateTime.parse(modified), dmp_id);
-    }
-
-    private boolean hasRights(Property entity, RDMService dataService) {
-        for (String right : dataService.getRights()) {
-            if (entity.getSpecializationOf().contains(right)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private void updateModified(DMP dmp, RDMService dataService) {
-        propertyModule.deactivateAndCreateEntity(Functions.findPropertyInList("dmp", "modified",
-                dmp.getProperties(dmp, "", dataService)), dataService);
+    private Property findMaDMPIdentifier(String identifier) {
+        return propertyModule.findProperty(null, "dmp:identifier", identifier, true);
     }
 
 }

@@ -29,6 +29,7 @@ public class PropertyDao extends AbstractDao<Property> {
      * @param atLocation
      * @param specializationOf
      * @param value
+     * @param onlyActive
      * @return
      */
     public Property findProperty(String atLocation, String specializationOf, String value, boolean onlyActive) {
@@ -74,6 +75,7 @@ public class PropertyDao extends AbstractDao<Property> {
      * 
      * @param atLocation
      * @param specializationOf
+     * @param value
      * @param onlyActive
      * @return
      */

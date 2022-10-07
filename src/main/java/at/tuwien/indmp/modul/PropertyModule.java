@@ -25,7 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class PropertyModule {
 
     @Autowired
-    private PropertyDao entityDao;
+    private PropertyDao propertyDao;
 
     @Autowired
     private ActivityDao activityDao;
@@ -36,34 +36,62 @@ public class PropertyModule {
     private final Logger log = LoggerFactory.getLogger(PropertyModule.class);
 
     /**
+     * 
+     * Create a new property
+     * 
+     * @param property
+     * @param rdmService
+     */
+    public void persist(Property property, RDMService rdmService) {
+        Objects.requireNonNull(property, "Property is null.");
+        Objects.requireNonNull(rdmService, "Service is null.");
+
+        // Add references to the RDM service
+        property.getWasGeneratedBy().setWasStartedBy(rdmService);
+        rdmService.addStartRelation(property.getWasGeneratedBy());
+
+        // Persist a new activity
+        activityDao.persist(property.getWasGeneratedBy());
+
+        // Persist a new property
+        propertyDao.persist(property);
+
+        // Update the RDM service
+        rdmServiceDao.update(rdmService);
+
+        log.debug("Persisting a new property: " + property.toString());
+    }
+
+    /**
      *
-     * Persist a list of entities
+     * Persist a list of properties
      *
-     * @param entities
-     * @param dataService
+     * @param properties
+     * @param rdmService
      */
     @Transactional
-    public void persist(List<Property> entities, RDMService dataService) {
-        Objects.requireNonNull(entities, "List with entities is null.");
-        // For each entity
-        for (Property entity : entities) {
-            persist(entity, dataService);
+    public void persistList(List<Property> properties, RDMService rdmService) {
+        Objects.requireNonNull(properties, "List with properties is null.");
+        // For each property
+        for (Property property : properties) {
+            persist(property, rdmService);
         }
     }
 
     /**
      * 
-     * Find entity
+     * Find the property
      * 
      * @param atLocation
      * @param specializationOf
      * @param value
+     * @param onlyActive
      * @return
      */
     @Transactional(readOnly = true)
-    public Property findEntity(String atLocation, String specializationOf, String value) {
+    public Property findProperty(String atLocation, String specializationOf, String value, boolean onlyActive) {
         try {
-            return entityDao.findEntity(atLocation, specializationOf, value);
+            return propertyDao.findProperty(atLocation, specializationOf, value, onlyActive);
         } catch (NoResultException | EmptyResultDataAccessException ex) {
             return null;
         }
@@ -71,143 +99,148 @@ public class PropertyModule {
 
     /**
      * 
-     * Find entities
+     * Find the properties
      * 
      * @param atLocation
      * @param specializationOf
+     * @param value
+     * @param onlyActive
      * @return
      */
     @Transactional(readOnly = true)
-    public List<Property> findEntities(String atLocation, String specializationOf, String value, boolean onlyActive) {
-        return entityDao.findProperties(atLocation, specializationOf, value, onlyActive);
+    public List<Property> findProperties(String atLocation, String specializationOf, String value, boolean onlyActive) {
+        return propertyDao.findProperties(atLocation, specializationOf, value, onlyActive);
     }
 
     /**
      * 
-     * Find entities with nested ones
+     * Find the properties with nested ones
      * 
      * @param atLocation
      * @param specializationOf
+     * @param onlyActive
      * @return
      */
     @Transactional(readOnly = true)
-    public List<Property> findAllEntities(String atLocation, String specializationOf, boolean onlyActive) {
-        return entityDao.findAllProperties(atLocation, specializationOf, onlyActive);
+    public List<Property> findAllProperties(String atLocation, String specializationOf, boolean onlyActive) {
+        return propertyDao.findAllProperties(atLocation, specializationOf, onlyActive);
     }
 
     /**
      *
-     * Deactivate the current entities and create new ones
+     * Terminate the current properties and create new ones
      *
-     * @param entities
-     * @param dataService
+     * @param properties
+     * @param rdmService
      */
     @Transactional
-    public void deactivateAndCreateEntities(List<Property> entities, RDMService dataService) {
-        Objects.requireNonNull(entities, "List with entities is null.");
-
-        // For each entity
-        for (Property entity : entities) {
-            deactivateAndCreateEntity(entity, dataService);
+    public void terminateAndCreateProperties(List<Property> properties, RDMService rdmService) {
+        Objects.requireNonNull(properties, "List with properties is null.");
+        // For each property
+        for (Property property : properties) {
+            terminateAndCreateProperty(property, rdmService);
         }
     }
 
     /**
      *
-     * Deactivate the current entity and create new one
+     * Terminate the current property and create new one
      *
-     * @param entities
-     * @param dataService
+     * @param property
+     * @param rdmService
      */
     @Transactional
-    public void deactivateAndCreateEntity(Property entity, RDMService dataService) {
-        Objects.requireNonNull(entity, "Entity is null.");
-        Objects.requireNonNull(dataService, "Data service is null.");
+    public void terminateAndCreateProperty(Property property, RDMService rdmService) {
+        Objects.requireNonNull(property, "Property is null.");
+        Objects.requireNonNull(rdmService, "RDM service is null.");
 
-        // Find current record
-        final Property currentEntity = findEntity(entity.getAtLocation(), entity.getSpecializationOf(), null);
+        // Find the current property record
+        final Property currentProperty = findProperty(property.getAtLocation(), property.getSpecializationOf(), null, true);
 
-        // If entity exists
-        if (currentEntity != null) {
+        // If the property exists
+        if (currentProperty != null) {
+
             // If they do not have the same value
-            if(!currentEntity.hasSameValue(entity)) {
-                // Deactivate the old one
-                deactivate(currentEntity, entity.getWasGeneratedBy().getStartedAtTime());
-                // Persist new entity
-                persist(entity, dataService);
+            if(!currentProperty.hasSameValue(property)) {
+                // Terminate the original one
+                terminate(currentProperty, property.getWasGeneratedBy().getStartedAtTime(), rdmService);
+
+                // Persist a new property
+                persist(property, rdmService);
             }
         } else {
-            // Persist new entity
-            persist(entity, dataService);
+            // Persist a new property
+            persist(property, rdmService);
         }
     }
 
     /**
      *
-     * Change atLocation after identifier change
+     * Change atLocation for nested object properties
      *
-     * @param currentLocation
-     * @param newLocation
+     * @param originalAtLocation
+     * @param newAtLocation
      */
     @Transactional
-    public void changeNestedEntities(String currentLocation, String newLocation) {
-        Objects.requireNonNull(currentLocation, "Current atlocation is null.");
-        Objects.requireNonNull(currentLocation, "New atLocation is null.");
+    public void changeNestedProperties(String originalAtLocation, String newAtLocation) {
+        Objects.requireNonNull(originalAtLocation, "The original atlocation is null.");
+        Objects.requireNonNull(originalAtLocation, "The new atLocation is null.");
 
-        // Change class identifiers
-        List<Property> entities = findAllEntities(currentLocation, null, false);
-        // For each entity update location
-        for (final Property entity : entities) {
-            log.info("Changing the location for " + entity.toString());
-            entity.setAtLocation(entity.getAtLocation().replace(currentLocation, newLocation));
-            entityDao.update(entity);
+        // Get all properties
+        List<Property> properties = findAllProperties(originalAtLocation, null, false);
+
+        // For each property update the atLocation
+        for (final Property property : properties) {
+            property.setAtLocation(property.getAtLocation().replace(originalAtLocation, newAtLocation));
+            propertyDao.update(property);
+            log.debug("Changing the location for " + property.toString());
         }
     }
 
     /**
      *
-     * Remove all nested entites
+     * Terminate all properties
      *
-     * @param currentLocation
+     * @param atLocation
+     * @param endTime
+     * @param rdmService
      */
     @Transactional
-    public void removeAllNestedEntities(String currentLocation, LocalDateTime endTime) {
-        Objects.requireNonNull(currentLocation, "Current location is null.");
+    public void terminateAllProperties(String atLocation, LocalDateTime endTime, RDMService rdmService) {
+        Objects.requireNonNull(atLocation, "The current atLocation is null.");
+        Objects.requireNonNull(atLocation, "End time is null.");
+        Objects.requireNonNull(rdmService, "RDM service is null.");
 
-        // Find all entities
-        List<Property> entities = findAllEntities(currentLocation, null, true);
+        // Find all properties
+        List<Property> properties = findAllProperties(atLocation, null, true);
 
-        // Deactivate them
-        for (final Property entity : entities) {
-            deactivate(entity, Timestamp.valueOf(endTime));
+        // Terminate each found property
+        for (final Property property : properties) {
+            terminate(property, Timestamp.valueOf(endTime), rdmService);
         }
     }
 
     /* Private */
 
-    private void persist(Property entity, RDMService dataService) {
-        Objects.requireNonNull(entity, "Entity is null.");
-        Objects.requireNonNull(dataService, "Service is null.");
+    @Transactional
+    private void terminate(Property property, Timestamp endTime, RDMService rdmService) {
+        Objects.requireNonNull(property, "The property is null.");
+        Objects.requireNonNull(endTime, "The end time is null.");
+        Objects.requireNonNull(rdmService, "The service is null.");
 
-        log.info("Persisting a new entity: " + entity.toString());
+        final Activity currentActivity = property.getWasGeneratedBy();
 
-        // Add references
-        entity.getWasGeneratedBy().setWasStartedBy(dataService);
-        dataService.addStartRelation(entity.getWasGeneratedBy());
-        // Persist the new activity
-        activityDao.persist(entity.getWasGeneratedBy());
-        // Persist the new entity
-        entityDao.persist(entity);
-        // Update the RDM service
-        rdmServiceDao.update(dataService);
-    }
-
-    private void deactivate(Property entity, Timestamp endTime) {
-        Objects.requireNonNull(entity, "The current entity is null.");
+        // Add references to the RDM service
+        currentActivity.setWasEndedBy(rdmService);
+        rdmService.addEndRelation(currentActivity);
 
         // End previous activity
-        final Activity currentActivity = entity.getWasGeneratedBy();
         currentActivity.setEndedAtTime(endTime);
+
+        // Update the activity
         activityDao.update(currentActivity);
+
+        // Update the RDM service
+        rdmServiceDao.update(rdmService);
     }
 }

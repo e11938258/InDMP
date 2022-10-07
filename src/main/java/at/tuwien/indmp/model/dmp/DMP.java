@@ -314,7 +314,7 @@ public class DMP extends AbstractClassObject {
         // ------------------------------------
         // Set properties
         // ------------------------------------
-        final List<Property> properties = propertyModule.findEntities(atLocation, null, null, true);
+        final List<Property> properties = propertyModule.findProperties(atLocation, null, null, true);
 
         Property p = Functions.findPropertyInList(getSpecializationOf("created"), properties);
         setCreated(p != null ? LocalDateTime.parse(p.getValue()) : null);
@@ -353,7 +353,7 @@ public class DMP extends AbstractClassObject {
         // ------------------------------------
         // Nested object: Build contact
         // ------------------------------------
-        for (Property property : propertyModule.findAllEntities(atLocation, "contact:identifier", true)) {
+        for (Property property : propertyModule.findAllProperties(atLocation, "contact:identifier", true)) {
             contact = new Contact();
             contact.build(propertyModule, atLocation + "/" + property.getValue());
         }
@@ -361,7 +361,7 @@ public class DMP extends AbstractClassObject {
         // ------------------------------------
         // Nested object: Build contributor
         // ------------------------------------
-        for (Property property : propertyModule.findAllEntities(atLocation, "contributor:identifier", true)) {
+        for (Property property : propertyModule.findAllProperties(atLocation, "contributor:identifier", true)) {
             final Contributor i = new Contributor();
             i.build(propertyModule, atLocation + "/" + property.getValue());
             contributor.add(i);
@@ -370,7 +370,7 @@ public class DMP extends AbstractClassObject {
         // ------------------------------------
         // Nested object: Build cost
         // ------------------------------------
-        for (Property property : propertyModule.findAllEntities(atLocation, "cost:title", true)) {
+        for (Property property : propertyModule.findAllProperties(atLocation, "cost:title", true)) {
             final Cost i = new Cost();
             i.build(propertyModule, atLocation + "/" + property.getValue());
             cost.add(i);
@@ -379,7 +379,7 @@ public class DMP extends AbstractClassObject {
         // ------------------------------------
         // Nested object: Build project
         // ------------------------------------
-        for (Property property : propertyModule.findAllEntities(atLocation, "project:title", true)) {
+        for (Property property : propertyModule.findAllProperties(atLocation, "project:title", true)) {
             final Project i = new Project();
             i.build(propertyModule, atLocation + "/" + property.getValue());
             project.add(i);
@@ -388,7 +388,7 @@ public class DMP extends AbstractClassObject {
         // ------------------------------------
         // Nested object: Build dataset
         // ------------------------------------
-        for (Property property : propertyModule.findAllEntities(atLocation, "dataset:identifier", true)) {
+        for (Property property : propertyModule.findAllProperties(atLocation, "dataset:identifier", true)) {
             final Dataset i = new Dataset();
             i.build(propertyModule, atLocation + "/" + property.getValue());
             dataset.add(i);

@@ -264,7 +264,7 @@ public class Dataset extends AbstractClassObject {
         // ------------------------------------
         // Set properties
         // ------------------------------------
-        final List<Property> properties = propertyModule.findEntities(atLocation, null, null, true);
+        final List<Property> properties = propertyModule.findProperties(atLocation, null, null, true);
 
         Property p = Functions.findPropertyInList(getSpecializationOf("data_quality_assurance"), properties);
         setData_quality_assurance(p != null
@@ -310,7 +310,7 @@ public class Dataset extends AbstractClassObject {
         // ------------------------------------
         // Nested object: Set distribution
         // ------------------------------------
-        for (Property property : propertyModule.findAllEntities(atLocation, "distribution:access_url", true)) {
+        for (Property property : propertyModule.findAllProperties(atLocation, "distribution:access_url", true)) {
             final Distribution i = new Distribution();
             i.build(propertyModule, atLocation + "/" + property.getValue());
             distribution.add(i);
@@ -319,7 +319,7 @@ public class Dataset extends AbstractClassObject {
         // ------------------------------------
         // Nested object: Metadata
         // ------------------------------------
-        for (Property property : propertyModule.findAllEntities(atLocation, "metadata:metadata_standard_id", true)) {
+        for (Property property : propertyModule.findAllProperties(atLocation, "metadata:metadata_standard_id", true)) {
             final Metadata i = new Metadata();
             i.build(propertyModule, atLocation + "/" + property.getValue());
             metadata.add(i);
@@ -328,7 +328,7 @@ public class Dataset extends AbstractClassObject {
         // ------------------------------------
         // Nested object: Security and privacy
         // ------------------------------------
-        for (Property property : propertyModule.findAllEntities(atLocation, "securityandprivacy:title", true)) {
+        for (Property property : propertyModule.findAllProperties(atLocation, "securityandprivacy:title", true)) {
             final SecurityAndPrivacy i = new SecurityAndPrivacy();
             i.build(propertyModule, atLocation + "/" + property.getValue());
             security_and_privacy.add(i);
@@ -337,7 +337,7 @@ public class Dataset extends AbstractClassObject {
         // ------------------------------------
         // Nested object: Technical resource
         // ------------------------------------
-        for (Property property : propertyModule.findAllEntities(atLocation, "techicalresource:name", true)) {
+        for (Property property : propertyModule.findAllProperties(atLocation, "techicalresource:name", true)) {
             final TechnicalResource i = new TechnicalResource();
             i.build(propertyModule, atLocation + "/" + property.getValue());
             technical_resource.add(i);

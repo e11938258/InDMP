@@ -21,29 +21,30 @@ import org.springframework.transaction.annotation.Transactional;
 public class RDMServiceModule {
 
     @Autowired
-    private RDMServiceDao dataServiceDao;
+    private RDMServiceDao rdmServiceDao;
 
     private final Logger log = LoggerFactory.getLogger(RDMServiceModule.class);
 
     /**
      * 
-     * Create a new service
+     * Create a new RDM service
      * 
-     * @param dataService
+     * @param rdmService
      */
     @Transactional
-    public void persist(RDMService dataService) {
-        Objects.requireNonNull(dataService);
-        if (!existsByAccessRights(dataService.getAccessRights())) {
-            dataServiceDao.persist(dataService);
+    public void persist(RDMService rdmService) {
+        Objects.requireNonNull(rdmService);
+        if (!existsByAccessRights(rdmService.getAccessRights())) {
+            rdmServiceDao.persist(rdmService);
         } else {
-            throw new ConflictException("This client id is already registered.");
+            log.error("The service client id is already registered.");
+            throw new ConflictException("The service client id is already registered.");
         }
     }
 
     /**
      * 
-     * Find the service by access rights
+     * UC8: Identification of the RDM service.
      * 
      * @param accessRights
      * @return
@@ -51,32 +52,34 @@ public class RDMServiceModule {
     @Transactional(readOnly = true)
     public RDMService findByAccessRights(String accessRights) {
         try {
-            return dataServiceDao.findByAccessRights(accessRights);
+            // 1. The integration service tries to find the RDM service by the access rights.
+            return rdmServiceDao.findByAccessRights(accessRights);
         } catch (NoResultException | EmptyResultDataAccessException ex) {
-            log.error("Service not found by client id");
-            throw new NotFoundException("Service not found by client id");
+            // 2. If the RDM service was not found
+            // 2.1 The integration service returns an error message to the RDM service and terminates the process.
+            log.error("Service not found by client id.");
+            throw new NotFoundException("Service not found by client id.");
         }
     }
 
     /**
      * 
-     * Get all services
+     * Get all RDM services
      * 
      * @return
      */
     @Transactional(readOnly = true)
-    public List<RDMService> getAllDataServices() {
-        return dataServiceDao.findAll();
+    public List<RDMService> getRDMServices() {
+        return rdmServiceDao.findAll();
     }
 
     /**
      * 
-     * Update service
+     * Update the RDM service
      * 
      */
-    @Transactional
-    public void update(RDMService dataService) {
-        dataServiceDao.update(dataService);
+    public void update(RDMService rdmService) {
+        rdmServiceDao.update(rdmService);
     }
 
     /* Private */
@@ -84,7 +87,7 @@ public class RDMServiceModule {
     @Transactional(readOnly = true)
     private boolean existsByAccessRights(String accessRights) {
         try {
-            if (dataServiceDao.findByAccessRights(accessRights) != null) {
+            if (rdmServiceDao.findByAccessRights(accessRights) != null) {
                 return true;
             } else {
                 return false;

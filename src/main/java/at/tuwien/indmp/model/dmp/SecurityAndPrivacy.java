@@ -61,7 +61,7 @@ public class SecurityAndPrivacy extends AbstractClassObject {
         // ------------------------------------
         // Set properties
         // ------------------------------------
-        final List<Property> properties = propertyModule.findEntities(atLocation, null, null, true);
+        final List<Property> properties = propertyModule.findProperties(atLocation, null, null, true);
 
         Property p = Functions.findPropertyInList(getSpecializationOf("description"), properties);
         setDescription(p != null ? p.getValue() : null);

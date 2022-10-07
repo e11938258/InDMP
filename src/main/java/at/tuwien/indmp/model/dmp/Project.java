@@ -119,7 +119,7 @@ public class Project extends AbstractClassObject {
         // ------------------------------------
         // Set properties
         // ------------------------------------
-        final List<Property> properties = propertyModule.findEntities(atLocation, null, null, true);
+        final List<Property> properties = propertyModule.findProperties(atLocation, null, null, true);
 
         Property p = Functions.findPropertyInList(getSpecializationOf("description"), properties);
         setDescription(p != null ? p.getValue() : null);
@@ -139,7 +139,7 @@ public class Project extends AbstractClassObject {
         // ------------------------------------
         // Nested objects: Funding
         // ------------------------------------
-        for (Property property : propertyModule.findAllEntities(atLocation, "funding:identifier", true)) {
+        for (Property property : propertyModule.findAllProperties(atLocation, "funding:identifier", true)) {
             final Funding i = new Funding();
             i.build(propertyModule, atLocation + "/" + property.getValue());
             funding.add(i);

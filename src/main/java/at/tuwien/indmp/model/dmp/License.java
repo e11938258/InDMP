@@ -68,7 +68,7 @@ public class License extends AbstractClassObject {
         // ------------------------------------
         // Set properties
         // ------------------------------------
-        final List<Property> properties = propertyModule.findEntities(atLocation, null, null, true);
+        final List<Property> properties = propertyModule.findProperties(atLocation, null, null, true);
 
         Property p = Functions.findPropertyInList(getSpecializationOf("start_date"), properties);
         setStart_date(p != null ? LocalDate.parse(p.getValue()) : null);

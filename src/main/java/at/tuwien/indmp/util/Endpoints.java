@@ -14,5 +14,7 @@ public class Endpoints {
     public static final String DELETE_MADMP_INSTANCE = "/madmp/instance/delete"; // PUT
 
     // RDM service REST API
-    public static final String CREATE_DATA_SERVICE = "/service"; // POST
+    public static final String CREATE_RDM_SERVICE = "/service"; // POST
+    public static final String READ_RDM_SERVICES = "/services"; // GET
+    public static final String SET_PROPERTY_RIGHTS_TO_RDM_SERVICE = "/service/rights/property/{accessRights}"; // PUT
 }

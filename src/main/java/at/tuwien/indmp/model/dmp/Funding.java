@@ -94,7 +94,7 @@ public class Funding extends AbstractClassObject {
         // ------------------------------------
         // Set properties
         // ------------------------------------
-        final List<Property> properties = propertyModule.findEntities(atLocation, null, null, true);
+        final List<Property> properties = propertyModule.findProperties(atLocation, null, null, true);
 
         Property p = Functions.findPropertyInList(getSpecializationOf("funding_status"), properties);
         setFunding_status(p != null ? p.getValue() : null);
@@ -109,9 +109,9 @@ public class Funding extends AbstractClassObject {
         // ------------------------------------
         // Nested object: Set grant id
         // ------------------------------------
-        for (Property property : propertyModule.findAllEntities(atLocation, "grant_id:identifier", true)) {
+        for (Property property : propertyModule.findAllProperties(atLocation, "grant_id:identifier", true)) {
             // Set properties
-            final List<Property> grantProperties = propertyModule.findEntities(atLocation + "/" + property.getValue(), null, null, true);
+            final List<Property> grantProperties = propertyModule.findProperties(atLocation + "/" + property.getValue(), null, null, true);
 
             // Set identifier
             identifier = Functions.findPropertyInList("grant_id:identifier", grantProperties);

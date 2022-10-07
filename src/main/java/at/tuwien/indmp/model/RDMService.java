@@ -7,6 +7,8 @@ import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -29,7 +31,7 @@ import at.tuwien.indmp.util.RDMServiceState;
  * 
  */
 @Entity
-@Table(name = "data_service", uniqueConstraints = {
+@Table(name = "rdm_service", uniqueConstraints = {
         @UniqueConstraint(columnNames = "access_rights")
 })
 public class RDMService extends AbstractEntity {
@@ -55,15 +57,12 @@ public class RDMService extends AbstractEntity {
     @Column(nullable = false)
     @NotNull
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @Enumerated(EnumType.STRING)
     private RDMServiceState state = RDMServiceState.UNSYNCHRONIZED; 
 
     @ElementCollection
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private final List<String> dmpRights = new ArrayList<>(); // https://www.w3.org/TR/vocab-dcat-3/#Property:resource_rights
-
-    @ElementCollection
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
-    private final List<String> propertyRights = new ArrayList<>(); // https://www.w3.org/TR/vocab-dcat-3/#Property:resource_rights
+    private List<String> propertyRights = new ArrayList<>(); // https://www.w3.org/TR/vocab-dcat-3/#Property:resource_rights
 
     @OneToMany(mappedBy = "wasStartedBy", fetch = FetchType.LAZY)
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
@@ -109,15 +108,14 @@ public class RDMService extends AbstractEntity {
     }
 
     @JsonIgnore
-    public List<String> getDmpRights() {
-        return this.dmpRights;
-    }
-
-    @JsonIgnore
     public List<String> getPropertyRights() {
         return this.propertyRights;
     }
 
+    public void setPropertyRights(List<String> propertyRights) {
+        this.propertyRights = propertyRights;
+    }
+    
     @JsonIgnore
     public List<Activity> getStartedRelation() {
         return this.startedRelation;
@@ -147,21 +145,5 @@ public class RDMService extends AbstractEntity {
      */
     public boolean hasPropertyRight(Property property) {
         return propertyRights.contains(property.getSpecializationOf());
-    }
-
-    /**
-     * 
-     * Has RDM service right to the maDMP?
-     * 
-     * @param property
-     * @return
-     */
-    public boolean hasDMPRight(Property property) {
-        for (String atLocation : dmpRights) {
-            if(property.getAtLocation().startsWith(atLocation)) {
-                return true;
-            }
-        }
-        return false;
     }
 }

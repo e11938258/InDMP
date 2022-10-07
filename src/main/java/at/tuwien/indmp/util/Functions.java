@@ -27,10 +27,13 @@ public class Functions {
     public static Property createProperty(DMP dmp, String atLocation, String specializationOf, String value) {
         // Create a new activity
         final Activity activity = new Activity(Timestamp.valueOf(dmp.getModified()));
+
         // Add a new property
         final Property property = new Property(atLocation, specializationOf, value, activity);
+
         // Set property to activity
         activity.setGenerated(property);
+        
         // Return the property
         return property;
     }
@@ -47,6 +50,8 @@ public class Functions {
         final List<Property> results = properties.stream()
                 .filter(p -> p.getSpecializationOf().equals(specializationOf))
                 .collect(Collectors.toList());
+        
+        // If the property was found
         if (results.size() == 1) {
             return results.get(0);
         } else {

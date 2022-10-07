@@ -47,8 +47,7 @@ public class Activity extends AbstractEntity {
     private RDMService wasStartedBy; // https://www.w3.org/TR/2013/REC-prov-o-20130430/#wasStartedBy 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="was_ended_by", nullable = false)
-    @NotNull
+    @JoinColumn(name="was_ended_by")
     private RDMService wasEndedBy; // https://www.w3.org/TR/2013/REC-prov-o-20130430/#wasEndedBy
 
     public Activity() {

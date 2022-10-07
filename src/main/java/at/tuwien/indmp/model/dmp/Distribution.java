@@ -188,7 +188,7 @@ public class Distribution extends AbstractClassObject {
         // ------------------------------------
         // Set properties
         // ------------------------------------
-        final List<Property> properties = propertyModule.findEntities(atLocation, null, null, true);
+        final List<Property> properties = propertyModule.findProperties(atLocation, null, null, true);
 
         Property p = Functions.findPropertyInList(getSpecializationOf("data_access"), properties);
         setData_access(p != null ? p.getValue() : null);
@@ -222,7 +222,7 @@ public class Distribution extends AbstractClassObject {
         // ------------------------------------
         // Nested object: Set host
         // ------------------------------------
-        for (Property property : propertyModule.findAllEntities(atLocation, "host:url", true)) {
+        for (Property property : propertyModule.findAllProperties(atLocation, "host:url", true)) {
             host = new Host();
             host.build(propertyModule, atLocation + "/" + property.getValue());
             setHost(host);
@@ -231,7 +231,7 @@ public class Distribution extends AbstractClassObject {
         // ------------------------------------
         // Nested object: Set license
         // ------------------------------------
-        for (Property property : propertyModule.findAllEntities(atLocation, "license:license_ref", true)) {
+        for (Property property : propertyModule.findAllProperties(atLocation, "license:license_ref", true)) {
             final License i = new License();
             i.build(propertyModule, atLocation + "/" + property.getValue());
             license.add(i);
