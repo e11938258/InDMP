@@ -1,6 +1,6 @@
 package at.tuwien.indmp.modul;
 
-import at.tuwien.indmp.dao.DataServiceDao;
+import at.tuwien.indmp.dao.RDMServiceDao;
 import at.tuwien.indmp.exception.ConflictException;
 import at.tuwien.indmp.exception.NotFoundException;
 import at.tuwien.indmp.model.RDMService;
@@ -21,7 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class RDMServiceModule {
 
     @Autowired
-    private DataServiceDao dataServiceDao;
+    private RDMServiceDao dataServiceDao;
 
     private final Logger log = LoggerFactory.getLogger(RDMServiceModule.class);
 

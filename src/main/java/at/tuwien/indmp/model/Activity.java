@@ -1,14 +1,10 @@
 package at.tuwien.indmp.model;
 
-import java.io.Serializable;
 import java.time.LocalDate;
 
 import javax.persistence.Entity;
 import javax.persistence.Column;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
@@ -30,13 +26,7 @@ import at.tuwien.indmp.util.ModelConstants;
  */
 @Entity
 @Table(name = "activity")
-public class Activity implements Serializable {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(updatable = false, nullable = false, precision = 18, scale = 0)
-    @JsonIgnore
-    private Long id; // Just database identifier
+public class Activity extends AbstractEntity {
 
     @Column(name = "started_at_time", nullable = false)
     @NotNull
@@ -66,16 +56,6 @@ public class Activity implements Serializable {
 
     public Activity(LocalDate startedAtTime) {
         this.startedAtTime = startedAtTime;
-    }
-
-    @JsonIgnore
-    public Long getId() {
-        return this.id;
-    }
-
-    @JsonIgnore
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public LocalDate getStartedAtTime() {

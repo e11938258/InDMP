@@ -13,29 +13,31 @@ import org.springframework.stereotype.Repository;
 import at.tuwien.indmp.model.RDMService;
 
 @Repository
-public class DataServiceDao extends AbstractDao<RDMService> {
+public class RDMServiceDao extends AbstractDao<RDMService> {
 
-    public DataServiceDao() {
+    public RDMServiceDao() {
         super(RDMService.class);
     }
 
     /**
      * 
-     * Find all services
+     * Find all rdm services
      * 
      * @return
      */
     public List<RDMService> findAll() {
+
         final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         final CriteriaQuery<RDMService> criteriaQuery = criteriaBuilder.createQuery(RDMService.class);
         final Root<RDMService> root = criteriaQuery.from(RDMService.class);
         criteriaQuery.select(root).distinct(true);
+
         return entityManager.createQuery(criteriaQuery).getResultList();
     }
 
     /**
      * 
-     * Find the service by access rights
+     * Find the rdm service by access rights
      * 
      * @param accessRights
      * @return
@@ -48,7 +50,9 @@ public class DataServiceDao extends AbstractDao<RDMService> {
         final Root<RDMService> root = criteriaQuery.from(RDMService.class);
         criteriaQuery.select(root).distinct(true);
 
+        // ------------------------------------
         // Conditions
+        // ------------------------------------
         Predicate predicate = criteriaBuilder.equal(root.get("accessRights"), accessRights);
         criteriaQuery.where(predicate);
 

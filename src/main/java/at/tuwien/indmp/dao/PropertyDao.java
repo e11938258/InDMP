@@ -16,29 +16,32 @@ import at.tuwien.indmp.model.Activity;
 import at.tuwien.indmp.model.Property;
 
 @Repository
-public class EntityDao extends AbstractDao<Property> {
+public class PropertyDao extends AbstractDao<Property> {
 
-    public EntityDao() {
+    public PropertyDao() {
         super(Property.class);
     }
 
     /**
      * 
-     * Find entity which is active
+     * Find active property
      * 
      * @param atLocation
      * @param specializationOf
      * @param value
      * @return
      */
-    public Property findEntity(String atLocation, String specializationOf, String value) {
+    public Property findProperty(String atLocation, String specializationOf, String value, boolean onlyActive) {
+
         final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         final CriteriaQuery<Property> criteriaQuery = criteriaBuilder.createQuery(Property.class);
         final Root<Property> root = criteriaQuery.from(Property.class);
         final Join<Property, Activity> activity = root.join("wasGeneratedBy", JoinType.INNER);
         criteriaQuery.select(root).distinct(true);
 
+        // ------------------------------------
         // Conditions
+        // ------------------------------------
         Predicate predicate = criteriaBuilder.isNotNull(root.get("value"));
 
         if (atLocation != null) {
@@ -56,8 +59,9 @@ public class EntityDao extends AbstractDao<Property> {
                     criteriaBuilder.equal(root.get("value"), value));
         }
 
-        // Only active entity
-        predicate = criteriaBuilder.and(predicate, criteriaBuilder.isNull(activity.get("endedAtTime")));
+        if (onlyActive) {
+            predicate = criteriaBuilder.and(predicate, criteriaBuilder.isNull(activity.get("endedAtTime")));
+        }
 
         criteriaQuery.where(predicate);
 
@@ -66,14 +70,14 @@ public class EntityDao extends AbstractDao<Property> {
 
     /**
      * 
-     * Find entities
+     * Find properties
      * 
      * @param atLocation
      * @param specializationOf
      * @param onlyActive
      * @return
      */
-    public List<Property> findEntities(String atLocation, String specializationOf, String value, boolean onlyActive) {
+    public List<Property> findProperties(String atLocation, String specializationOf, String value, boolean onlyActive) {
 
         final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         final CriteriaQuery<Property> criteriaQuery = criteriaBuilder.createQuery(Property.class);
@@ -81,7 +85,9 @@ public class EntityDao extends AbstractDao<Property> {
         final Join<Property, Activity> activity = root.join("wasGeneratedBy", JoinType.INNER);
         criteriaQuery.select(root).distinct(true);
 
+        // ------------------------------------
         // Conditions
+        // ------------------------------------
         Predicate predicate = criteriaBuilder.isNotNull(root.get("value"));
 
         if (atLocation != null) {
@@ -109,14 +115,14 @@ public class EntityDao extends AbstractDao<Property> {
 
     /**
      * 
-     * Find entities with nested ones
+     * Find properties with properties of nested objects
      * 
      * @param atLocation
      * @param specializationOf
      * @param onlyActive
      * @return
      */
-    public List<Property> findAllEntities(String atLocation, String specializationOf, boolean onlyActive) {
+    public List<Property> findAllProperties(String atLocation, String specializationOf, boolean onlyActive) {
         Objects.requireNonNull(atLocation);
 
         final CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
@@ -125,7 +131,9 @@ public class EntityDao extends AbstractDao<Property> {
         final Join<Property, Activity> activity = root.join("wasGeneratedBy", JoinType.INNER);
         criteriaQuery.select(root).distinct(true);
 
+        // ------------------------------------
         // Conditions
+        // ------------------------------------
         Predicate predicate = criteriaBuilder.like(root.get("atLocation"), atLocation + "%");
 
         if (specializationOf != null) {

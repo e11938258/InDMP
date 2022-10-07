@@ -1,19 +1,13 @@
 package at.tuwien.indmp.model;
 
-import java.io.Serializable;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import at.tuwien.indmp.util.ModelConstants;
 
@@ -26,13 +20,7 @@ import at.tuwien.indmp.util.ModelConstants;
  */
 @Entity
 @Table(name = "property")
-public class Property implements Serializable {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(updatable = false, nullable = false, precision = 18, scale = 0)
-    @JsonIgnore
-    private Long id; // Just database identifier
+public class Property extends AbstractEntity {
 
     @Column(name = "at_location", nullable = false)
     @Size(min = ModelConstants.PROPERTY_AT_LOCATION_MIN, max = ModelConstants.PROPERTY_AT_LOCATION_MAX)
@@ -61,16 +49,6 @@ public class Property implements Serializable {
         this.specializationOf = specializationOf;
         this.value = value;
         this.wasGeneratedBy = wasGeneratedBy;
-    }
-
-    @JsonIgnore
-    public Long getId() {
-        return this.id;
-    }
-
-    @JsonIgnore
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getSpecializationOf() {

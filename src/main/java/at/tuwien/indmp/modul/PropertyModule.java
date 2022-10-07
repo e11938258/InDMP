@@ -1,7 +1,7 @@
 package at.tuwien.indmp.modul;
 
 import at.tuwien.indmp.dao.ActivityDao;
-import at.tuwien.indmp.dao.EntityDao;
+import at.tuwien.indmp.dao.PropertyDao;
 import at.tuwien.indmp.model.Activity;
 import at.tuwien.indmp.model.RDMService;
 import at.tuwien.indmp.model.Property;
@@ -24,7 +24,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class PropertyModule {
 
     @Autowired
-    private EntityDao entityDao;
+    private PropertyDao entityDao;
 
     @Autowired
     private ActivityDao activityDao;
@@ -95,7 +95,7 @@ public class PropertyModule {
      */
     @Transactional(readOnly = true)
     public List<Property> findEntities(String atLocation, String specializationOf, String value, boolean onlyActive) {
-        return entityDao.findEntities(atLocation, specializationOf, value, onlyActive);
+        return entityDao.findProperties(atLocation, specializationOf, value, onlyActive);
     }
 
     /**
@@ -108,7 +108,7 @@ public class PropertyModule {
      */
     @Transactional(readOnly = true)
     public List<Property> findAllEntities(String atLocation, String specializationOf, boolean onlyActive) {
-        return entityDao.findAllEntities(atLocation, specializationOf, onlyActive);
+        return entityDao.findAllProperties(atLocation, specializationOf, onlyActive);
     }
 
     /**

@@ -1,6 +1,5 @@
 package at.tuwien.indmp.model;
 
-import java.io.Serializable;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -9,9 +8,6 @@ import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -36,13 +32,7 @@ import at.tuwien.indmp.util.RDMServiceState;
 @Table(name = "data_service", uniqueConstraints = {
         @UniqueConstraint(columnNames = "access_rights")
 })
-public class RDMService implements Serializable {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(updatable = false, nullable = false, precision = 18, scale = 0)
-    @JsonIgnore
-    private Long id; // Just database identifier
+public class RDMService extends AbstractEntity {
 
     @Column(nullable = false)
     @NotNull
@@ -84,14 +74,6 @@ public class RDMService implements Serializable {
     private final List<Activity> endedRelation = new ArrayList<>(); // https://www.w3.org/TR/vocab-dcat-3/#Property:resource_relation
 
     public RDMService() {
-    }
-
-    public Long getId() {
-        return this.id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getTitle() {
