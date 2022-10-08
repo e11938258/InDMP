@@ -44,6 +44,10 @@ public class Property extends AbstractEntity {
     public Property() {
     }
 
+    public Property(String specializationOf) {
+        this.specializationOf = specializationOf;
+    }
+
     public Property(String atLocation, String specializationOf, String value, Activity wasGeneratedBy) {
         this.atLocation = atLocation;
         this.specializationOf = specializationOf;

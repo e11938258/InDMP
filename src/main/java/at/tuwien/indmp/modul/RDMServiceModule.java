@@ -45,6 +45,18 @@ public class RDMServiceModule {
 
     /**
      * 
+     * Fint the RDM service by id
+     * 
+     * @param id
+     * @return
+     */
+    public RDMService find(Long id) {
+        Objects.requireNonNull(id);
+        return rdmServiceDao.find(id);
+    }
+
+    /**
+     * 
      * UC8: Identification of the RDM service.
      * 
      * @param accessRights
@@ -53,11 +65,13 @@ public class RDMServiceModule {
     @Transactional(readOnly = true)
     public RDMService findByAccessRights(String accessRights) {
         try {
-            // 1. The integration service tries to find the RDM service by the access rights.
+            // 1. The integration service tries to find the RDM service by the access
+            // rights.
             return rdmServiceDao.findByAccessRights(accessRights);
         } catch (NoResultException | EmptyResultDataAccessException ex) {
             // 2. If the RDM service was not found
-            // 2.1 The integration service returns an error message to the RDM service and terminates the process.
+            // 2.1 The integration service returns an error message to the RDM service and
+            // terminates the process.
             log.error("Service not found by client id.");
             throw new NotFoundException("Service not found by client id.");
         }

@@ -3,14 +3,10 @@ package at.tuwien.indmp.controller;
 import java.util.List;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 
 import at.tuwien.indmp.model.RDMService;
 import at.tuwien.indmp.modul.RDMServiceModule;
 import at.tuwien.indmp.util.Endpoints;
-import at.tuwien.indmp.util.ModelConstants;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -63,9 +59,9 @@ public class RDMServiceController {
      */
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(value = Endpoints.SET_PROPERTY_RIGHTS_TO_RDM_SERVICE, method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
-    public void setPropertyRightsToRDMService(@PathVariable("accessRights") @NotNull @Size(min = ModelConstants.RDM_SERVICE_ACCESS_RIGHTS_MIN, max = ModelConstants.RDM_SERVICE_ACCESS_RIGHTS_MAX) @Pattern(regexp = ModelConstants.RDM_SERVICE_ACCESS_RIGHTS_REGEX) String accessRights, @Valid @RequestBody List<String> propertyRights) {
-        // 2. UC8: Identify RDM service
-        final RDMService rdmService = rdmServiceModule.findByAccessRights(accessRights);
+    public void setPropertyRightsToRDMService(@PathVariable("id") Long id, @Valid @RequestBody List<String> propertyRights) {
+        // 2. Identify the RDM service by the identifier.
+        final RDMService rdmService = rdmServiceModule.find(id);
         
         // 3., 3.1 The integration service updates the maDMP property rights to the specific RDM service.
         rdmService.setPropertyRights(propertyRights);

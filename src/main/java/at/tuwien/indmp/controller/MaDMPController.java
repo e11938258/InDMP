@@ -205,7 +205,7 @@ public class MaDMPController {
      * @param principal
      * @param identifier
      * @param created
-     * @param modified
+     * @param version
      * @return
      */
     @ResponseStatus(HttpStatus.OK)
@@ -213,14 +213,14 @@ public class MaDMPController {
     public DMPScheme getMaDMP(Principal principal,
             @RequestParam(required = true) String identifier,
             @RequestParam(required = true) String created,
-            @RequestParam(required = false) String modified) {
+            @RequestParam(required = false) String version) {
 
         // 3. UC8: Identify RDM service
         final RDMService rdmService = rdmServiceModule.findByAccessRights(principal.getName());
 
         // 4. The integration service creates a maDMP representation with the received
-        // values
-        final DMP dmp = new DMP(created, modified, new DMP_id(identifier));
+        // values. The modified property is set to the current time
+        final DMP dmp = new DMP(created, LocalDateTime.now(), new DMP_id(identifier));
 
         // 5. UC7: Validate and identify maDMP
         dmpModule.validateAndIdentifyMaDMP(dmp, rdmService);
@@ -233,7 +233,7 @@ public class MaDMPController {
         } else {
             // 7.1 The integration service loads the properties based on the defined time.
             // If the parameter is null, it returns the current maDMP
-            // TODO: Support modified property
+            // TODO: Support older version of the maDMP based on the parameter
             return dmpModule.loadWholeDMP(dmp);
         }
     }
@@ -245,7 +245,7 @@ public class MaDMPController {
      * @param principal
      * @param identifier
      * @param created
-     * @param property
+     * @param specializationOf
      * @return
      */
     @ResponseStatus(HttpStatus.OK)
@@ -253,20 +253,21 @@ public class MaDMPController {
     public List<Property> getProvenanceInformation(Principal principal,
             @RequestParam(required = true) String identifier,
             @RequestParam(required = true) String created,
-            @Valid @RequestBody Property property) {
+            @RequestParam(required = true) String specializationOf) {
 
         // 3. UC8: Identify RDM service
         final RDMService rdmService = rdmServiceModule.findByAccessRights(principal.getName());
 
         // 4. The integration service creates a maDMP representation with the received
-        // values
+        // values. The modified property is set to the current time
         final DMP dmp = new DMP(created, LocalDateTime.now(), new DMP_id(identifier));
 
         // 5. UC7: Validate and identify maDMP
         dmpModule.validateAndIdentifyMaDMP(dmp, rdmService);
 
-        // 6. The integration service loads all stored values for a given property of the particular maDMP.
-        return dmpModule.getProvenanceInformation(dmp, property);
+        // 6. The integration service loads all stored values for a given property of
+        // the particular maDMP.
+        return dmpModule.getProvenanceInformation(dmp, new Property(specializationOf));
     }
 
     /* Private */
