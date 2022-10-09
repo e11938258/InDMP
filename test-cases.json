@@ -9,7 +9,7 @@
 			"name": "INIT",
 			"item": [
 				{
-					"name": "Register a new DMP service",
+					"name": "1. Register a new DMP service",
 					"event": [
 						{
 							"listen": "test",
@@ -28,7 +28,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": " {\r\n    \"title\": \"dmp_app_1\",\r\n    \"accessRights\": \"<keycloak client id>\",\r\n    \"endpointURL\": \"<webhook.site endpoint>\",\r\n    \"rights\": [\r\n         \"contact\",\r\n         \"contributor\",\r\n         \"cost\",\r\n         \"dataset\",\r\n         \"distribution\",\r\n         \"dmp\",\r\n         \"funding\",\r\n         \"grant_id\",\r\n         \"host\",\r\n         \"license\",\r\n         \"metadata\",\r\n         \"project\",\r\n         \"securityandprivacy\",\r\n         \"technicalresource\"\r\n     ]\r\n }",
+							"raw": "{\r\n    \"title\": \"dmp_app_1\",\r\n    \"accessRights\": \"<keycloak client id>\",\r\n    \"endpointURL\": \"<webhook.site endpoint>\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -48,7 +48,7 @@
 					"response": []
 				},
 				{
-					"name": "Register a new repository service",
+					"name": "2. Register a new data repository",
 					"event": [
 						{
 							"listen": "test",
@@ -67,7 +67,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": " {\r\n    \"title\": \"repository_app_1\",\r\n    \"accessRights\": \"<keycloak client id>\",\r\n    \"endpointURL\": \"<webhook.site endpoint>\",\r\n    \"rights\": [\r\n         \"contact\",\r\n         \"contributor\",\r\n         \"dataset\",\r\n         \"distribution\",\r\n         \"host\",\r\n         \"license\",\r\n         \"metadata\",\r\n         \"securityandprivacy\"\r\n     ]\r\n }",
+							"raw": " {\r\n    \"title\": \"repository_app_1\",\r\n    \"accessRights\": \"<keycloak client id>\",\r\n    \"endpointURL\": \"<webhook.site endpoint>\"\r\n }",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -85,6 +85,150 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "3. Get all RDM services",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{app_host}}/services",
+							"host": [
+								"{{app_host}}"
+							],
+							"path": [
+								"services"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "4. Set the property rights to the DMP service",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n    \"dmp:identifier\",\r\n    \"dmp:type\",\r\n    \"dmp:title\",\r\n    \"dmp:created\",\r\n    \"dmp:language\",\r\n    \"dmp:ethical_issues_exist\",\r\n    \"dmp:modified\",\r\n    \"dmp:description\",\r\n    \"dmp:ethical_issues_description\",\r\n    \"dmp:ethical_issues_report\",\r\n    \"project:title\",\r\n    \"project:description\",\r\n    \"project:start\",\r\n    \"project:end\",\r\n    \"funding:identifier\",\r\n    \"funding:type\",\r\n    \"funding:funding_status\",\r\n    \"grant_id:identifier\",\r\n    \"grant_id:type\",\r\n    \"contact:identifier\",\r\n    \"contact:type\",\r\n    \"contact:name\",\r\n    \"contact:mbox\",\r\n    \"contributor:identifier\",\r\n    \"contributor:type\",\r\n    \"contributor:name\",\r\n    \"contributor:mbox\",\r\n    \"contributor:role\",\r\n    \"cost:value\",\r\n    \"cost:currency_code\",\r\n    \"cost:description\",\r\n    \"dataset:identifier\",\r\n    \"dataset:type\",\r\n    \"dataset:personal_data\",\r\n    \"dataset:sensitive_data\",\r\n    \"dataset:title\",\r\n    \"dataset:description\",\r\n    \"dataset:issued\",\r\n    \"dataset:language\",\r\n    \"dataset:preservation_statement\",\r\n    \"dataset:dtype\",\r\n    \"dataset:keyword\",\r\n    \"dataset:data_quality_assurance\",\r\n    \"distribution:title\",\r\n    \"distribution:data_access\",\r\n    \"distribution:description\",\r\n    \"distribution:access_url\",\r\n    \"distribution:download_url\",\r\n    \"distribution:available_until\",\r\n    \"distribution:byte_size\",\r\n    \"distribution:format\",\r\n    \"license:license_ref\",\r\n    \"license:start_date\",\r\n    \"host:title\",\r\n    \"host:url\",\r\n    \"host:availability\",\r\n    \"host:backup_frequency\",\r\n    \"host:backup_type\",\r\n    \"host:certified_with\",\r\n    \"host:description\",\r\n    \"host:geo_location\",\r\n    \"host:pid_system\",\r\n    \"host:storage_type\",\r\n    \"host:support_versioning\",    \r\n    \"metadata:identifier\",\r\n    \"metadata:type\",\r\n    \"metadata:language\",\r\n    \"metadata:description\",\r\n    \"securityandprivacy:name\",\r\n    \"securityandprivacy:description\",\r\n    \"technicalresource:title\",\r\n    \"technicalresource:description\"\r\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{app_host}}/service/1/rights/property",
+							"host": [
+								"{{app_host}}"
+							],
+							"path": [
+								"service",
+								"1",
+								"rights",
+								"property"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "5. Set the property rights to the data repository",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n    \"dmp:identifier\",\r\n    \"dmp:type\",\r\n    \"dmp:modified\",\r\n    \"contributor:identifier\",\r\n    \"contributor:type\",\r\n    \"contributor:name\",\r\n    \"contributor:mbox\",\r\n    \"contributor:role\",\r\n    \"cost:value\",\r\n    \"cost:currency_code\",\r\n    \"cost:description\",\r\n    \"dataset:identifier\",\r\n    \"dataset:type\",\r\n    \"dataset:personal_data\",\r\n    \"dataset:sensitive_data\",\r\n    \"dataset:title\",\r\n    \"dataset:description\",\r\n    \"dataset:issued\",\r\n    \"dataset:language\",\r\n    \"dataset:preservation_statement\",\r\n    \"dataset:dtype\",\r\n    \"dataset:keyword\",\r\n    \"dataset:data_quality_assurance\",\r\n    \"distribution:title\",\r\n    \"distribution:data_access\",\r\n    \"distribution:description\",\r\n    \"distribution:access_url\",\r\n    \"distribution:download_url\",\r\n    \"distribution:available_until\",\r\n    \"distribution:byte_size\",\r\n    \"distribution:format\",\r\n    \"license:license_ref\",\r\n    \"license:start_date\",\r\n    \"host:title\",\r\n    \"host:url\",\r\n    \"host:availability\",\r\n    \"host:backup_frequency\",\r\n    \"host:backup_type\",\r\n    \"host:certified_with\",\r\n    \"host:description\",\r\n    \"host:geo_location\",\r\n    \"host:pid_system\",\r\n    \"host:storage_type\",\r\n    \"host:support_versioning\",    \r\n    \"metadata:identifier\",\r\n    \"metadata:type\",\r\n    \"metadata:language\",\r\n    \"metadata:description\",\r\n    \"securityandprivacy:name\",\r\n    \"securityandprivacy:description\",\r\n    \"technicalresource:title\",\r\n    \"technicalresource:description\"\r\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{app_host}}/service/2/rights/property",
+							"host": [
+								"{{app_host}}"
+							],
+							"path": [
+								"service",
+								"2",
+								"rights",
+								"property"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "6. Get all RDM services",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"pm.test(\"Status code is 200\", function () {\r",
+									"    pm.response.to.have.status(200);\r",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{app_host}}/services",
+							"host": [
+								"{{app_host}}"
+							],
+							"path": [
+								"services"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -92,7 +236,7 @@
 			"name": "FTC1",
 			"item": [
 				{
-					"name": "Send a new minimal maDMP with wrong timing",
+					"name": "1. Send a minimal maDMP with the incomplete body.",
 					"event": [
 						{
 							"listen": "test",
@@ -131,7 +275,7 @@
 					"response": []
 				},
 				{
-					"name": "Send a new minimal maDMP with wrong timing",
+					"name": "2. Send a new minimal maDMP with wrong timing.",
 					"event": [
 						{
 							"listen": "test",
@@ -170,7 +314,7 @@
 					"response": []
 				},
 				{
-					"name": "Send a new minimal maDMP",
+					"name": "3. Send a new minimal maDMP.",
 					"event": [
 						{
 							"listen": "test",
@@ -209,7 +353,7 @@
 					"response": []
 				},
 				{
-					"name": "Send a new minimal maDMP again with same ID",
+					"name": "4. Send a new minimal maDMP again with the same identifier.",
 					"event": [
 						{
 							"listen": "test",
@@ -248,7 +392,7 @@
 					"response": []
 				},
 				{
-					"name": "Send the minimal maDMP with invalid modified property",
+					"name": "5. Send the minimal maDMP with the invalid modified property.",
 					"event": [
 						{
 							"listen": "test",
@@ -287,7 +431,7 @@
 					"response": []
 				},
 				{
-					"name": "Send long maDMP with same identifier",
+					"name": "6. Send a long maDMP with the same identifier.",
 					"event": [
 						{
 							"listen": "test",
@@ -331,7 +475,7 @@
 			"name": "FTC2",
 			"item": [
 				{
-					"name": "Send a new minimal maDMP",
+					"name": "1. Send a new minimal maDMP.",
 					"event": [
 						{
 							"listen": "test",
@@ -370,7 +514,7 @@
 					"response": []
 				},
 				{
-					"name": "Get maDMP with incomplete parameters",
+					"name": "2. Get the maDMP with incomplete parameters.",
 					"event": [
 						{
 							"listen": "test",
@@ -406,7 +550,7 @@
 					"response": []
 				},
 				{
-					"name": "Get maDMP with wrong parameters",
+					"name": "3. Get the maDMP with wrong parameters.",
 					"event": [
 						{
 							"listen": "test",
@@ -446,7 +590,7 @@
 					"response": []
 				},
 				{
-					"name": "Get maDMP with wrong identifiers",
+					"name": "4. Get the maDMP with wrong identifiers.",
 					"event": [
 						{
 							"listen": "test",
@@ -486,7 +630,7 @@
 					"response": []
 				},
 				{
-					"name": "Get current version of maDMP",
+					"name": "5. Get the current version of the maDMP.",
 					"event": [
 						{
 							"listen": "test",
@@ -537,7 +681,7 @@
 			"name": "FTC3",
 			"item": [
 				{
-					"name": "Send a new maDMP with dataset",
+					"name": "1. Send a new maDMP with the dataset.",
 					"event": [
 						{
 							"listen": "test",
@@ -556,7 +700,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n\t\"dmp\": {\r\n\t\t\"created\": \"2022-04-14T13:33:07.000\",\r\n\t\t\"dmp_id\": {\r\n\t\t\t\"identifier\": \"https://doi.org/10.0000/11.2.22\"\r\n\t\t},\r\n\t\t\"modified\": \"2022-04-14T13:33:07.000\",\r\n        \"dataset\": [\r\n\t\t\t{\r\n\t\t\t\t\"dataset_id\": {\r\n\t\t\t\t\t\"identifier\": \"https://hdl.handle.net/0000/00.00000\",\r\n\t\t\t\t\t\"type\": \"handle\"\r\n\t\t\t\t},\r\n\t\t\t\t\"title\": \"Client application\",\r\n\t\t\t\t\"personal_data\": \"no\",\r\n\t\t\t\t\"sensitive_data\": \"no\",\r\n\t\t\t\t\"type\": \"Source code\",\r\n\t\t\t\t\"description\": \"Some test scripts\",\r\n\t\t\t\t\"distribution\": [\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\t\"title\": \"Planned distribution\",\r\n\t\t\t\t\t\t\"format\": [],\r\n\t\t\t\t\t\t\"byte_size\": 1000000000,\r\n\t\t\t\t\t\t\"data_access\": \"open\",\r\n                        \"access_url\": \"https://hdl.handle.net/0000\",\r\n\t\t\t\t\t\t\"license\": [\r\n\t\t\t\t\t\t\t{\r\n\t\t\t\t\t\t\t\t\"license_name\": \"The MIT License (MIT)\",\r\n\t\t\t\t\t\t\t\t\"license_ref\": \"http://opensource.org/licenses/mit-license.php\",\r\n\t\t\t\t\t\t\t\t\"start_date\": \"2020-09-30\"\r\n\t\t\t\t\t\t\t}\r\n\t\t\t\t\t\t],\r\n\t\t\t\t\t\t\"host\": {\r\n\t\t\t\t\t\t\t\"title\": \"GitHub\",\r\n\t\t\t\t\t\t\t\"url\": \"https://www.re3data.org/repository/r3d100010375\",\r\n\t\t\t\t\t\t\t\"host_id_type\": \"HTTP-RE3DATA\",\r\n\t\t\t\t\t\t\t\"description\": \"GitHub is the best place to share code with friends, co-workers, classmates, and complete strangers. Over three million people use GitHub to build amazing things together. With the collaborative features of GitHub.com, our desktop and mobile apps, and GitHub Enterprise, it has never been easier for individuals and teams to write better code, faster. Originally founded by Tom Preston-Werner, Chris Wanstrath, and PJ Hyett to simplify sharing code, GitHub has grown into the largest code host in the world.\",\r\n\t\t\t\t\t\t\t\"supports_versioning\": \"yes\",\r\n\t\t\t\t\t\t\t\"storage_type\": \"repository\",\r\n\t\t\t\t\t\t\t\"pid_system\": [\r\n\t\t\t\t\t\t\t\t\"other\"\r\n\t\t\t\t\t\t\t]\r\n\t\t\t\t\t\t},\r\n\t\t\t\t\t\t\"available_until\": \"2030-09-30\"\r\n\t\t\t\t\t}\r\n\t\t\t\t]\r\n\t\t\t}\r\n        ]\r\n\t}\r\n}",
+							"raw": "{\r\n\t\"dmp\": {\r\n\t\t\"created\": \"2022-04-14T13:33:07.000\",\r\n\t\t\"dmp_id\": {\r\n\t\t\t\"identifier\": \"https://doi.org/10.0000/11.2.22\"\r\n\t\t},\r\n\t\t\"modified\": \"2022-04-14T13:33:07.000\",\r\n        \"dataset\": [\r\n\t\t\t{\r\n\t\t\t\t\"dataset_id\": {\r\n\t\t\t\t\t\"identifier\": \"https://hdl.handle.net/0000/00.00000\",\r\n\t\t\t\t\t\"type\": \"handle\"\r\n\t\t\t\t},\r\n\t\t\t\t\"title\": \"Client application\"\r\n\t\t\t}\r\n        ]\r\n\t}\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -576,7 +720,7 @@
 					"response": []
 				},
 				{
-					"name": "Update identifier with incomplete parameters",
+					"name": "2. Update the identifier with incomplete parameters.",
 					"event": [
 						{
 							"listen": "test",
@@ -603,12 +747,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{app_host}}/madmp/identifier?identifier=https://doi.org/10.0000/11.2.22&created=2022-04-14T13:33:07.000",
+							"raw": "{{app_host}}/madmp/object/identifier?identifier=https://doi.org/10.0000/11.2.22&created=2022-04-14T13:33:07.000",
 							"host": [
 								"{{app_host}}"
 							],
 							"path": [
 								"madmp",
+								"object",
 								"identifier"
 							],
 							"query": [
@@ -626,7 +771,7 @@
 					"response": []
 				},
 				{
-					"name": "Update identifier with incomplete body",
+					"name": "3. Update the identifier with the incomplete body.",
 					"event": [
 						{
 							"listen": "test",
@@ -653,12 +798,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{app_host}}/madmp/identifier?identifier=https://doi.org/10.0000/11.2.22&created=2022-04-14T13:33:07.000&modified=2022-04-14T13:45:08.000",
+							"raw": "{{app_host}}/madmp/object/identifier?identifier=https://doi.org/10.0000/11.2.22&created=2022-04-14T13:33:07.000&modified=2022-04-14T13:45:08.000",
 							"host": [
 								"{{app_host}}"
 							],
 							"path": [
 								"madmp",
+								"object",
 								"identifier"
 							],
 							"query": [
@@ -680,14 +826,14 @@
 					"response": []
 				},
 				{
-					"name": "Update identifier with wrong specialization",
+					"name": "4. Update the identifier with the wrong specialization.",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 400\", function () {\r",
-									"    pm.response.to.have.status(400);\r",
+									"pm.test(\"Status code is 403\", function () {\r",
+									"    pm.response.to.have.status(403);\r",
 									"});"
 								],
 								"type": "text/javascript"
@@ -707,12 +853,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{app_host}}/madmp/identifier?identifier=https://doi.org/10.0000/11.2.22&created=2022-04-14T13:33:07.000&modified=2022-04-14T13:45:08.000",
+							"raw": "{{app_host}}/madmp/object/identifier?identifier=https://doi.org/10.0000/11.2.22&created=2022-04-14T13:33:07.000&modified=2022-04-14T13:45:08.000",
 							"host": [
 								"{{app_host}}"
 							],
 							"path": [
 								"madmp",
+								"object",
 								"identifier"
 							],
 							"query": [
@@ -734,7 +881,7 @@
 					"response": []
 				},
 				{
-					"name": "Update identifier of dataset",
+					"name": "5. Update the identifier of the dataset.",
 					"event": [
 						{
 							"listen": "test",
@@ -761,12 +908,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{app_host}}/madmp/identifier?identifier=https://doi.org/10.0000/11.2.22&created=2022-04-14T13:33:07.000&modified=2022-04-14T13:45:08.000",
+							"raw": "{{app_host}}/madmp/object/identifier?identifier=https://doi.org/10.0000/11.2.22&created=2022-04-14T13:33:07.000&modified=2022-04-14T13:45:08.000",
 							"host": [
 								"{{app_host}}"
 							],
 							"path": [
 								"madmp",
+								"object",
 								"identifier"
 							],
 							"query": [
@@ -788,7 +936,7 @@
 					"response": []
 				},
 				{
-					"name": "Get current version of maDMP and verify the modification",
+					"name": "6. Get the current version of the maDMP and verify the modification.",
 					"event": [
 						{
 							"listen": "test",
@@ -837,7 +985,7 @@
 			"name": "FTC4",
 			"item": [
 				{
-					"name": "Send a new maDMP with dataset",
+					"name": "1. Send a new maDMP with the dataset.",
 					"event": [
 						{
 							"listen": "test",
@@ -856,7 +1004,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n\t\"dmp\": {\r\n\t\t\"created\": \"2022-04-14T14:48:39.000\",\r\n\t\t\"dmp_id\": {\r\n\t\t\t\"identifier\": \"https://doi.org/10.0000/33.3.12\"\r\n\t\t},\r\n\t\t\"modified\": \"2022-04-14T14:48:39.000\",\r\n        \"dataset\": [\r\n\t\t\t{\r\n\t\t\t\t\"dataset_id\": {\r\n\t\t\t\t\t\"identifier\": \"https://hdl.handle.net/0000/00.00000\",\r\n\t\t\t\t\t\"type\": \"handle\"\r\n\t\t\t\t},\r\n\t\t\t\t\"title\": \"Client application\",\r\n\t\t\t\t\"personal_data\": \"no\",\r\n\t\t\t\t\"sensitive_data\": \"no\",\r\n\t\t\t\t\"type\": \"Source code\",\r\n\t\t\t\t\"description\": \"Some test scripts\",\r\n\t\t\t\t\"distribution\": [\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\t\"title\": \"Planned distribution\",\r\n\t\t\t\t\t\t\"format\": [],\r\n\t\t\t\t\t\t\"byte_size\": 1000000000,\r\n\t\t\t\t\t\t\"data_access\": \"open\",\r\n                        \"access_url\": \"https://hdl.handle.net/0000\",\r\n\t\t\t\t\t\t\"license\": [\r\n\t\t\t\t\t\t\t{\r\n\t\t\t\t\t\t\t\t\"license_name\": \"The MIT License (MIT)\",\r\n\t\t\t\t\t\t\t\t\"license_ref\": \"http://opensource.org/licenses/mit-license.php\",\r\n\t\t\t\t\t\t\t\t\"start_date\": \"2020-09-30\"\r\n\t\t\t\t\t\t\t}\r\n\t\t\t\t\t\t],\r\n\t\t\t\t\t\t\"host\": {\r\n\t\t\t\t\t\t\t\"title\": \"GitHub\",\r\n\t\t\t\t\t\t\t\"url\": \"https://www.re3data.org/repository/r3d100010375\",\r\n\t\t\t\t\t\t\t\"host_id_type\": \"HTTP-RE3DATA\",\r\n\t\t\t\t\t\t\t\"description\": \"GitHub is the best place to share code with friends, co-workers, classmates, and complete strangers. Over three million people use GitHub to build amazing things together. With the collaborative features of GitHub.com, our desktop and mobile apps, and GitHub Enterprise, it has never been easier for individuals and teams to write better code, faster. Originally founded by Tom Preston-Werner, Chris Wanstrath, and PJ Hyett to simplify sharing code, GitHub has grown into the largest code host in the world.\",\r\n\t\t\t\t\t\t\t\"supports_versioning\": \"yes\",\r\n\t\t\t\t\t\t\t\"storage_type\": \"repository\",\r\n\t\t\t\t\t\t\t\"pid_system\": [\r\n\t\t\t\t\t\t\t\t\"other\"\r\n\t\t\t\t\t\t\t]\r\n\t\t\t\t\t\t},\r\n\t\t\t\t\t\t\"available_until\": \"2030-09-30\"\r\n\t\t\t\t\t}\r\n\t\t\t\t]\r\n\t\t\t}\r\n        ]\r\n\t}\r\n}",
+							"raw": "{\r\n\t\"dmp\": {\r\n\t\t\"created\": \"2022-04-14T14:48:39.000\",\r\n\t\t\"dmp_id\": {\r\n\t\t\t\"identifier\": \"https://doi.org/10.0000/33.3.12\"\r\n\t\t},\r\n\t\t\"modified\": \"2022-04-14T14:48:39.000\",\r\n        \"dataset\": [\r\n\t\t\t{\r\n\t\t\t\t\"dataset_id\": {\r\n\t\t\t\t\t\"identifier\": \"https://hdl.handle.net/0000/00.00000\",\r\n\t\t\t\t\t\"type\": \"handle\"\r\n\t\t\t\t},\r\n\t\t\t\t\"title\": \"Client application\"\r\n\t\t\t}\r\n        ]\r\n\t}\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -876,7 +1024,7 @@
 					"response": []
 				},
 				{
-					"name": "Delete instance with incomplete parameters",
+					"name": "2. Delete the object with incomplete parameters.",
 					"event": [
 						{
 							"listen": "test",
@@ -903,14 +1051,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{app_host}}/madmp/instance/delete?identifier=https://doi.org/10.0000/33.3.12&created=2022-04-14T14:48:39.000",
+							"raw": "{{app_host}}/madmp/object/remove?identifier=https://doi.org/10.0000/33.3.12&created=2022-04-14T14:48:39.000",
 							"host": [
 								"{{app_host}}"
 							],
 							"path": [
 								"madmp",
-								"instance",
-								"delete"
+								"object",
+								"remove"
 							],
 							"query": [
 								{
@@ -927,7 +1075,7 @@
 					"response": []
 				},
 				{
-					"name": "Delete instance without body",
+					"name": "3. Delete the object without the body.",
 					"event": [
 						{
 							"listen": "test",
@@ -945,14 +1093,14 @@
 						"method": "PUT",
 						"header": [],
 						"url": {
-							"raw": "{{app_host}}/madmp/instance/delete?identifier=https://doi.org/10.0000/33.3.12&created=2022-04-14T14:48:39.000&modified=2022-04-14T14:50:20.000",
+							"raw": "{{app_host}}/madmp/object/remove?identifier=https://doi.org/10.0000/33.3.12&created=2022-04-14T14:48:39.000&modified=2022-04-14T14:50:20.000",
 							"host": [
 								"{{app_host}}"
 							],
 							"path": [
 								"madmp",
-								"instance",
-								"delete"
+								"object",
+								"remove"
 							],
 							"query": [
 								{
@@ -973,7 +1121,7 @@
 					"response": []
 				},
 				{
-					"name": "Delete instance with wrong identifier",
+					"name": "4. Delete the object with the wrong identifier.",
 					"event": [
 						{
 							"listen": "test",
@@ -1000,14 +1148,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{app_host}}/madmp/instance/delete?identifier=https://doi.org/20.0000/11.2.23&created=2022-04-14T14:48:39.000&modified=2022-04-14T14:50:20.000",
+							"raw": "{{app_host}}/madmp/object/remove?identifier=https://doi.org/20.0000/11.2.23&created=2022-04-14T14:48:39.000&modified=2022-04-14T14:50:20.000",
 							"host": [
 								"{{app_host}}"
 							],
 							"path": [
 								"madmp",
-								"instance",
-								"delete"
+								"object",
+								"remove"
 							],
 							"query": [
 								{
@@ -1028,14 +1176,14 @@
 					"response": []
 				},
 				{
-					"name": "Delete instance with wrong class identifier",
+					"name": "5. Delete the object with the wrong class identifier.",
 					"event": [
 						{
 							"listen": "test",
 							"script": {
 								"exec": [
-									"pm.test(\"Status code is 404\", function () {\r",
-									"    pm.response.to.have.status(404);\r",
+									"pm.test(\"Status code is 400\", function () {\r",
+									"    pm.response.to.have.status(400);\r",
 									"});"
 								],
 								"type": "text/javascript"
@@ -1055,14 +1203,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{app_host}}/madmp/instance/delete?identifier=https://doi.org/10.0000/33.3.12&created=2022-04-14T14:48:39.000&modified=2022-04-14T14:50:20.000",
+							"raw": "{{app_host}}/madmp/object/remove?identifier=https://doi.org/10.0000/33.3.12&created=2022-04-14T14:48:39.000&modified=2022-04-14T14:50:20.000",
 							"host": [
 								"{{app_host}}"
 							],
 							"path": [
 								"madmp",
-								"instance",
-								"delete"
+								"object",
+								"remove"
 							],
 							"query": [
 								{
@@ -1083,7 +1231,7 @@
 					"response": []
 				},
 				{
-					"name": "Delete instance",
+					"name": "6. Delete the object.",
 					"event": [
 						{
 							"listen": "test",
@@ -1110,14 +1258,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{app_host}}/madmp/instance/delete?identifier=https://doi.org/10.0000/33.3.12&created=2022-04-14T14:48:39.000&modified=2022-04-14T14:50:20.000",
+							"raw": "{{app_host}}/madmp/object/remove?identifier=https://doi.org/10.0000/33.3.12&created=2022-04-14T14:48:39.000&modified=2022-04-14T14:50:20.000",
 							"host": [
 								"{{app_host}}"
 							],
 							"path": [
 								"madmp",
-								"instance",
-								"delete"
+								"object",
+								"remove"
 							],
 							"query": [
 								{
@@ -1138,7 +1286,7 @@
 					"response": []
 				},
 				{
-					"name": "Get current version of maDMP and verify the deletions",
+					"name": "7. Get the current version of the maDMP and verify the deletions.",
 					"event": [
 						{
 							"listen": "test",
@@ -1183,7 +1331,7 @@
 			"name": "FTC5",
 			"item": [
 				{
-					"name": "Send a new maDMP with dataset",
+					"name": "1. Send a new maDMP with dataset.",
 					"event": [
 						{
 							"listen": "test",
@@ -1202,7 +1350,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n\t\"dmp\": {\r\n\t\t\"created\": \"2022-04-14T16:55:40.000\",\r\n\t\t\"dmp_id\": {\r\n\t\t\t\"identifier\": \"https://doi.org/10.0002/11.1.123\"\r\n\t\t},\r\n\t\t\"modified\": \"2022-04-14T16:55:40.000\",\r\n        \"dataset\": [\r\n\t\t\t{\r\n\t\t\t\t\"dataset_id\": {\r\n\t\t\t\t\t\"identifier\": \"https://hdl.handle.net/0000/00.00000\",\r\n\t\t\t\t\t\"type\": \"handle\"\r\n\t\t\t\t},\r\n\t\t\t\t\"title\": \"Client application\",\r\n\t\t\t\t\"personal_data\": \"no\",\r\n\t\t\t\t\"sensitive_data\": \"no\",\r\n\t\t\t\t\"type\": \"Source code\",\r\n\t\t\t\t\"description\": \"Some test scripts\",\r\n\t\t\t\t\"distribution\": [\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\t\"title\": \"Planned distribution\",\r\n\t\t\t\t\t\t\"format\": [],\r\n\t\t\t\t\t\t\"byte_size\": 1000000000,\r\n\t\t\t\t\t\t\"data_access\": \"open\",\r\n                        \"access_url\": \"https://hdl.handle.net/0000\",\r\n\t\t\t\t\t\t\"license\": [\r\n\t\t\t\t\t\t\t{\r\n\t\t\t\t\t\t\t\t\"license_name\": \"The MIT License (MIT)\",\r\n\t\t\t\t\t\t\t\t\"license_ref\": \"http://opensource.org/licenses/mit-license.php\",\r\n\t\t\t\t\t\t\t\t\"start_date\": \"2020-09-30\"\r\n\t\t\t\t\t\t\t}\r\n\t\t\t\t\t\t],\r\n\t\t\t\t\t\t\"host\": {\r\n\t\t\t\t\t\t\t\"title\": \"GitHub\",\r\n\t\t\t\t\t\t\t\"url\": \"https://www.re3data.org/repository/r3d100010375\",\r\n\t\t\t\t\t\t\t\"host_id_type\": \"HTTP-RE3DATA\",\r\n\t\t\t\t\t\t\t\"description\": \"GitHub is the best place to share code with friends, co-workers, classmates, and complete strangers. Over three million people use GitHub to build amazing things together. With the collaborative features of GitHub.com, our desktop and mobile apps, and GitHub Enterprise, it has never been easier for individuals and teams to write better code, faster. Originally founded by Tom Preston-Werner, Chris Wanstrath, and PJ Hyett to simplify sharing code, GitHub has grown into the largest code host in the world.\",\r\n\t\t\t\t\t\t\t\"supports_versioning\": \"yes\",\r\n\t\t\t\t\t\t\t\"storage_type\": \"repository\",\r\n\t\t\t\t\t\t\t\"pid_system\": [\r\n\t\t\t\t\t\t\t\t\"other\"\r\n\t\t\t\t\t\t\t]\r\n\t\t\t\t\t\t},\r\n\t\t\t\t\t\t\"available_until\": \"2030-09-30\"\r\n\t\t\t\t\t}\r\n\t\t\t\t]\r\n\t\t\t}\r\n        ]\r\n\t}\r\n}",
+							"raw": "{\r\n\t\"dmp\": {\r\n\t\t\"created\": \"2022-04-14T16:55:40.000\",\r\n\t\t\"dmp_id\": {\r\n\t\t\t\"identifier\": \"https://doi.org/10.0002/11.1.123\"\r\n\t\t},\r\n\t\t\"modified\": \"2022-04-14T16:55:40.000\",\r\n        \"dataset\": [\r\n\t\t\t{\r\n\t\t\t\t\"dataset_id\": {\r\n\t\t\t\t\t\"identifier\": \"https://hdl.handle.net/0000/00.00000\",\r\n\t\t\t\t\t\"type\": \"handle\"\r\n\t\t\t\t},\r\n\t\t\t\t\"title\": \"Client application\"\r\n\t\t\t}\r\n        ]\r\n\t}\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -1222,7 +1370,7 @@
 					"response": []
 				},
 				{
-					"name": "Update identifier of dataset",
+					"name": "2. Update the identifier of the dataset.",
 					"event": [
 						{
 							"listen": "test",
@@ -1249,12 +1397,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{app_host}}/madmp/identifier?identifier=https://doi.org/10.0002/11.1.123&created=2022-04-14T16:55:40.000&modified=2022-04-14T16:55:41.000",
+							"raw": "{{app_host}}/madmp/object/identifier?identifier=https://doi.org/10.0002/11.1.123&created=2022-04-14T16:55:40.000&modified=2022-04-14T16:55:41.000",
 							"host": [
 								"{{app_host}}"
 							],
 							"path": [
 								"madmp",
+								"object",
 								"identifier"
 							],
 							"query": [
@@ -1276,7 +1425,7 @@
 					"response": []
 				},
 				{
-					"name": "Get identifier history with wrong parameters",
+					"name": "3. Get identifier history with wrong parameters.",
 					"event": [
 						{
 							"listen": "test",
@@ -1294,14 +1443,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{app_host}}/madmp/identifier/history?identifier=https://doi.org/10.0002/11.1.123",
+							"raw": "{{app_host}}/madmp/provenance?identifier=https://doi.org/10.0002/11.1.123",
 							"host": [
 								"{{app_host}}"
 							],
 							"path": [
 								"madmp",
-								"identifier",
-								"history"
+								"provenance"
 							],
 							"query": [
 								{
@@ -1314,7 +1462,7 @@
 					"response": []
 				},
 				{
-					"name": "Get identifier history",
+					"name": "4. Get identifier history of the dataset.",
 					"event": [
 						{
 							"listen": "test",
@@ -1332,14 +1480,13 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{app_host}}/madmp/identifier/history?identifier=https://doi.org/10.0002/11.1.123&created=2022-04-14T16:55:40.000",
+							"raw": "{{app_host}}/madmp/provenance?identifier=https://doi.org/10.0002/11.1.123&created=2022-04-14T16:55:40.000&specializationOf=dataset:identifier",
 							"host": [
 								"{{app_host}}"
 							],
 							"path": [
 								"madmp",
-								"identifier",
-								"history"
+								"provenance"
 							],
 							"query": [
 								{
@@ -1349,6 +1496,10 @@
 								{
 									"key": "created",
 									"value": "2022-04-14T16:55:40.000"
+								},
+								{
+									"key": "specializationOf",
+									"value": "dataset:identifier"
 								}
 							]
 						}
@@ -1361,7 +1512,7 @@
 			"name": "FTC6",
 			"item": [
 				{
-					"name": "Send a new minimal maDMP",
+					"name": "1. Send a new minimal maDMP.",
 					"event": [
 						{
 							"listen": "test",
@@ -1400,7 +1551,7 @@
 					"response": []
 				},
 				{
-					"name": "Send a new maDMP out of modification scope",
+					"name": "2. Send a new maDMP out of the modification scope.",
 					"event": [
 						{
 							"listen": "test",
@@ -1509,7 +1660,7 @@
 					"response": []
 				},
 				{
-					"name": "Get current version of maDMP and verify the modification scope",
+					"name": "3. Get the current version of the maDMP and verify the modification scope.",
 					"event": [
 						{
 							"listen": "test",
@@ -1560,7 +1711,7 @@
 			"name": "FTC7",
 			"item": [
 				{
-					"name": "Send a new minimal maDMP",
+					"name": "1. Send a new minimal maDMP.",
 					"event": [
 						{
 							"listen": "test",
@@ -1599,7 +1750,7 @@
 					"response": []
 				},
 				{
-					"name": "Update maDMP with long body",
+					"name": "2. Update the maDMP with a long body.",
 					"event": [
 						{
 							"listen": "test",
@@ -1638,7 +1789,7 @@
 					"response": []
 				},
 				{
-					"name": "Delete dataset",
+					"name": "3. Delete the dataset.",
 					"event": [
 						{
 							"listen": "test",
@@ -1665,14 +1816,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{app_host}}/madmp/instance/delete?identifier=https://doi.org/11.0013/11.1.111&created=2022-04-25T07:24:05.000&modified=2022-04-25T07:25:15.000",
+							"raw": "{{app_host}}/madmp/object/remove?identifier=https://doi.org/11.0013/11.1.111&created=2022-04-25T07:24:05.000&modified=2022-04-25T07:25:15.000",
 							"host": [
 								"{{app_host}}"
 							],
 							"path": [
 								"madmp",
-								"instance",
-								"delete"
+								"object",
+								"remove"
 							],
 							"query": [
 								{
@@ -1693,7 +1844,7 @@
 					"response": []
 				},
 				{
-					"name": "Update maDMP with the deleted dataset",
+					"name": "4. Update the maDMP with the deleted dataset.",
 					"event": [
 						{
 							"listen": "test",
@@ -1732,7 +1883,7 @@
 					"response": []
 				},
 				{
-					"name": "Update maDMP with the old modified property",
+					"name": "5. Update the maDMP with the old modified property.",
 					"event": [
 						{
 							"listen": "test",
@@ -1776,7 +1927,7 @@
 			"name": "FTC8",
 			"item": [
 				{
-					"name": "Send a new long maDMP with 3 datasets",
+					"name": "1. Send a new long maDMP with 3 datasets.",
 					"event": [
 						{
 							"listen": "test",
@@ -1815,7 +1966,7 @@
 					"response": []
 				},
 				{
-					"name": "Delete dataset 0",
+					"name": "2. Delete the dataset 0.",
 					"event": [
 						{
 							"listen": "test",
@@ -1842,14 +1993,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{app_host}}/madmp/instance/delete?identifier=https://doi.org/17.1992/13.5.666&created=2022-04-25T07:38:01.000&modified=2022-04-25T07:38:06.000",
+							"raw": "{{app_host}}/madmp/object/remove?identifier=https://doi.org/17.1992/13.5.666&created=2022-04-25T07:38:01.000&modified=2022-04-25T07:38:06.000",
 							"host": [
 								"{{app_host}}"
 							],
 							"path": [
 								"madmp",
-								"instance",
-								"delete"
+								"object",
+								"remove"
 							],
 							"query": [
 								{
@@ -1870,7 +2021,7 @@
 					"response": []
 				},
 				{
-					"name": "Delete dataset 1",
+					"name": "3. Delete the dataset 1.",
 					"event": [
 						{
 							"listen": "test",
@@ -1897,14 +2048,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{app_host}}/madmp/instance/delete?identifier=https://doi.org/17.1992/13.5.666&created=2022-04-25T07:38:01.000&modified=2022-04-25T07:38:09.000",
+							"raw": "{{app_host}}/madmp/object/remove?identifier=https://doi.org/17.1992/13.5.666&created=2022-04-25T07:38:01.000&modified=2022-04-25T07:38:09.000",
 							"host": [
 								"{{app_host}}"
 							],
 							"path": [
 								"madmp",
-								"instance",
-								"delete"
+								"object",
+								"remove"
 							],
 							"query": [
 								{
@@ -1925,7 +2076,7 @@
 					"response": []
 				},
 				{
-					"name": "Update identifier of dataset 2 -> 0",
+					"name": "4. Update the identifier of the dataset 2 to 0.",
 					"event": [
 						{
 							"listen": "test",
@@ -1952,12 +2103,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{app_host}}/madmp/identifier?identifier=https://doi.org/17.1992/13.5.666&created=2022-04-25T07:38:01.000&modified=2022-04-25T07:38:22.000",
+							"raw": "{{app_host}}/madmp/object/identifier?identifier=https://doi.org/17.1992/13.5.666&created=2022-04-25T07:38:01.000&modified=2022-04-25T07:38:22.000",
 							"host": [
 								"{{app_host}}"
 							],
 							"path": [
 								"madmp",
+								"object",
 								"identifier"
 							],
 							"query": [
@@ -1979,7 +2131,7 @@
 					"response": []
 				},
 				{
-					"name": "Delete dataset 0",
+					"name": "5. Delete the dataset 0.",
 					"event": [
 						{
 							"listen": "test",
@@ -2006,14 +2158,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{app_host}}/madmp/instance/delete?identifier=https://doi.org/17.1992/13.5.666&created=2022-04-25T07:38:01.000&modified=2022-04-25T07:39:11.000",
+							"raw": "{{app_host}}/madmp/object/remove?identifier=https://doi.org/17.1992/13.5.666&created=2022-04-25T07:38:01.000&modified=2022-04-25T07:39:11.000",
 							"host": [
 								"{{app_host}}"
 							],
 							"path": [
 								"madmp",
-								"instance",
-								"delete"
+								"object",
+								"remove"
 							],
 							"query": [
 								{
@@ -2034,7 +2186,7 @@
 					"response": []
 				},
 				{
-					"name": "Delete project information",
+					"name": "6. Delete project information.",
 					"event": [
 						{
 							"listen": "test",
@@ -2053,7 +2205,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n  \"atLocation\": \"/https://doi.org/17.1992/13.5.666/openEO - a common, open source interface between Earth Observation data infrastructures and front-end applications\",\r\n  \"specializationOf\": \"dataset\"\r\n}",
+							"raw": "{\r\n  \"atLocation\": \"/https://doi.org/17.1992/13.5.666/openEO - a common, open source interface between Earth Observation data infrastructures and front-end applications\",\r\n  \"specializationOf\": \"project\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -2061,14 +2213,14 @@
 							}
 						},
 						"url": {
-							"raw": "{{app_host}}/madmp/instance/delete?identifier=https://doi.org/17.1992/13.5.666&created=2022-04-25T07:38:01.000&modified=2022-04-25T07:39:13.000",
+							"raw": "{{app_host}}/madmp/object/remove?identifier=https://doi.org/17.1992/13.5.666&created=2022-04-25T07:38:01.000&modified=2022-04-25T07:39:13.000",
 							"host": [
 								"{{app_host}}"
 							],
 							"path": [
 								"madmp",
-								"instance",
-								"delete"
+								"object",
+								"remove"
 							],
 							"query": [
 								{
@@ -2089,7 +2241,7 @@
 					"response": []
 				},
 				{
-					"name": "Get current version of maDMP",
+					"name": "7. Get the current version of the maDMP.",
 					"event": [
 						{
 							"listen": "test",
@@ -2123,484 +2275,6 @@
 									"key": "created",
 									"value": "2022-04-25T07:38:01.000"
 								}
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "NFTC1",
-			"item": [
-				{
-					"name": "1. Send a new minimal maDMP",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n\t\"dmp\": {\r\n\t\t\"created\": \"2022-04-25T08:46:20.000\",\r\n\t\t\"dmp_id\": {\r\n\t\t\t\"identifier\": \"https://doi.org/10.0000/AB1\"\r\n\t\t},\r\n\t\t\"modified\": \"2022-04-25T08:46:20.000\"\r\n\t}\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{app_host}}/madmp",
-							"host": [
-								"{{app_host}}"
-							],
-							"path": [
-								"madmp"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "2. Send a new small maDMP",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n\t\"dmp\": {\r\n\t\t\"created\": \"2022-04-25T08:46:40.000\",\r\n\t\t\"dmp_id\": {\r\n\t\t\t\"identifier\": \"https://doi.org/10.0000/AB2\",\r\n            \"type\": \"doi\"\r\n\t\t},\r\n\t\t\"modified\": \"2022-04-25T08:46:40.000\",\r\n        \"title\": \"DMP for our new project\",\r\n\t\t\"description\": \"This DMP is for our new project.\",\r\n\t\t\"language\": \"eng\",\r\n\t\t\"contact\": {\r\n\t\t\t\"name\": \"John Smith\",\r\n\t\t\t\"mbox\": \"john.smith@tuwien.ac.at\",\r\n\t\t\t\"contact_id\": {\r\n\t\t\t\t\"identifier\": \"https://www.tiss.tuwien.ac.at/person/2351952424\",\r\n\t\t\t\t\"type\": \"other\"\r\n\t\t\t}\r\n\t\t},\r\n\t\t\"project\": [\r\n\t\t\t{\r\n\t\t\t\t\"title\": \"openEO - a common, open source interface between Earth Observation data infrastructures and front-end applications\",\r\n\t\t\t\t\"project_id\": \"https://tiss.tuwien.ac.at/api/pdb/rest/project/v3/1428966\",\r\n\t\t\t\t\"project_id_type\": \"HTTP-PDB\",\r\n\t\t\t\t\"start\": \"2017-10-01\",\r\n\t\t\t\t\"end\": \"2020-09-30\",\r\n\t\t\t\t\"funding\": [\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\t\"funder_name\": \"European Commission - Framework Programme\",\r\n\t\t\t\t\t\t\"funder_id\": {\r\n\t\t\t\t\t\t\t\"identifier\": \"\",\r\n\t\t\t\t\t\t\t\"type\": \"other\"\r\n\t\t\t\t\t\t},\r\n\t\t\t\t\t\t\"grant_id\": {\r\n\t\t\t\t\t\t\t\"identifier\": \"EO-2-2017\",\r\n\t\t\t\t\t\t\t\"type\": \"other\"\r\n\t\t\t\t\t\t}\r\n\t\t\t\t\t}\r\n\t\t\t\t]\r\n\t\t\t}\r\n\t\t]\r\n\t}\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{app_host}}/madmp",
-							"host": [
-								"{{app_host}}"
-							],
-							"path": [
-								"madmp"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "3. Send a new medium maDMP",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n\t\"dmp\": {\r\n\t\t\"created\": \"2022-04-25T08:47:01.000\",\r\n\t\t\"dmp_id\": {\r\n\t\t\t\"identifier\": \"https://doi.org/10.0000/AB3\",\r\n            \"type\": \"doi\"\r\n\t\t},\r\n\t\t\"modified\": \"2022-04-25T08:47:01.000\",\r\n        \"title\": \"DMP for our new project\",\r\n\t\t\"description\": \"This DMP is for our new project.\",\r\n\t\t\"language\": \"eng\",\r\n\t\t\"contact\": {\r\n\t\t\t\"name\": \"John Smith\",\r\n\t\t\t\"mbox\": \"john.smith@tuwien.ac.at\",\r\n\t\t\t\"contact_id\": {\r\n\t\t\t\t\"identifier\": \"https://www.tiss.tuwien.ac.at/person/2351952424\",\r\n\t\t\t\t\"type\": \"other\"\r\n\t\t\t}\r\n\t\t},\r\n\t\t\"contributor\": [\r\n\t\t\t{\r\n\t\t\t\t\"name\": \"Leo Messi\",\r\n\t\t\t\t\"mbox\": \"leo.messi@barcelona.com\",\r\n\t\t\t\t\"contributor_id\": {\r\n\t\t\t\t\t\"identifier\": \"https://orcid.org/0000-0002-0000-0000\",\r\n\t\t\t\t\t\"type\": \"orcid\"\r\n\t\t\t\t},\r\n\t\t\t\t\"role\": [\r\n\t\t\t\t\t\"ProjectLeader\"\r\n\t\t\t\t]\r\n\t\t\t},\r\n\t\t\t{\r\n\t\t\t\t\"name\": \"Robert Lewandowski\",\r\n\t\t\t\t\"mbox\": \"robert@bayern.de\",\r\n\t\t\t\t\"contributor_id\": {\r\n\t\t\t\t\t\"identifier\": \"https://orcid.org/0000-0002-4929-7875\",\r\n\t\t\t\t\t\"type\": \"orcid\"\r\n\t\t\t\t},\r\n\t\t\t\t\"role\": [\r\n\t\t\t\t\t\"ContactPerson\",\r\n\t\t\t\t\t\"DataManager\"\r\n\t\t\t\t]\r\n\t\t\t},\r\n\t\t\t{\r\n\t\t\t\t\"name\": \"Cristiano Ronaldo\",\r\n\t\t\t\t\"mbox\": \"CR@juve.it\",\r\n\t\t\t\t\"contributor_id\": {\r\n\t\t\t\t\t\"identifier\": \"https://www.tiss.tuwien.ac.at/person/305962565\",\r\n\t\t\t\t\t\"type\": \"other\"\r\n\t\t\t\t},\r\n\t\t\t\t\"role\": [\r\n\t\t\t\t\t\"DataCurator\"\r\n\t\t\t\t]\r\n\t\t\t}\r\n\t\t],\r\n\t\t\"ethical_issues_exist\": \"yes\",\r\n\t\t\"ethical_issues_report\": \"https://docs.google.com/document/d/xyz\",\r\n\t\t\"ethical_issues_description\": \"Ethical issues are handled by ...\",\r\n\t\t\"project\": [\r\n\t\t\t{\r\n\t\t\t\t\"title\": \"openEO - a common, open source interface between Earth Observation data infrastructures and front-end applications\",\r\n\t\t\t\t\"project_id\": \"https://tiss.tuwien.ac.at/api/pdb/rest/project/v3/1428966\",\r\n\t\t\t\t\"project_id_type\": \"HTTP-PDB\",\r\n\t\t\t\t\"start\": \"2017-10-01\",\r\n\t\t\t\t\"end\": \"2020-09-30\",\r\n\t\t\t\t\"description\": \"<p>The capabilities of the latest generation of Earth observation satellites to collect large volumes of diverse and thematically rich data are unprecedented. For exploiting these valuable data sets, many research and industry groups have started to shift their processing into the cloud. Although the functionalities of existing cloud computing solutions largely overlap, there are all custom-made and tailored to the specific data infrastructures. This lack of standards not only makes it hard for end users and application developers to develop generic front-ends, but also to compare the cloud offerings by running the same analysis against different cloud back-ends. To solve this, a common interface that allows end- and intermediate users to query cloud-based back offices and carry out computations on them in a simple way is needed. The openEO project will design such an interface, implement it as an open source community project, bind it to generic analytics front-ends and evaluate it against a set of relevant Earth observation cloud back offices. The openEO interface will consist of three layers of Application Programming Interfaces, namely a core API for finding, accessing, and processing large datasets, a driver APIs to connect to back offices operated by European and worldwide industry, and client APIs for analysing these datasets using R, Python and JavaScript. To demonstrate the capability of the openEO interface, four use cases based chiefly on Sentinel-1 and Sentinel-2 time series will be implemented. openEO will simplify the use of cloud-based processing engines, allow switching between cloud-based back office providers and comparing them, and enable reproducible, open Earth observation science. Thereby, openEO reduces the entry barriers for the adaptation of cloud computing technologies by a broad user community and paves the way for the federation of infrastructure capabilities.</p><p> </p>\",\r\n\t\t\t\t\"funding\": [\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\t\"funder_name\": \"European Commission - Framework Programme\",\r\n\t\t\t\t\t\t\"funder_id\": {\r\n\t\t\t\t\t\t\t\"identifier\": \"\",\r\n\t\t\t\t\t\t\t\"type\": \"other\"\r\n\t\t\t\t\t\t},\r\n\t\t\t\t\t\t\"grant_id\": {\r\n\t\t\t\t\t\t\t\"identifier\": \"EO-2-2017\",\r\n\t\t\t\t\t\t\t\"type\": \"other\"\r\n\t\t\t\t\t\t}\r\n\t\t\t\t\t}\r\n\t\t\t\t]\r\n\t\t\t}\r\n\t\t]\r\n\t}\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{app_host}}/madmp",
-							"host": [
-								"{{app_host}}"
-							],
-							"path": [
-								"madmp"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "4. Send a new large maDMP",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n\t\"dmp\": {\r\n\t\t\"created\": \"2022-04-25T08:47:12.000\",\r\n\t\t\"dmp_id\": {\r\n\t\t\t\"identifier\": \"https://doi.org/10.0000/AB4\",\r\n            \"type\": \"doi\"\r\n\t\t},\r\n\t\t\"modified\": \"2022-04-25T08:47:12.000\",\r\n        \"title\": \"DMP for our new project\",\r\n\t\t\"description\": \"This DMP is for our new project.\",\r\n\t\t\"language\": \"eng\",\r\n\t\t\"contact\": {\r\n\t\t\t\"name\": \"John Smith\",\r\n\t\t\t\"mbox\": \"john.smith@tuwien.ac.at\",\r\n\t\t\t\"contact_id\": {\r\n\t\t\t\t\"identifier\": \"https://www.tiss.tuwien.ac.at/person/2351952424\",\r\n\t\t\t\t\"type\": \"other\"\r\n\t\t\t}\r\n\t\t},\r\n\t\t\"contributor\": [\r\n\t\t\t{\r\n\t\t\t\t\"name\": \"Leo Messi\",\r\n\t\t\t\t\"mbox\": \"leo.messi@barcelona.com\",\r\n\t\t\t\t\"contributor_id\": {\r\n\t\t\t\t\t\"identifier\": \"https://orcid.org/0000-0002-0000-0000\",\r\n\t\t\t\t\t\"type\": \"orcid\"\r\n\t\t\t\t},\r\n\t\t\t\t\"role\": [\r\n\t\t\t\t\t\"ProjectLeader\"\r\n\t\t\t\t]\r\n\t\t\t},\r\n\t\t\t{\r\n\t\t\t\t\"name\": \"Robert Lewandowski\",\r\n\t\t\t\t\"mbox\": \"robert@bayern.de\",\r\n\t\t\t\t\"contributor_id\": {\r\n\t\t\t\t\t\"identifier\": \"https://orcid.org/0000-0002-4929-7875\",\r\n\t\t\t\t\t\"type\": \"orcid\"\r\n\t\t\t\t},\r\n\t\t\t\t\"role\": [\r\n\t\t\t\t\t\"ContactPerson\",\r\n\t\t\t\t\t\"DataManager\"\r\n\t\t\t\t]\r\n\t\t\t},\r\n\t\t\t{\r\n\t\t\t\t\"name\": \"Cristiano Ronaldo\",\r\n\t\t\t\t\"mbox\": \"CR@juve.it\",\r\n\t\t\t\t\"contributor_id\": {\r\n\t\t\t\t\t\"identifier\": \"https://www.tiss.tuwien.ac.at/person/305962565\",\r\n\t\t\t\t\t\"type\": \"other\"\r\n\t\t\t\t},\r\n\t\t\t\t\"role\": [\r\n\t\t\t\t\t\"DataCurator\"\r\n\t\t\t\t]\r\n\t\t\t}\r\n\t\t],\r\n\t\t\"ethical_issues_exist\": \"yes\",\r\n\t\t\"ethical_issues_report\": \"https://docs.google.com/document/d/xyz\",\r\n\t\t\"ethical_issues_description\": \"Ethical issues are handled by ...\",\r\n\t\t\"project\": [\r\n\t\t\t{\r\n\t\t\t\t\"title\": \"openEO - a common, open source interface between Earth Observation data infrastructures and front-end applications\",\r\n\t\t\t\t\"project_id\": \"https://tiss.tuwien.ac.at/api/pdb/rest/project/v3/1428966\",\r\n\t\t\t\t\"project_id_type\": \"HTTP-PDB\",\r\n\t\t\t\t\"start\": \"2017-10-01\",\r\n\t\t\t\t\"end\": \"2020-09-30\",\r\n\t\t\t\t\"description\": \"<p>The capabilities of the latest generation of Earth observation satellites to collect large volumes of diverse and thematically rich data are unprecedented. For exploiting these valuable data sets, many research and industry groups have started to shift their processing into the cloud. Although the functionalities of existing cloud computing solutions largely overlap, there are all custom-made and tailored to the specific data infrastructures. This lack of standards not only makes it hard for end users and application developers to develop generic front-ends, but also to compare the cloud offerings by running the same analysis against different cloud back-ends. To solve this, a common interface that allows end- and intermediate users to query cloud-based back offices and carry out computations on them in a simple way is needed. The openEO project will design such an interface, implement it as an open source community project, bind it to generic analytics front-ends and evaluate it against a set of relevant Earth observation cloud back offices. The openEO interface will consist of three layers of Application Programming Interfaces, namely a core API for finding, accessing, and processing large datasets, a driver APIs to connect to back offices operated by European and worldwide industry, and client APIs for analysing these datasets using R, Python and JavaScript. To demonstrate the capability of the openEO interface, four use cases based chiefly on Sentinel-1 and Sentinel-2 time series will be implemented. openEO will simplify the use of cloud-based processing engines, allow switching between cloud-based back office providers and comparing them, and enable reproducible, open Earth observation science. Thereby, openEO reduces the entry barriers for the adaptation of cloud computing technologies by a broad user community and paves the way for the federation of infrastructure capabilities.</p><p> </p>\",\r\n\t\t\t\t\"funding\": [\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\t\"funder_name\": \"European Commission - Framework Programme\",\r\n\t\t\t\t\t\t\"funder_id\": {\r\n\t\t\t\t\t\t\t\"identifier\": \"\",\r\n\t\t\t\t\t\t\t\"type\": \"other\"\r\n\t\t\t\t\t\t},\r\n\t\t\t\t\t\t\"grant_id\": {\r\n\t\t\t\t\t\t\t\"identifier\": \"EO-2-2017\",\r\n\t\t\t\t\t\t\t\"type\": \"other\"\r\n\t\t\t\t\t\t}\r\n\t\t\t\t\t}\r\n\t\t\t\t]\r\n\t\t\t}\r\n\t\t],\r\n\t\t\"dataset\": [\r\n\t\t\t{\r\n\t\t\t\t\"dataset_id\": {\r\n\t\t\t\t\t\"identifier\": \"https://hdl.handle.net/0000/00.00000\",\r\n\t\t\t\t\t\"type\": \"handle\"\r\n\t\t\t\t},\r\n\t\t\t\t\"title\": \"Client application\",\r\n\t\t\t\t\"personal_data\": \"no\",\r\n\t\t\t\t\"sensitive_data\": \"no\",\r\n\t\t\t\t\"type\": \"Source code\",\r\n\t\t\t\t\"description\": \"Some test scripts\",\r\n\t\t\t\t\"distribution\": [\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\t\"title\": \"Planned distribution\",\r\n\t\t\t\t\t\t\"format\": [],\r\n\t\t\t\t\t\t\"byte_size\": 1000000000,\r\n\t\t\t\t\t\t\"data_access\": \"open\",\r\n                        \"access_url\": \"https://hdl.handle.net/0000\",\r\n\t\t\t\t\t\t\"license\": [\r\n\t\t\t\t\t\t\t{\r\n\t\t\t\t\t\t\t\t\"license_name\": \"The MIT License (MIT)\",\r\n\t\t\t\t\t\t\t\t\"license_ref\": \"http://opensource.org/licenses/mit-license.php\",\r\n\t\t\t\t\t\t\t\t\"start_date\": \"2020-09-30\"\r\n\t\t\t\t\t\t\t}\r\n\t\t\t\t\t\t],\r\n\t\t\t\t\t\t\"host\": {\r\n\t\t\t\t\t\t\t\"title\": \"GitHub\",\r\n\t\t\t\t\t\t\t\"url\": \"https://www.re3data.org/repository/r3d100010375\",\r\n\t\t\t\t\t\t\t\"host_id_type\": \"HTTP-RE3DATA\",\r\n\t\t\t\t\t\t\t\"description\": \"GitHub is the best place to share code with friends, co-workers, classmates, and complete strangers. Over three million people use GitHub to build amazing things together. With the collaborative features of GitHub.com, our desktop and mobile apps, and GitHub Enterprise, it has never been easier for individuals and teams to write better code, faster. Originally founded by Tom Preston-Werner, Chris Wanstrath, and PJ Hyett to simplify sharing code, GitHub has grown into the largest code host in the world.\",\r\n\t\t\t\t\t\t\t\"supports_versioning\": \"yes\",\r\n\t\t\t\t\t\t\t\"storage_type\": \"repository\",\r\n\t\t\t\t\t\t\t\"pid_system\": [\r\n\t\t\t\t\t\t\t\t\"other\"\r\n\t\t\t\t\t\t\t]\r\n\t\t\t\t\t\t},\r\n\t\t\t\t\t\t\"available_until\": \"2030-09-30\"\r\n\t\t\t\t\t}\r\n\t\t\t\t]\r\n\t\t\t},\r\n\t\t\t{\r\n\t\t\t\t\"dataset_id\": {\r\n\t\t\t\t\t\"identifier\": \"https://hdl.handle.net/0000/00.00001\",\r\n\t\t\t\t\t\"type\": \"handle\"\r\n\t\t\t\t},\r\n\t\t\t\t\"title\": \"Image collection\",\r\n\t\t\t\t\"personal_data\": \"no\",\r\n\t\t\t\t\"sensitive_data\": \"yes\",\r\n\t\t\t\t\"type\": \"Images\",\r\n\t\t\t\t\"description\": \"Images of test object X\",\r\n\t\t\t\t\"distribution\": [\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\t\"title\": \"Planned distribution\",\r\n\t\t\t\t\t\t\"format\": [],\r\n                        \"access_url\": \"https://hdl.handle.net/0001\",\r\n\t\t\t\t\t\t\"byte_size\": 50000000000,\r\n\t\t\t\t\t\t\"data_access\": \"closed\"\r\n\t\t\t\t\t}\r\n\t\t\t\t]\r\n\t\t\t},\r\n\t\t\t{\r\n\t\t\t\t\"dataset_id\": {\r\n\t\t\t\t\t\"identifier\": \"https://hdl.handle.net/0000/00.00002\",\r\n\t\t\t\t\t\"type\": \"handle\"\r\n\t\t\t\t},\r\n\t\t\t\t\"title\": \"Interviews\",\r\n\t\t\t\t\"personal_data\": \"yes\",\r\n\t\t\t\t\"sensitive_data\": \"no\",\r\n\t\t\t\t\"type\": \"other\",\r\n\t\t\t\t\"description\": \"Audio recordings with test persons\",\r\n\t\t\t\t\"distribution\": [\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\t\"title\": \"Planned distribution\",\r\n\t\t\t\t\t\t\"format\": [\r\n\t\t\t\t\t\t\t\"audio/mpeg\"\r\n\t\t\t\t\t\t],\r\n\t\t\t\t\t\t\"byte_size\": 439705600,\r\n\t\t\t\t\t\t\"data_access\": \"open\",\r\n                        \"access_url\": \"https://hdl.handle.net/0002\",\r\n\t\t\t\t\t\t\"license\": [\r\n\t\t\t\t\t\t\t{\r\n\t\t\t\t\t\t\t\t\"license_name\": \"Creative Commons Attribution (CC-BY)\",\r\n\t\t\t\t\t\t\t\t\"license_ref\": \"http://creativecommons.org/licenses/by/4.0/\",\r\n\t\t\t\t\t\t\t\t\"start_date\": \"2021-01-01\"\r\n\t\t\t\t\t\t\t}\r\n\t\t\t\t\t\t],\r\n\t\t\t\t\t\t\"host\": {\r\n\t\t\t\t\t\t\t\"title\": \"Zenodo\",\r\n\t\t\t\t\t\t\t\"url\": \"https://www.re3data.org/repository/r3d100010468\",\r\n\t\t\t\t\t\t\t\"host_id_type\": \"HTTP-RE3DATA\",\r\n\t\t\t\t\t\t\t\"description\": \"ZENODO builds and operates a simple and innovative service that enables researchers, scientists, EU projects and institutions to share and showcase multidisciplinary research results (data and publications) that are not part of the existing institutional or subject-based repositories of the research communities.\\nZENODO enables researchers, scientists, EU projects and institutions to:\\neasily share the long tail of small research results in a wide variety of formats including text, spreadsheets, audio, video, and images across all fields of science.\\ndisplay their research results and get credited by making the research results citable and integrate them into existing reporting lines to funding agencies like the European Commission.\\neasily access and reuse shared research results.\",\r\n\t\t\t\t\t\t\t\"supports_versioning\": \"unknown\",\r\n\t\t\t\t\t\t\t\"storage_type\": \"repository\",\r\n\t\t\t\t\t\t\t\"pid_system\": [\r\n\t\t\t\t\t\t\t\t\"doi\"\r\n\t\t\t\t\t\t\t]\r\n\t\t\t\t\t\t},\r\n\t\t\t\t\t\t\"available_until\": \"2031-08-01\"\r\n\t\t\t\t\t}\r\n\t\t\t\t]\r\n\t\t\t}\r\n\t\t]\r\n\t}\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{app_host}}/madmp",
-							"host": [
-								"{{app_host}}"
-							],
-							"path": [
-								"madmp"
-							]
-						}
-					},
-					"response": []
-				}
-			]
-		},
-		{
-			"name": "NFTC2",
-			"item": [
-				{
-					"name": "1. Send a new minimal maDMP",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n\t\"dmp\": {\r\n\t\t\"created\": \"2022-04-26T01:10:00.000\",\r\n\t\t\"dmp_id\": {\r\n\t\t\t\"identifier\": \"https://doi.org/10.0125/T1\"\r\n\t\t},\r\n\t\t\"modified\": \"2022-04-26T01:10:00.000\"\r\n\t}\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{app_host}}/madmp",
-							"host": [
-								"{{app_host}}"
-							],
-							"path": [
-								"madmp"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "2. Update maDMP with minimal body content",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n\t\"dmp\": {\r\n\t\t\"created\": \"2022-04-26T01:10:00.000\",\r\n\t\t\"dmp_id\": {\r\n\t\t\t\"identifier\": \"https://doi.org/10.0125/T1\"\r\n\t\t},\r\n\t\t\"modified\": \"2022-04-26T01:10:01.000\",\r\n        \"title\": \"DMP for our new project\"\r\n\t}\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{app_host}}/madmp",
-							"host": [
-								"{{app_host}}"
-							],
-							"path": [
-								"madmp"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "3. Send a new minimal maDMP.",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n\t\"dmp\": {\r\n\t\t\"created\": \"2022-04-26T01:20:00.000\",\r\n\t\t\"dmp_id\": {\r\n\t\t\t\"identifier\": \"https://doi.org/10.0125/T2\"\r\n\t\t},\r\n\t\t\"modified\": \"2022-04-26T01:20:00.000\"\r\n\t}\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{app_host}}/madmp",
-							"host": [
-								"{{app_host}}"
-							],
-							"path": [
-								"madmp"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "4. Update maDMP with small body content",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n\t\"dmp\": {\r\n\t\t\"created\": \"2022-04-26T01:20:00.000\",\r\n\t\t\"dmp_id\": {\r\n\t\t\t\"identifier\": \"https://doi.org/10.0125/T2\"\r\n\t\t},\r\n\t\t\"modified\": \"2022-04-26T01:20:01.000\",\r\n        \"title\": \"DMP for our new project\",\r\n\t\t\"description\": \"This DMP is for our new project.\",\r\n\t\t\"language\": \"eng\",\r\n\t\t\"contact\": {\r\n\t\t\t\"name\": \"John Smith\",\r\n\t\t\t\"mbox\": \"john.smith@tuwien.ac.at\",\r\n\t\t\t\"contact_id\": {\r\n\t\t\t\t\"identifier\": \"https://www.tiss.tuwien.ac.at/person/2351952424\",\r\n\t\t\t\t\"type\": \"other\"\r\n\t\t\t}\r\n\t\t},\r\n\t\t\"project\": [\r\n\t\t\t{\r\n\t\t\t\t\"title\": \"openEO - a common, open source interface between Earth Observation data infrastructures and front-end applications\",\r\n\t\t\t\t\"project_id\": \"https://tiss.tuwien.ac.at/api/pdb/rest/project/v3/1428966\",\r\n\t\t\t\t\"project_id_type\": \"HTTP-PDB\",\r\n\t\t\t\t\"start\": \"2017-10-01\",\r\n\t\t\t\t\"end\": \"2020-09-30\",\r\n\t\t\t\t\"funding\": [\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\t\"funder_name\": \"European Commission - Framework Programme\",\r\n\t\t\t\t\t\t\"funder_id\": {\r\n\t\t\t\t\t\t\t\"identifier\": \"\",\r\n\t\t\t\t\t\t\t\"type\": \"other\"\r\n\t\t\t\t\t\t},\r\n\t\t\t\t\t\t\"grant_id\": {\r\n\t\t\t\t\t\t\t\"identifier\": \"EO-2-2017\",\r\n\t\t\t\t\t\t\t\"type\": \"other\"\r\n\t\t\t\t\t\t}\r\n\t\t\t\t\t}\r\n\t\t\t\t]\r\n\t\t\t}\r\n\t\t]\r\n\t}\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{app_host}}/madmp",
-							"host": [
-								"{{app_host}}"
-							],
-							"path": [
-								"madmp"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "5. Send a new minimal maDMP",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n\t\"dmp\": {\r\n\t\t\"created\": \"2022-04-26T01:30:00.000\",\r\n\t\t\"dmp_id\": {\r\n\t\t\t\"identifier\": \"https://doi.org/10.0125/T3\"\r\n\t\t},\r\n\t\t\"modified\": \"2022-04-26T01:30:00.000\"\r\n\t}\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{app_host}}/madmp",
-							"host": [
-								"{{app_host}}"
-							],
-							"path": [
-								"madmp"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "6. Update maDMP with medium body content",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n\t\"dmp\": {\r\n\t\t\"created\": \"2022-04-26T01:30:00.000\",\r\n\t\t\"dmp_id\": {\r\n\t\t\t\"identifier\": \"https://doi.org/10.0125/T3\"\r\n\t\t},\r\n\t\t\"modified\": \"2022-04-26T01:30:01.000\",\r\n        \"title\": \"DMP for our new project\",\r\n\t\t\"description\": \"This DMP is for our new project.\",\r\n\t\t\"language\": \"eng\",\r\n\t\t\"contact\": {\r\n\t\t\t\"name\": \"John Smith\",\r\n\t\t\t\"mbox\": \"john.smith@tuwien.ac.at\",\r\n\t\t\t\"contact_id\": {\r\n\t\t\t\t\"identifier\": \"https://www.tiss.tuwien.ac.at/person/2351952424\",\r\n\t\t\t\t\"type\": \"other\"\r\n\t\t\t}\r\n\t\t},\r\n\t\t\"contributor\": [\r\n\t\t\t{\r\n\t\t\t\t\"name\": \"Leo Messi\",\r\n\t\t\t\t\"mbox\": \"leo.messi@barcelona.com\",\r\n\t\t\t\t\"contributor_id\": {\r\n\t\t\t\t\t\"identifier\": \"https://orcid.org/0000-0002-0000-0000\",\r\n\t\t\t\t\t\"type\": \"orcid\"\r\n\t\t\t\t},\r\n\t\t\t\t\"role\": [\r\n\t\t\t\t\t\"ProjectLeader\"\r\n\t\t\t\t]\r\n\t\t\t},\r\n\t\t\t{\r\n\t\t\t\t\"name\": \"Robert Lewandowski\",\r\n\t\t\t\t\"mbox\": \"robert@bayern.de\",\r\n\t\t\t\t\"contributor_id\": {\r\n\t\t\t\t\t\"identifier\": \"https://orcid.org/0000-0002-4929-7875\",\r\n\t\t\t\t\t\"type\": \"orcid\"\r\n\t\t\t\t},\r\n\t\t\t\t\"role\": [\r\n\t\t\t\t\t\"ContactPerson\",\r\n\t\t\t\t\t\"DataManager\"\r\n\t\t\t\t]\r\n\t\t\t},\r\n\t\t\t{\r\n\t\t\t\t\"name\": \"Cristiano Ronaldo\",\r\n\t\t\t\t\"mbox\": \"CR@juve.it\",\r\n\t\t\t\t\"contributor_id\": {\r\n\t\t\t\t\t\"identifier\": \"https://www.tiss.tuwien.ac.at/person/305962565\",\r\n\t\t\t\t\t\"type\": \"other\"\r\n\t\t\t\t},\r\n\t\t\t\t\"role\": [\r\n\t\t\t\t\t\"DataCurator\"\r\n\t\t\t\t]\r\n\t\t\t}\r\n\t\t],\r\n\t\t\"ethical_issues_exist\": \"yes\",\r\n\t\t\"ethical_issues_report\": \"https://docs.google.com/document/d/xyz\",\r\n\t\t\"ethical_issues_description\": \"Ethical issues are handled by ...\",\r\n\t\t\"project\": [\r\n\t\t\t{\r\n\t\t\t\t\"title\": \"openEO - a common, open source interface between Earth Observation data infrastructures and front-end applications\",\r\n\t\t\t\t\"project_id\": \"https://tiss.tuwien.ac.at/api/pdb/rest/project/v3/1428966\",\r\n\t\t\t\t\"project_id_type\": \"HTTP-PDB\",\r\n\t\t\t\t\"start\": \"2017-10-01\",\r\n\t\t\t\t\"end\": \"2020-09-30\",\r\n\t\t\t\t\"description\": \"<p>The capabilities of the latest generation of Earth observation satellites to collect large volumes of diverse and thematically rich data are unprecedented. For exploiting these valuable data sets, many research and industry groups have started to shift their processing into the cloud. Although the functionalities of existing cloud computing solutions largely overlap, there are all custom-made and tailored to the specific data infrastructures. This lack of standards not only makes it hard for end users and application developers to develop generic front-ends, but also to compare the cloud offerings by running the same analysis against different cloud back-ends. To solve this, a common interface that allows end- and intermediate users to query cloud-based back offices and carry out computations on them in a simple way is needed. The openEO project will design such an interface, implement it as an open source community project, bind it to generic analytics front-ends and evaluate it against a set of relevant Earth observation cloud back offices. The openEO interface will consist of three layers of Application Programming Interfaces, namely a core API for finding, accessing, and processing large datasets, a driver APIs to connect to back offices operated by European and worldwide industry, and client APIs for analysing these datasets using R, Python and JavaScript. To demonstrate the capability of the openEO interface, four use cases based chiefly on Sentinel-1 and Sentinel-2 time series will be implemented. openEO will simplify the use of cloud-based processing engines, allow switching between cloud-based back office providers and comparing them, and enable reproducible, open Earth observation science. Thereby, openEO reduces the entry barriers for the adaptation of cloud computing technologies by a broad user community and paves the way for the federation of infrastructure capabilities.</p><p> </p>\",\r\n\t\t\t\t\"funding\": [\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\t\"funder_name\": \"European Commission - Framework Programme\",\r\n\t\t\t\t\t\t\"funder_id\": {\r\n\t\t\t\t\t\t\t\"identifier\": \"\",\r\n\t\t\t\t\t\t\t\"type\": \"other\"\r\n\t\t\t\t\t\t},\r\n\t\t\t\t\t\t\"grant_id\": {\r\n\t\t\t\t\t\t\t\"identifier\": \"EO-2-2017\",\r\n\t\t\t\t\t\t\t\"type\": \"other\"\r\n\t\t\t\t\t\t}\r\n\t\t\t\t\t}\r\n\t\t\t\t]\r\n\t\t\t}\r\n\t\t]\r\n\t}\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{app_host}}/madmp",
-							"host": [
-								"{{app_host}}"
-							],
-							"path": [
-								"madmp"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "7. Send a new minimal maDMP",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n\t\"dmp\": {\r\n\t\t\"created\": \"2022-04-26T01:40:00.000\",\r\n\t\t\"dmp_id\": {\r\n\t\t\t\"identifier\": \"https://doi.org/10.0125/T4\"\r\n\t\t},\r\n\t\t\"modified\": \"2022-04-26T01:40:00.000\"\r\n\t}\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{app_host}}/madmp",
-							"host": [
-								"{{app_host}}"
-							],
-							"path": [
-								"madmp"
-							]
-						}
-					},
-					"response": []
-				},
-				{
-					"name": "8. Update maDMP with large body content",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"pm.test(\"Status code is 200\", function () {\r",
-									"    pm.response.to.have.status(200);\r",
-									"});"
-								],
-								"type": "text/javascript"
-							}
-						}
-					],
-					"request": {
-						"method": "PUT",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n\t\"dmp\": {\r\n\t\t\"created\": \"2022-04-26T01:40:00.000\",\r\n\t\t\"dmp_id\": {\r\n\t\t\t\"identifier\": \"https://doi.org/10.0125/T4\"\r\n\t\t},\r\n\t\t\"modified\": \"2022-04-26T01:40:01.000\",\r\n        \"title\": \"DMP for our new project\",\r\n\t\t\"description\": \"This DMP is for our new project.\",\r\n\t\t\"language\": \"eng\",\r\n\t\t\"contact\": {\r\n\t\t\t\"name\": \"John Smith\",\r\n\t\t\t\"mbox\": \"john.smith@tuwien.ac.at\",\r\n\t\t\t\"contact_id\": {\r\n\t\t\t\t\"identifier\": \"https://www.tiss.tuwien.ac.at/person/2351952424\",\r\n\t\t\t\t\"type\": \"other\"\r\n\t\t\t}\r\n\t\t},\r\n\t\t\"contributor\": [\r\n\t\t\t{\r\n\t\t\t\t\"name\": \"Leo Messi\",\r\n\t\t\t\t\"mbox\": \"leo.messi@barcelona.com\",\r\n\t\t\t\t\"contributor_id\": {\r\n\t\t\t\t\t\"identifier\": \"https://orcid.org/0000-0002-0000-0000\",\r\n\t\t\t\t\t\"type\": \"orcid\"\r\n\t\t\t\t},\r\n\t\t\t\t\"role\": [\r\n\t\t\t\t\t\"ProjectLeader\"\r\n\t\t\t\t]\r\n\t\t\t},\r\n\t\t\t{\r\n\t\t\t\t\"name\": \"Robert Lewandowski\",\r\n\t\t\t\t\"mbox\": \"robert@bayern.de\",\r\n\t\t\t\t\"contributor_id\": {\r\n\t\t\t\t\t\"identifier\": \"https://orcid.org/0000-0002-4929-7875\",\r\n\t\t\t\t\t\"type\": \"orcid\"\r\n\t\t\t\t},\r\n\t\t\t\t\"role\": [\r\n\t\t\t\t\t\"ContactPerson\",\r\n\t\t\t\t\t\"DataManager\"\r\n\t\t\t\t]\r\n\t\t\t},\r\n\t\t\t{\r\n\t\t\t\t\"name\": \"Cristiano Ronaldo\",\r\n\t\t\t\t\"mbox\": \"CR@juve.it\",\r\n\t\t\t\t\"contributor_id\": {\r\n\t\t\t\t\t\"identifier\": \"https://www.tiss.tuwien.ac.at/person/305962565\",\r\n\t\t\t\t\t\"type\": \"other\"\r\n\t\t\t\t},\r\n\t\t\t\t\"role\": [\r\n\t\t\t\t\t\"DataCurator\"\r\n\t\t\t\t]\r\n\t\t\t}\r\n\t\t],\r\n\t\t\"ethical_issues_exist\": \"yes\",\r\n\t\t\"ethical_issues_report\": \"https://docs.google.com/document/d/xyz\",\r\n\t\t\"ethical_issues_description\": \"Ethical issues are handled by ...\",\r\n\t\t\"project\": [\r\n\t\t\t{\r\n\t\t\t\t\"title\": \"openEO - a common, open source interface between Earth Observation data infrastructures and front-end applications\",\r\n\t\t\t\t\"project_id\": \"https://tiss.tuwien.ac.at/api/pdb/rest/project/v3/1428966\",\r\n\t\t\t\t\"project_id_type\": \"HTTP-PDB\",\r\n\t\t\t\t\"start\": \"2017-10-01\",\r\n\t\t\t\t\"end\": \"2020-09-30\",\r\n\t\t\t\t\"description\": \"<p>The capabilities of the latest generation of Earth observation satellites to collect large volumes of diverse and thematically rich data are unprecedented. For exploiting these valuable data sets, many research and industry groups have started to shift their processing into the cloud. Although the functionalities of existing cloud computing solutions largely overlap, there are all custom-made and tailored to the specific data infrastructures. This lack of standards not only makes it hard for end users and application developers to develop generic front-ends, but also to compare the cloud offerings by running the same analysis against different cloud back-ends. To solve this, a common interface that allows end- and intermediate users to query cloud-based back offices and carry out computations on them in a simple way is needed. The openEO project will design such an interface, implement it as an open source community project, bind it to generic analytics front-ends and evaluate it against a set of relevant Earth observation cloud back offices. The openEO interface will consist of three layers of Application Programming Interfaces, namely a core API for finding, accessing, and processing large datasets, a driver APIs to connect to back offices operated by European and worldwide industry, and client APIs for analysing these datasets using R, Python and JavaScript. To demonstrate the capability of the openEO interface, four use cases based chiefly on Sentinel-1 and Sentinel-2 time series will be implemented. openEO will simplify the use of cloud-based processing engines, allow switching between cloud-based back office providers and comparing them, and enable reproducible, open Earth observation science. Thereby, openEO reduces the entry barriers for the adaptation of cloud computing technologies by a broad user community and paves the way for the federation of infrastructure capabilities.</p><p> </p>\",\r\n\t\t\t\t\"funding\": [\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\t\"funder_name\": \"European Commission - Framework Programme\",\r\n\t\t\t\t\t\t\"funder_id\": {\r\n\t\t\t\t\t\t\t\"identifier\": \"\",\r\n\t\t\t\t\t\t\t\"type\": \"other\"\r\n\t\t\t\t\t\t},\r\n\t\t\t\t\t\t\"grant_id\": {\r\n\t\t\t\t\t\t\t\"identifier\": \"EO-2-2017\",\r\n\t\t\t\t\t\t\t\"type\": \"other\"\r\n\t\t\t\t\t\t}\r\n\t\t\t\t\t}\r\n\t\t\t\t]\r\n\t\t\t}\r\n\t\t],\r\n\t\t\"dataset\": [\r\n\t\t\t{\r\n\t\t\t\t\"dataset_id\": {\r\n\t\t\t\t\t\"identifier\": \"https://hdl.handle.net/0000/00.00000\",\r\n\t\t\t\t\t\"type\": \"handle\"\r\n\t\t\t\t},\r\n\t\t\t\t\"title\": \"Client application\",\r\n\t\t\t\t\"personal_data\": \"no\",\r\n\t\t\t\t\"sensitive_data\": \"no\",\r\n\t\t\t\t\"type\": \"Source code\",\r\n\t\t\t\t\"description\": \"Some test scripts\",\r\n\t\t\t\t\"distribution\": [\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\t\"title\": \"Planned distribution\",\r\n\t\t\t\t\t\t\"format\": [],\r\n\t\t\t\t\t\t\"byte_size\": 1000000000,\r\n\t\t\t\t\t\t\"data_access\": \"open\",\r\n                        \"access_url\": \"https://hdl.handle.net/0000\",\r\n\t\t\t\t\t\t\"license\": [\r\n\t\t\t\t\t\t\t{\r\n\t\t\t\t\t\t\t\t\"license_name\": \"The MIT License (MIT)\",\r\n\t\t\t\t\t\t\t\t\"license_ref\": \"http://opensource.org/licenses/mit-license.php\",\r\n\t\t\t\t\t\t\t\t\"start_date\": \"2020-09-30\"\r\n\t\t\t\t\t\t\t}\r\n\t\t\t\t\t\t],\r\n\t\t\t\t\t\t\"host\": {\r\n\t\t\t\t\t\t\t\"title\": \"GitHub\",\r\n\t\t\t\t\t\t\t\"url\": \"https://www.re3data.org/repository/r3d100010375\",\r\n\t\t\t\t\t\t\t\"host_id_type\": \"HTTP-RE3DATA\",\r\n\t\t\t\t\t\t\t\"description\": \"GitHub is the best place to share code with friends, co-workers, classmates, and complete strangers. Over three million people use GitHub to build amazing things together. With the collaborative features of GitHub.com, our desktop and mobile apps, and GitHub Enterprise, it has never been easier for individuals and teams to write better code, faster. Originally founded by Tom Preston-Werner, Chris Wanstrath, and PJ Hyett to simplify sharing code, GitHub has grown into the largest code host in the world.\",\r\n\t\t\t\t\t\t\t\"supports_versioning\": \"yes\",\r\n\t\t\t\t\t\t\t\"storage_type\": \"repository\",\r\n\t\t\t\t\t\t\t\"pid_system\": [\r\n\t\t\t\t\t\t\t\t\"other\"\r\n\t\t\t\t\t\t\t]\r\n\t\t\t\t\t\t},\r\n\t\t\t\t\t\t\"available_until\": \"2030-09-30\"\r\n\t\t\t\t\t}\r\n\t\t\t\t]\r\n\t\t\t},\r\n\t\t\t{\r\n\t\t\t\t\"dataset_id\": {\r\n\t\t\t\t\t\"identifier\": \"https://hdl.handle.net/0000/00.00001\",\r\n\t\t\t\t\t\"type\": \"handle\"\r\n\t\t\t\t},\r\n\t\t\t\t\"title\": \"Image collection\",\r\n\t\t\t\t\"personal_data\": \"no\",\r\n\t\t\t\t\"sensitive_data\": \"yes\",\r\n\t\t\t\t\"type\": \"Images\",\r\n\t\t\t\t\"description\": \"Images of test object X\",\r\n\t\t\t\t\"distribution\": [\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\t\"title\": \"Planned distribution\",\r\n\t\t\t\t\t\t\"format\": [],\r\n                        \"access_url\": \"https://hdl.handle.net/0001\",\r\n\t\t\t\t\t\t\"byte_size\": 50000000000,\r\n\t\t\t\t\t\t\"data_access\": \"closed\"\r\n\t\t\t\t\t}\r\n\t\t\t\t]\r\n\t\t\t},\r\n\t\t\t{\r\n\t\t\t\t\"dataset_id\": {\r\n\t\t\t\t\t\"identifier\": \"https://hdl.handle.net/0000/00.00002\",\r\n\t\t\t\t\t\"type\": \"handle\"\r\n\t\t\t\t},\r\n\t\t\t\t\"title\": \"Interviews\",\r\n\t\t\t\t\"personal_data\": \"yes\",\r\n\t\t\t\t\"sensitive_data\": \"no\",\r\n\t\t\t\t\"type\": \"other\",\r\n\t\t\t\t\"description\": \"Audio recordings with test persons\",\r\n\t\t\t\t\"distribution\": [\r\n\t\t\t\t\t{\r\n\t\t\t\t\t\t\"title\": \"Planned distribution\",\r\n\t\t\t\t\t\t\"format\": [\r\n\t\t\t\t\t\t\t\"audio/mpeg\"\r\n\t\t\t\t\t\t],\r\n\t\t\t\t\t\t\"byte_size\": 439705600,\r\n\t\t\t\t\t\t\"data_access\": \"open\",\r\n                        \"access_url\": \"https://hdl.handle.net/0002\",\r\n\t\t\t\t\t\t\"license\": [\r\n\t\t\t\t\t\t\t{\r\n\t\t\t\t\t\t\t\t\"license_name\": \"Creative Commons Attribution (CC-BY)\",\r\n\t\t\t\t\t\t\t\t\"license_ref\": \"http://creativecommons.org/licenses/by/4.0/\",\r\n\t\t\t\t\t\t\t\t\"start_date\": \"2021-01-01\"\r\n\t\t\t\t\t\t\t}\r\n\t\t\t\t\t\t],\r\n\t\t\t\t\t\t\"host\": {\r\n\t\t\t\t\t\t\t\"title\": \"Zenodo\",\r\n\t\t\t\t\t\t\t\"url\": \"https://www.re3data.org/repository/r3d100010468\",\r\n\t\t\t\t\t\t\t\"host_id_type\": \"HTTP-RE3DATA\",\r\n\t\t\t\t\t\t\t\"description\": \"ZENODO builds and operates a simple and innovative service that enables researchers, scientists, EU projects and institutions to share and showcase multidisciplinary research results (data and publications) that are not part of the existing institutional or subject-based repositories of the research communities.\\nZENODO enables researchers, scientists, EU projects and institutions to:\\neasily share the long tail of small research results in a wide variety of formats including text, spreadsheets, audio, video, and images across all fields of science.\\ndisplay their research results and get credited by making the research results citable and integrate them into existing reporting lines to funding agencies like the European Commission.\\neasily access and reuse shared research results.\",\r\n\t\t\t\t\t\t\t\"supports_versioning\": \"unknown\",\r\n\t\t\t\t\t\t\t\"storage_type\": \"repository\",\r\n\t\t\t\t\t\t\t\"pid_system\": [\r\n\t\t\t\t\t\t\t\t\"doi\"\r\n\t\t\t\t\t\t\t]\r\n\t\t\t\t\t\t},\r\n\t\t\t\t\t\t\"available_until\": \"2031-08-01\"\r\n\t\t\t\t\t}\r\n\t\t\t\t]\r\n\t\t\t}\r\n\t\t]\r\n\t}\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{app_host}}/madmp",
-							"host": [
-								"{{app_host}}"
-							],
-							"path": [
-								"madmp"
 							]
 						}
 					},
