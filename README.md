@@ -14,7 +14,7 @@ The software was developed by Filip Zoubek (https://orcid.org/0000-0003-1269-266
 
 ## General info
 
-Integrated The Machine-actionable Data Management planning application (InDMP) serves as a proof-of-concept for the thesis Framework for integration of reasearch data management services using machine-actionable data management plans. The application allows to integrate services using maDMPs to exchange information through the REST API, manage modification of each service as well as to track the evolution of DMPs and provenance of information. The repository contains the mentioned application for integration as well as the json file in which the test cases are stored ready for uploading to the Postman application. You can see the structure of the repository in the following listing:
+The integrated machine-actionable Data Management plan (InDMP) serves as a proof-of-concept for the thesis Framework for integration of Reasearch Data Management (RDM) services using machine-actionable Data Management Plan (maDMPs). This service allows to integrate RDM services using maDMPs to exchange information through the REST API, manage property modification of each service as well as to track the evolution of DMPs and provenance of information. The repository contains the mentioned service as well as the JSON file in which the test cases are stored ready for uploading to the Postman application. You can see the structure of the repository in the following listing:
 
 ```
 indmp-app
@@ -25,14 +25,15 @@ indmp-app
 │   test-cases.json
 ```
 
-There is also API documentation of the InDMP application available on the [SwaggerHub](https://app.swaggerhub.com/apis/e11938258/InDMP/1.0.0#/).
+There is also API documentation of the InDMP service available on the [SwaggerHub](https://app.swaggerhub.com/apis/e11938258/InDMP/1.0.0#/).
 
 ## Technologies
-The application was developed using Spring Boot in Java programming language version 11.0.13. The authorization between InDMP and Postman (client) is done using the OAuth2 protocol, where [Keycloak](https://www.keycloak.org/) 6.0.1 was used as the authorization server. The InDMP app also uses the PostgreSQL 10.19 tool as data storage. Tests were performed operating system on Ubuntu 18.04.6.
+
+The service was developed using Spring Boot in Java programming language version 11.0.13. The authorization between InDMP and Postman (client) is done using the OAuth2 protocol, where [Keycloak](https://www.keycloak.org/) 6.0.1 was used as the authorization server. The InDMP service also uses the PostgreSQL 10.19 tool as data storage. Tests were performed operating system on Ubuntu 18.04.6.
 
 ## Setup
 
-The InDMP application has configuration file in /src/main/resources/application.properties. By default, all applications are configured that can run on the same machine with ports:
+The InDMP service has configuration file in /src/main/resources/application.properties. By default, all applications are configured that can run on the same machine with ports:
 
 | Address| Service name |
 | - | - |
@@ -42,7 +43,7 @@ The InDMP application has configuration file in /src/main/resources/application.
 
 ### Keycloak
 
-Every request has to be authorized before communicating with the application using the OAuth2 protocol. This is done using the [Keycloak](https://www.keycloak.org/) application, which needs to be set up properly after installation.
+Every request has to be authorized before communicating with the service using the OAuth2 protocol. This is done using the [Keycloak](https://www.keycloak.org/) application, which needs to be set up properly after installation.
 
 NOTE: The default port of the application is 8080, it is necessary to change it to port 8090 before starting the application, for example using the input argument:
 
@@ -50,9 +51,9 @@ NOTE: The default port of the application is 8080, it is necessary to change it 
 -Djboss.socket.binding.port-offset=10
 ```
 
-You need to perform the following actions:
+You need to perform the following steps:
 
-1. Login to the Keycloak app, URL: http://127.0.0.1:8090/auth/admin/master/console/
+1. Login to the Keycloak application, URL: http://127.0.0.1:8090/auth/admin/master/console/
 2. Create a new realm with name "Services"
 3. Select the realm "Services"
 4. Create a new client scope with name "update"
@@ -69,11 +70,11 @@ You need to perform the following actions:
 
 That's it! 
 
-When creating users, each of them will get a client id, which the InDMP application will use to recognize from which service the request was sent.
+When creating users, each of them will get a client id, which the InDMP service will use to identify the service.
 
 ### PostgreSQL
 
-The InDMP application uses the PostgreSQL 10 database system. After installation and logging into the system, you have to create a new user with database and grant neccessary provileges. Therefore, you need to perform the following actions:
+The InDMP service uses the PostgreSQL 10 database system. After installation and logging into this system, you have to create a new user with database and grant neccessary privileges. Therefore, you need to perform the following actions:
 
 1. Create a new user:
 
@@ -103,11 +104,11 @@ That's it! By default, InDMP uses the following configuration:
 | Username | indmp |
 | Password | indmp123 |
 
-NOTE: The InDMP application deletes the content of the tables each time it starts by default. If you want to change it, you need to modify the parameter initialization-mode in the application configuration from always to never.
+NOTE: The InDMP service deletes the content of the tables each time it starts by default. If you want to change it, you need to modify the parameter spring.jpa.hibernate.ddl-auto in the service configuration from create-drop to update.
 
 ## How to run
 
-If PostgreSQL and Keycloak are running and are properly configured, you firstly build the InDMP application using the following command in terminal:
+If PostgreSQL and Keycloak are running and are properly configured, you first build the InDMP service using the following command in terminal:
 
 ```console
 > mvn clean package
@@ -121,103 +122,71 @@ and then run it:
 
 ## Limitations
 
-The current version is meant to be used as a proof-of-concept. A service can be registered and its rights restricted to particular maDMP classes. It can also use maDMP to create or update the DMP, modify the identification, and remove the class instance. It can also acquire the most recent version of maDMP and a list of identifiers' histories.
-
-However, the solution has its disadvantages. The implementation cannot access prior maDMP versions and synchronizes data across all registered services, it does not limit services to a single maDMP. Simultaneously, when altering identifiers or removing instances, it ignores the class type and finds solely based on the location. Although unusual, two identical instances of distinct classes may share the same location within the specific maDMP. Furthermore, privileges can be restricted only to classes rather than specific properties, with the exception of the modified property, which must update all services. One of the solution's final flaws is that when altering an identifier or removing an instance, the service only checks the modification scope for the class that is being removed, not for the nested classes.
+InDMP in its current version cannot retrieve older versions of maDMP and also has insufficient management of RDM services.
 
 ## Test cases
 
-To verify the functionality of InDMP, a set of functional and non-functional test cases were created to model common situations in DMP development during the research. If you have Postman installed, import the test cases from the repository into your environment via the File menu. You will need to obtain a token from the authorization server before running the test cases. It can be get at the collection level, where the necessary information is preloaded. There are also general variables that can be changed at will as needed. In test case 6, one request has a different authorization due to the modification scope test. Therefore it is necessary to generate a new token, which can be obtained at the level of this request. 
+To verify the functionality of the InDMP service, a set of functional and non-functional test cases were created to model common situations in DMP development during the research. 
 
-Each new run of the application you must send two requests in the Init folder that register services - dmp tool and data repository. However, you need firstly to change the values of accessRights, to the correct client id from the application Keycloak, and endpointURL which should point to the endpoint where InDMP will send the new maDMP information after each modification. For testing purposes, this can be done using the [Webhook.site](https://webhook.site/) application, which will generate an API endpoint to receive requests. You just need one for both services.
+If you have Postman installed, import the test cases from the repository into your environment via the File menu. You will need to obtain a token from the authorization server before running the test cases. It can be get at the collection level, where the necessary information is preloaded. There are also general variables that can be changed at will as needed. Test case 6 contains one step/request (the second one) which has a different authorization due to the modification scope test. Therefore it is necessary to generate a new token, which can be obtained at the level of this request.
+
+Each new run of the service you have to send at least two requests in the INIT folder that register services - dmp tool and data repository - and two requests that set them property rights. However, first you need to change the values of accessRights, to the correct client id from the application Keycloak, and endpointURL which should point to the endpoint where InDMP will send the new maDMP information after each modification. For testing purposes, this can be done using the [Webhook.site](https://webhook.site/) application, which will generate an API endpoint to receive requests. You just need one for both services. Test cases can also run all at once within the entire collection.
 
 ### Modification scope of services
 
-In order to understand all the tests, it is necessary to mention the modification scope of each testing service, you can see them in the following table:
-
-| maDMP class | DMP app | Repository app |
-| - | - | - |
-| contact | Yes | Yes |
-| contributor | Yes | Yes |
-| cost | Yes | No |
-| dataset | Yes | Yes |
-| distribution | Yes | Yes |
-| dmp | Yes | No |
-| funding | Yes | No |
-| grant id | Yes | No |
-| host | Yes | Yes |
-| license | Yes | Yes |
-| metadata | Yes | Yes |
-| project | Yes | No |
-| security and privacy | Yes | Yes |
-| technical resource | Yes | No |
+Rights to individual maDMP properties are set for RDM services. How the RDM service rights are set for testing purposes can be found in the INIT folder in the request bodies for setting rights.
 
 NOTE: If the DMP is new, all values from the received data are stored.
 
-### Functional and non-functional test cases
+### Functional test cases
 
-In the following two tables you can see the individual functional and non-functional test cases with steps and expected results. Each test case has its own folder in Postman, which consists of several consecutive requests. Requests also contain simple tests to verify the correctness of the response.
+In the following table you can see the individual functional test cases with steps and expected results. Each test case has its own folder in Postman, which consists of several consecutive requests. Requests also contain simple tests to verify the correctness of the response.
 
 | Test case | Description | Steps | Expected code | Expected body |
 | - | - | - | - | - |
-| FTC1 | Testing the operation "maDMP update" | Send minimal maDMP with incomplete body | 400 |  |
-|  |  | Send a new minimal maDMP with wrong timing | 404 |  |
-|  |  | Send a new minimal maDMP | 200 |  |
-|  |  | Send a new minimal maDMP again with same ID | 409 |  |
-|  |  | Send the minimal maDMP with invalid modified property | 409 |  |
-|  |  | Send long maDMP with same identifier | 200 |  |
-| FTC2 | Testing the operation "get maDMP" | Send a new minimal maDMP | 200 |  |
-|  |  | Get maDMP with incomplete parameters | 400 |  |
-|  |  | Get maDMP with wrong parameters | 400 |  |
-|  |  | Get maDMP with wrong identifiers | 404 |  |
-|  |  | Get current version of maDMP | 200 | n. 1 |
-| FTC3 | Testing the operation "update identifier" | Send a new maDMP with dataset | 200 |  |
-|  |  | Update identifier with incomplete parameters | 400 |  |
-|  |  | Update identifier with incomplete body | 400 |  |
-|  |  | Update identifier with wrong specialization | 400 |  |
-|  |  | Update identifier of dataset | 200 |  |
-|  |  | Get current version of maDMP and verify the modification | 200 | n. 2 |
-| FTC4 | Testing the operation "delete instance" | Send a new maDMP with dataset | 200 |  |
-|  |  | Delete instance with incomplete parameters | 400 |  |
-|  |  | Delete instance without body | 400 |  |
-|  |  | Delete instance with wrong identifier | 404 |  |
-|  |  | Delete instance with wrong class identifier | 404 |  |
-|  |  | Delete instance | 200 |  |
-|  |  | Get current version of maDMP and verify the deletions | 200 | n. 3 |
-| FTC5 | Testing the operation "get identifier history" | Send a new maDMP with dataset | 200 |  |
-|  |  | Update identifier of dataset | 200 |  |
-|  |  | Get identifier history with wrong parameters | 400 |  |
-|  |  | Get identifier history | 200 | n. 4 |
-| FTC6 | Testing the modification scope | Send a new minimal maDMP | 200 |  |
-|  |  | Send a new maDMP out of modification scope | 200 |  |
-|  |  | Get current version of maDMP and verify the modification scope | 200 | n. 5 |
-| FTC7 | Simulation of production env. 1 | Send a new minimal maDMP | 200 |  |
-|  |  | Update maDMP with long body | 200 |  |
-|  |  | Delete dataset | 200 |  |
-|  |  | Update maDMP with the deleted dataset | 200 |  |
-|  |  | Update maDMP with the old modified property | 409 |  |
-| FTC8 | Simulation of production env. 2 | Send a new long maDMP with 3 datasets | 200 |  |
-|  |  | Delete dataset 0 | 200 |  |
-|  |  | Delete dataset 1 | 200 |  |
-|  |  | Update identifier of dataset 2 to 0 | 200 |  |
-|  |  | Delete dataset 0 | 200 |  |
-|  |  | Delete project information | 200 |  |
-|  |  | Get current version of maDMP | 200 | n. 6 |
-
-| Test case | Description | Steps | Expected code |
-| - | - | - | - |
-| NFTC1 | Testing creation time | Send a new minimal maDMP | 200 |
-|  |  | Send a new small maDMP | 200 |
-|  |  | Send a new medium maDMP | 200 |
-|  |  | Send a new large maDMP | 200 |
-| NFTC2 | Testing update time | Send a new minimal maDMP | 200 |
-|  |  | Update maDMP with minimal body content | 200 |
-|  |  | Send a new minimal maDMP | 200 |
-|  |  | Update maDMP with small body content | 200 |
-|  |  | Send a new minimal maDMP | 200 |
-|  |  | Update maDMP with medium body content | 200 |
-|  |  | Send a new minimal maDMP | 200 |
-|  |  | Update maDMP with large body content | 200 |
+| FTC1 | Testing the operation to modify maDMP information | 1. Send a minimal maDMP with the incomplete body. | 400 |  |
+|  |  | 2. Send a new minimal maDMP with wrong timing. | 404 |  |
+|  |  | 3. Send a new minimal maDMP. | 200 |  |
+|  |  | 4. Send a new minimal maDMP again with the same identifier. | 409 |  |
+|  |  | 5. Send the minimal maDMP with the invalid modified property. | 409 |  |
+|  |  | 6. Send a long maDMP with the same identifier. | 200 |  |
+| FTC2 | Testing the operation to get the maDMP | 1. Send a new minimal maDMP. | 200 |  |
+|  |  | 2. Get the maDMP with incomplete parameters. | 400 |  |
+|  |  | 3. Get the maDMP with wrong parameters. | 400 |  |
+|  |  | 4. Get the maDMP with wrong identifiers. | 404 |  |
+|  |  | 5. Get the current version of the maDMP. | 200 | n. 1 |
+| FTC3 | Testing the operation to modify the maDMP object identifier | 1. Send a new maDMP with the dataset. | 200 |  |
+|  |  | 2. Update the identifier with incomplete parameters. | 400 |  |
+|  |  | 3. Update the identifier with the incomplete body. | 400 |  |
+|  |  | 4. Update the identifier with the wrong specialization. | 403 |  |
+|  |  | 5. Update the identifier of the dataset.| 200 |  |
+|  |  | 6. Get the current version of the maDMP and verify the modification. | 200 | n. 2 |
+| FTC4 | Testing the operation to remove the maDMP object | 1. Send a new maDMP with the dataset. | 200 |  |
+|  |  | 2. Delete the object with incomplete parameters. | 400 |  |
+|  |  | 3. Delete the object without the body. | 400 |  |
+|  |  | 4. Delete the object with the wrong identifier. | 404 |  |
+|  |  | 5. Delete the object with the wrong class identifier. | 400 |  |
+|  |  | 6. Delete the object. | 200 |  |
+|  |  | 7. Get the current version of the maDMP and verify the deletions. | 200 | n. 3 |
+| FTC5 | Testing the operation to get provenance information | 1. Send a new maDMP with dataset. | 200 |  |
+|  |  | 2. Update the identifier of the dataset. | 200 |  |
+|  |  | 3. Get identifier history with wrong parameters. | 400 |  |
+|  |  | 4. Get identifier history of the dataset.| 200 | n. 4 |
+| FTC6 | Testing the RDM service modification rights | 1. Send a new minimal maDMP. | 200 |  |
+|  |  | 2. Send a new maDMP out of the modification scope. | 200 |  |
+|  |  | 3. Get the current version of the maDMP and verify the modification scope. | 200 | n. 5 |
+| FTC7 | Simulation of production env. 1 | 1. Send a new minimal maDMP. | 200 |  |
+|  |  | 2. Update the maDMP with a long body. | 200 |  |
+|  |  | 3. Delete the dataset. | 200 |  |
+|  |  | 4. Update the maDMP with the deleted dataset. | 200 |  |
+|  |  | 5. Update the maDMP with the old modified property. | 409 |  |
+| FTC8 | Simulation of production env. 2 | 1. Send a new long maDMP with 3 datasets. | 200 |  |
+|  |  | 2. Delete the dataset 0. | 200 |  |
+|  |  | 3. Delete the dataset 1. | 200 |  |
+|  |  | 4. Update the identifier of the dataset 2 to 0. | 200 |  |
+|  |  | 5. Delete the dataset 0. | 200 |  |
+|  |  | 6. Delete project information. | 200 |  |
+|  |  | 7. Get the current version of the maDMP. | 200 | n. 6 |
 
 #### Expected bodies
 
@@ -250,39 +219,12 @@ In the following two tables you can see the individual functional and non-functi
         "cost": [],
         "dataset": [
             {
-                "description": "Some test scripts",
-                "personal_data": "no",
-                "sensitive_data": "no",
                 "title": "Client application",
-                "type": "Source code",
                 "dataset_id": {
                     "identifier": "https://hdl.handle.net/0000/00.1234",
                     "type": "handle"
                 },
-                "distribution": [
-                    {
-                        "access_url": "https://hdl.handle.net/0000",
-                        "available_until": "2030-09-30",
-                        "byte_size": 1000000000,
-                        "data_access": "open",
-                        "title": "Planned distribution",
-                        "host": {
-                            "description": "GitHub is the best place to share code with friends, co-workers, classmates, and complete strangers. Over three million people use GitHub to build amazing things together. With the collaborative features of GitHub.com, our desktop and mobile apps, and GitHub Enterprise, it has never been easier for individuals and teams to write better code, faster. Originally founded by Tom Preston-Werner, Chris Wanstrath, and PJ Hyett to simplify sharing code, GitHub has grown into the largest code host in the world.",
-                            "pid_system": [
-                                "other"
-                            ],
-                            "storage_type": "repository",
-                            "title": "GitHub",
-                            "url": "https://www.re3data.org/repository/r3d100010375"
-                        },
-                        "license": [
-                            {
-                                "license_ref": "http://opensource.org/licenses/mit-license.php",
-                                "start_date": "2020-09-30"
-                            }
-                        ]
-                    }
-                ],
+                "distribution": [],
                 "metadata": [],
                 "security_and_privacy": [],
                 "technical_resource": []
@@ -319,26 +261,16 @@ In the following two tables you can see the individual functional and non-functi
 ```json
 [
     {
-        "atLocation": "/https://doi.org/10.0002/11.1.123",
-        "specializationOf": "dmp:identifier",
-        "value": "https://doi.org/10.0002/11.1.123",
-        "wasGeneratedBy": {
-            "startedAtTime": "2022-04-14T14:55:40.000",
-            "wasAssociatedWith": {
-                "identifier": 1,
-                "title": "dmp_app_1"
-            }
-        }
-    },
-    {
         "atLocation": "/https://doi.org/10.0002/11.1.123/https://hdl.handle.net/0000/00.1234",
         "specializationOf": "dataset:identifier",
         "value": "https://hdl.handle.net/0000/00.00000",
         "wasGeneratedBy": {
             "startedAtTime": "2022-04-14T14:55:40.000",
             "endedAtTime": "2022-04-14T14:55:41.000",
-            "wasAssociatedWith": {
-                "identifier": 1,
+            "wasStartedBy": {
+                "title": "dmp_app_1"
+            },
+            "wasEndedBy": {
                 "title": "dmp_app_1"
             }
         }
@@ -349,20 +281,7 @@ In the following two tables you can see the individual functional and non-functi
         "value": "https://hdl.handle.net/0000/00.1234",
         "wasGeneratedBy": {
             "startedAtTime": "2022-04-14T14:55:41.000",
-            "wasAssociatedWith": {
-                "identifier": 1,
-                "title": "dmp_app_1"
-            }
-        }
-    },
-    {
-        "atLocation": "/https://doi.org/10.0002/11.1.123/https://hdl.handle.net/0000/00.1234/https://hdl.handle.net/0000",
-        "specializationOf": "distribution:access_url",
-        "value": "https://hdl.handle.net/0000",
-        "wasGeneratedBy": {
-            "startedAtTime": "2022-04-14T14:55:40.000",
-            "wasAssociatedWith": {
-                "identifier": 1,
+            "wasStartedBy": {
                 "title": "dmp_app_1"
             }
         }
