@@ -19,9 +19,11 @@ import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonView;
 
 import at.tuwien.indmp.util.ModelConstants;
 import at.tuwien.indmp.util.RDMServiceState;
+import at.tuwien.indmp.util.Views;
 
 /**
  * 
@@ -40,36 +42,42 @@ public class RDMService extends AbstractEntity {
     @NotNull
     @Size(min = ModelConstants.RDM_SERVICE_TITLE_MIN, max = ModelConstants.RDM_SERVICE_TITLE_MAX)
     @Pattern(regexp = ModelConstants.RDM_SERVICE_TITLE_REGEX)
+    @JsonProperty(access = JsonProperty.Access.READ_WRITE)
+    @JsonView(Views.Basic.class)
     private String title; // https://www.w3.org/TR/vocab-dcat-3/#Property:resource_title
 
     @Column(name = "access_rights", nullable = false, unique = true)
     @NotNull
     @Size(min = ModelConstants.RDM_SERVICE_ACCESS_RIGHTS_MIN, max = ModelConstants.RDM_SERVICE_ACCESS_RIGHTS_MAX)
     @Pattern(regexp = ModelConstants.RDM_SERVICE_ACCESS_RIGHTS_REGEX)
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @JsonProperty(access = JsonProperty.Access.READ_WRITE)
+    @JsonView(Views.Extended.class)
     private String accessRights; // https://www.w3.org/TR/vocab-dcat-3/#Property:resource_access_rights
 
-    @Column(name = "endpoint_url", nullable = false, unique = true)
+    @Column(name = "endpoint_url", nullable = false)
     @NotNull
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @JsonProperty(access = JsonProperty.Access.READ_WRITE)
+    @JsonView(Views.Extended.class)
     private URI endpointURL; // https://www.w3.org/TR/vocab-dcat-3/#Property:data_service_endpoint_url
 
     @Column(nullable = false)
     @NotNull
     @JsonProperty(access = JsonProperty.Access.READ_ONLY)
     @Enumerated(EnumType.STRING)
+    @JsonView(Views.Extended.class)
     private RDMServiceState state = RDMServiceState.UNSYNCHRONIZED; 
 
     @ElementCollection
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @JsonProperty(access = JsonProperty.Access.READ_ONLY)
+    @JsonView(Views.Extended.class)
     private List<String> propertyRights = new ArrayList<>(); // https://www.w3.org/TR/vocab-dcat-3/#Property:resource_rights
 
     @OneToMany(mappedBy = "wasStartedBy", fetch = FetchType.LAZY)
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @JsonIgnore
     private final List<Activity> startedRelation = new ArrayList<>(); // https://www.w3.org/TR/vocab-dcat-3/#Property:resource_relation
 
     @OneToMany(mappedBy = "wasEndedBy", fetch = FetchType.LAZY)
-    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    @JsonIgnore
     private final List<Activity> endedRelation = new ArrayList<>(); // https://www.w3.org/TR/vocab-dcat-3/#Property:resource_relation
 
     public RDMService() {
@@ -107,7 +115,6 @@ public class RDMService extends AbstractEntity {
         this.state = state;
     }
 
-    @JsonIgnore
     public List<String> getPropertyRights() {
         return this.propertyRights;
     }
@@ -121,13 +128,13 @@ public class RDMService extends AbstractEntity {
         return this.startedRelation;
     }
 
+    public void addStartRelation(Activity activity) {
+        startedRelation.add(activity);
+    }
+
     @JsonIgnore
     public List<Activity> getEndedRelation() {
         return this.endedRelation;
-    }
-
-    public void addStartRelation(Activity activity) {
-        startedRelation.add(activity);
     }
 
     public void addEndRelation(Activity activity) {

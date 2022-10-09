@@ -16,5 +16,5 @@ public class Endpoints {
     // RDM service REST API
     public static final String CREATE_RDM_SERVICE = "/service"; // POST
     public static final String READ_RDM_SERVICES = "/services"; // GET
-    public static final String SET_PROPERTY_RIGHTS_TO_RDM_SERVICE = "/service/{id}/rights/property/"; // PUT
+    public static final String SET_PROPERTY_RIGHTS_TO_RDM_SERVICE = "/service/{id}/rights/property"; // PUT
 }

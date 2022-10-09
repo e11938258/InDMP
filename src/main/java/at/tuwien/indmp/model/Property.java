@@ -8,8 +8,10 @@ import javax.persistence.Table;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+import com.fasterxml.jackson.annotation.JsonView;
 
 import at.tuwien.indmp.util.ModelConstants;
+import at.tuwien.indmp.util.Views;
 
 /**
  * 
@@ -25,20 +27,24 @@ public class Property extends AbstractEntity {
     @Column(name = "at_location", nullable = false)
     @Size(min = ModelConstants.PROPERTY_AT_LOCATION_MIN, max = ModelConstants.PROPERTY_AT_LOCATION_MAX)
     @Pattern(regexp = ModelConstants.PROPERTY_AT_LOCATION_REGEX)
+    @JsonView(Views.Basic.class)
     private String atLocation; // https://www.w3.org/TR/2013/REC-prov-o-20130430/#atLocation
 
     @Column(name = "specialization_of", nullable = false)
     @Size(min = ModelConstants.PROPERTY_SPECIALIZATION_OF_MIN, max = ModelConstants.PROPERTY_SPECIALIZATION_OF_MAX)
     @Pattern(regexp = ModelConstants.PROPERTY_SPECIALIZATION_OF_REGEX)
+    @JsonView(Views.Basic.class)
     private String specializationOf; // https://www.w3.org/TR/2013/REC-prov-o-20130430/#specializationOf
 
     @Column(nullable = false)
     @Size(min = ModelConstants.PROPERTY_VALUE_MIN, max = ModelConstants.PROPERTY_VALUE_MAX)
     @Pattern(regexp = ModelConstants.PROPERTY_VALUE_REGEX)
+    @JsonView(Views.Basic.class)
     private String value; // https://www.w3.org/TR/2013/REC-prov-o-20130430/#value
 
     @OneToOne
     @JoinColumn(name = "was_generated_by", referencedColumnName = "id")
+    @JsonView(Views.Basic.class)
     private Activity wasGeneratedBy; // https://www.w3.org/TR/2013/REC-prov-o-20130430/#wasGeneratedBy
 
     public Property() {

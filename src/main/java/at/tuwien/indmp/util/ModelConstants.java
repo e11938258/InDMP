@@ -2,6 +2,7 @@ package at.tuwien.indmp.util;
 
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 
 public class ModelConstants {
@@ -70,21 +71,23 @@ public class ModelConstants {
     });
 
     // Which classes can be deleted?
-    public static final List<String> REMOVABLE_CLASSES = Arrays.asList(new String[] {
-            "contact",
-            "contributor",
-            "cost",
-            "dataset",
-            "distribution",
-            "funding",
-            "grant_id",
-            "host",
-            "license",
-            "metadata",
-            "project",
-            "securityandprivacy",
-            "technicalresource",
-    });
+    public static final HashMap<String, String> REMOVABLE_CLASSES = new HashMap<String, String>() {
+        {
+            put("contact", "contact:identifier");
+            put("contributor", "contributor:identifier");
+            put("cost", "cost:title");
+            put("dataset", "dataset:identifier");
+            put("distribution", "distribution:access_url");
+            put("funding", "funding:identifier");
+            put("grant_id", "grant_id:identifier");
+            put("host", "host:url");
+            put("license", "license:license_ref");
+            put("metadata", "metadata:identifier");
+            put("project", "project:title");
+            put("securityandprivacy", "securityandprivacy:title");
+            put("technicalresource", "technicalresource:name");
+        }
+    };
 
     // ------------------------------------
     // Controlled vocabularies for maDMP

@@ -162,7 +162,13 @@ public class DMPModule {
         // Load the original modified property
         final Property originalModifiedProperty = propertyModule.findProperty(dmp.getAtLocation(""), "dmp:modified",
                 null, true);
-        final LocalDateTime originalModified = LocalDateTime.parse(originalModifiedProperty.getValue());
+
+        LocalDateTime originalModified = null;
+        if (originalModifiedProperty == null) {
+            throw new BadRequestException("Cannot find the stored modified property.");
+        } else {
+            originalModified = LocalDateTime.parse(originalModifiedProperty.getValue());
+        }
 
         // Is the old version of the DMP?
         if (dmp.getModified() == null || originalModified.isAfter(dmp.getModified())) {
@@ -279,13 +285,14 @@ public class DMPModule {
 
         // 8.3 If (the message contains the correct information and) the object is
         // removable
-        if (ModelConstants.REMOVABLE_CLASSES.contains(property.getSpecializationOf())) {
+        if (ModelConstants.REMOVABLE_CLASSES.containsKey(property.getSpecializationOf())) {
 
             // 8.3.1 The integration service finds all active properties belonging to the
             // object.
             final List<Property> objectProperties = propertyModule.findProperties(property.getAtLocation(), null, null,
                     true);
-            final Property objectIdentifier = Functions.findPropertyInList(property.getSpecializationOf(),
+            final Property objectIdentifier = Functions.findPropertyInList(
+                    ModelConstants.REMOVABLE_CLASSES.get(property.getSpecializationOf()),
                     objectProperties);
 
             // 8.3.2 If the active identifier was found

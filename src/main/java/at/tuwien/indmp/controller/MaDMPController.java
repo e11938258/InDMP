@@ -9,6 +9,7 @@ import javax.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -24,6 +25,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 
+import com.fasterxml.jackson.annotation.JsonView;
+
 import at.tuwien.indmp.exception.BadRequestException;
 import at.tuwien.indmp.exception.ForbiddenException;
 import at.tuwien.indmp.exception.NotFoundException;
@@ -36,6 +39,7 @@ import at.tuwien.indmp.modul.DMPModule;
 import at.tuwien.indmp.modul.RDMServiceModule;
 import at.tuwien.indmp.util.Endpoints;
 import at.tuwien.indmp.util.RDMServiceState;
+import at.tuwien.indmp.util.Views;
 
 @RestController
 public class MaDMPController {
@@ -68,8 +72,8 @@ public class MaDMPController {
         // 6. UC7: Validate and identify maDMP
         dmpModule.validateAndIdentifyMaDMP(dmpScheme.getDmp(), rdmService);
 
-        // 7. If maDMP is new
-        if (dmpScheme.getDmp().isNew()) {
+        // 7. If maDMP is not new
+        if (!dmpScheme.getDmp().isNew()) {
             // 7.1 The integration service checks whether the modified property is newer
             // than the last saved version.
             dmpModule.checkModifiedProperty(dmpScheme.getDmp());
@@ -100,8 +104,8 @@ public class MaDMPController {
     @RequestMapping(value = Endpoints.UPDATE_MADMP_OBJECT_IDENTIFIER, method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
     public void changeIdentifier(final Principal principal,
             @RequestParam(required = true) String identifier,
-            @RequestParam(required = true) String created,
-            @RequestParam(required = true) String modified,
+            @RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime created,
+            @RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime modified,
             @Valid @RequestBody Property property) {
 
         // 4. UC8: Identify RDM service
@@ -115,7 +119,7 @@ public class MaDMPController {
         dmpModule.validateAndIdentifyMaDMP(dmp, rdmService);
 
         // 7. If maDMP is new
-        if (!dmp.isNew()) {
+        if (dmp.isNew()) {
             // 7.1 The integration service returns an error message to the RDM service and
             // terminates the process.
             throw new NotFoundException("It is not possible to change the identifier for the new maDMP.");
@@ -155,8 +159,8 @@ public class MaDMPController {
     @RequestMapping(value = Endpoints.REMOVE_MADMP_OBJECT, method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
     public void deleteInstance(Principal principal,
             @RequestParam(required = true) String identifier,
-            @RequestParam(required = true) String created,
-            @RequestParam(required = true) String modified,
+            @RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime created,
+            @RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime modified,
             @Valid @RequestBody Property property) {
 
         // 4. UC8: Identify RDM service
@@ -170,7 +174,7 @@ public class MaDMPController {
         dmpModule.validateAndIdentifyMaDMP(dmp, rdmService);
 
         // 7. If maDMP is new
-        if (!dmp.isNew()) {
+        if (dmp.isNew()) {
             // 7.1 The integration service returns an error message to the RDM service and
             // terminates the process.
             throw new NotFoundException("It is not possible to remove the object for the new maDMP.");
@@ -212,8 +216,8 @@ public class MaDMPController {
     @RequestMapping(value = Endpoints.GET_MADMP, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
     public DMPScheme getMaDMP(Principal principal,
             @RequestParam(required = true) String identifier,
-            @RequestParam(required = true) String created,
-            @RequestParam(required = false) String version) {
+            @RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime created,
+            @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime version) {
 
         // 3. UC8: Identify RDM service
         final RDMService rdmService = rdmServiceModule.findByAccessRights(principal.getName());
@@ -226,7 +230,7 @@ public class MaDMPController {
         dmpModule.validateAndIdentifyMaDMP(dmp, rdmService);
 
         // 6. If maDMP is new
-        if (!dmp.isNew()) {
+        if (dmp.isNew()) {
             // 6.1 The integration service returns an error message to the RDM service and
             // terminates the process.
             throw new NotFoundException("It is not possible to get the maDMP for the new one.");
@@ -250,9 +254,10 @@ public class MaDMPController {
      */
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(value = Endpoints.GET_PROVENANCE_INFORMATION, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @JsonView(Views.Basic.class)
     public List<Property> getProvenanceInformation(Principal principal,
             @RequestParam(required = true) String identifier,
-            @RequestParam(required = true) String created,
+            @RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime created,
             @RequestParam(required = true) String specializationOf) {
 
         // 3. UC8: Identify RDM service
@@ -301,7 +306,7 @@ public class MaDMPController {
                     final HttpEntity<DMPScheme> request = new HttpEntity<>(dmpScheme, headers);
                     final RestTemplate restTemplate = new RestTemplate();
                     restTemplate.exchange(service.getEndpointURL(), HttpMethod.PUT, request, String.class);
-                    log.debug("Sending a new version of maDMP to " + service.getEndpointURL());
+                    log.info("Sending a new version of maDMP to " + service.getEndpointURL());
 
                     // 3.3.1 If the service RDM state is unavailable
                     if (service.getState().equals(RDMServiceState.UNAVAILABLE)) {
@@ -324,6 +329,12 @@ public class MaDMPController {
                     // unavailable
                     rdmServiceModule.setState(service, RDMServiceState.UNAVAILABLE);
                 }
+            } else if (service.getState().equals(RDMServiceState.UNAVAILABLE) ||
+                    service.getState().equals(RDMServiceState.UNSYNCHRONIZED)) {
+                // 4. If the RDM service that sent the change is unsynchronized or unavailable
+
+                // 4.1 UC10 Synchronize all maDMPs
+                synchronizeAllMaDMP(service);
             }
         }
     }
@@ -336,6 +347,8 @@ public class MaDMPController {
      */
     @Async
     private void synchronizeAllMaDMP(RDMService rdmService) {
+        log.info("Starting with the synchronization all maDMPs for the RDM service " + rdmService.getTitle());
+
         // 1. The integration service loads all maDMP identifiers.
         final List<Property> identifiers = dmpModule.getAllMaDMPs();
 
@@ -357,7 +370,7 @@ public class MaDMPController {
                 final HttpEntity<DMPScheme> request = new HttpEntity<>(dmpScheme, headers);
                 final RestTemplate restTemplate = new RestTemplate();
                 restTemplate.exchange(rdmService.getEndpointURL(), HttpMethod.PUT, request, String.class);
-                log.debug("Sending a new version of maDMP to " + rdmService.getEndpointURL());
+                log.info("Sending a new version of maDMP to " + rdmService.getEndpointURL());
             } catch (RestClientException ex) {
                 // 2.3 If the RDM service is not available
                 log.error("Error when sending maDMP to service: " + ex.getMessage());

@@ -14,8 +14,10 @@ import javax.validation.constraints.NotNull;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonView;
 
 import at.tuwien.indmp.util.ModelConstants;
+import at.tuwien.indmp.util.Views;
 
 /**
  * 
@@ -31,10 +33,12 @@ public class Activity extends AbstractEntity {
     @Column(name = "started_at_time", nullable = false)
     @NotNull
     @JsonFormat(pattern = ModelConstants.DATE_TIME_FORMAT_ISO_8601)
+    @JsonView(Views.Basic.class)
     private Timestamp startedAtTime; // https://www.w3.org/TR/2013/REC-prov-o-20130430/#startedAtTime
 
     @Column(name = "ended_at_time")
     @JsonFormat(pattern = ModelConstants.DATE_TIME_FORMAT_ISO_8601)
+    @JsonView(Views.Basic.class)
     private Timestamp endedAtTime; // https://www.w3.org/TR/2013/REC-prov-o-20130430/#endedAtTime
 
     @OneToOne(mappedBy = "wasGeneratedBy")
@@ -44,10 +48,12 @@ public class Activity extends AbstractEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="was_started_by", nullable = false)
     @NotNull
+    @JsonView(Views.Basic.class)
     private RDMService wasStartedBy; // https://www.w3.org/TR/2013/REC-prov-o-20130430/#wasStartedBy 
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="was_ended_by")
+    @JsonView(Views.Basic.class)
     private RDMService wasEndedBy; // https://www.w3.org/TR/2013/REC-prov-o-20130430/#wasEndedBy
 
     public Activity() {

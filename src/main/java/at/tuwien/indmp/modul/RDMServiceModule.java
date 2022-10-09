@@ -50,6 +50,7 @@ public class RDMServiceModule {
      * @param id
      * @return
      */
+    @Transactional
     public RDMService find(Long id) {
         Objects.requireNonNull(id);
         return rdmServiceDao.find(id);
@@ -94,6 +95,7 @@ public class RDMServiceModule {
      * Update the RDM service
      * 
      */
+    @Transactional
     public void update(RDMService rdmService) {
         Objects.requireNonNull(rdmService);
         rdmServiceDao.update(rdmService);
@@ -105,6 +107,7 @@ public class RDMServiceModule {
      * 
      * @param state
      */
+    @Transactional
     public void setState(RDMService rdmService, RDMServiceState state) {
         Objects.requireNonNull(rdmService);
         Objects.requireNonNull(state);

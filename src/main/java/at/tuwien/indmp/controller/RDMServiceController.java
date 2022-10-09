@@ -7,6 +7,7 @@ import javax.validation.Valid;
 import at.tuwien.indmp.model.RDMService;
 import at.tuwien.indmp.modul.RDMServiceModule;
 import at.tuwien.indmp.util.Endpoints;
+import at.tuwien.indmp.util.Views;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -17,6 +18,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
+
+import com.fasterxml.jackson.annotation.JsonView;
 
 @RestController
 public class RDMServiceController {
@@ -46,6 +49,7 @@ public class RDMServiceController {
      */
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(value = Endpoints.READ_RDM_SERVICES, method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
+    @JsonView(Views.Extended.class)
     public List<RDMService> readRdmServices() {
         return rdmServiceModule.getRDMServices(false);
     }

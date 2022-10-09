@@ -59,7 +59,7 @@ public class PropertyModule {
         // Update the RDM service
         rdmServiceDao.update(rdmService);
 
-        log.debug("Persisting a new property: " + property.toString());
+        log.info("Persisting a new property: " + property.toString());
     }
 
     /**
@@ -155,7 +155,7 @@ public class PropertyModule {
         Objects.requireNonNull(rdmService, "RDM service is null.");
 
         // Find the current property record
-        final Property currentProperty = findProperty(property.getAtLocation(), property.getSpecializationOf(), null, false);
+        final Property currentProperty = findProperty(property.getAtLocation(), property.getSpecializationOf(), null, true);
 
         // If the property exists
         if (currentProperty != null) {
@@ -193,7 +193,7 @@ public class PropertyModule {
         for (final Property property : properties) {
             property.setAtLocation(property.getAtLocation().replace(originalAtLocation, newAtLocation));
             propertyDao.update(property);
-            log.debug("Changing the location for " + property.toString());
+            log.info("Changing the location for " + property.toString());
         }
     }
 

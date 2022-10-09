@@ -73,26 +73,6 @@ public class DMP extends AbstractClassObject {
         this.dmp_id = dmp_id;
     }
 
-    /**
-     * 
-     * Mandatory maDMP properties
-     * 
-     * @param created
-     * @param modified
-     * @param dmp_id
-     */
-    public DMP(String created, String modified, DMP_id dmp_id) {
-        this.created = LocalDateTime.parse(created);
-        this.modified = LocalDateTime.parse(modified);
-        this.dmp_id = dmp_id;
-    }
-
-    public DMP(String created, LocalDateTime modified, DMP_id dmp_id) {
-        this.created = LocalDateTime.parse(created);
-        this.modified = modified;
-        this.dmp_id = dmp_id;
-    }
-
     public LocalDateTime getCreated() {
         return this.created;
     }
