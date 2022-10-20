@@ -68,51 +68,54 @@ public class DMPModule {
     public void validateAndIdentifyMaDMP(@Valid DMP dmp, RDMService rdmService) {
         // 1. The integration service checks whether the maDMP contains the mandatory
         // properties.
+        // 2. If the maDMP does not contain a mandatory properties
+        // 2.1 The integration service returns an error message to the RDM service and
+        // terminates the process.
         checkMinimalDMP(dmp);
 
-        // 2. If the modified property is future
+        // 3. If the modified property is future
         if (dmp.getModified().isAfter(LocalDateTime.now())) {
-            // 2.1 The integration service returns an error message to the RDM service and
+            // 3.1 The integration service returns an error message to the RDM service and
             // terminates the process
             log.error("The wrong modified property.");
             throw new BadRequestException("The wrong modified property.");
         }
 
-        // 3. If the property created is not the same as modified
+        // 4. If the property created is not the same as modified
         if (!dmp.isNew()) {
-            // 3.1 The integration service tries to identify the maDMP using the property
+            // 4.1 The integration service tries to identify the maDMP using the property
             // created.
             List<Property> creationProperties = findCreationProperties(dmp.getCreatedInString());
 
-            // 3.2 If maDMP was identified
+            // 4.2 If maDMP was identified
             if (creationProperties.size() > 0) {
 
-                // 3.2.1 The integration service tries to identify the maDMP using the
+                // 4.2.1 The integration service tries to identify the maDMP using the
                 // identifier
                 final Property madmpIdentifier = findMaDMPIdentifier(dmp.getDmp_id().getIdentifier());
 
-                // 3.2.2 If maDMP was not identified by the identifier
+                // 4.2.2 If maDMP was not identified by the identifier
                 if (madmpIdentifier == null) {
 
-                    // 3.2.2.1 If identification only by the property created is not allowed
+                    // 4.2.2.1 If identification only by the property created is not allowed
                     if (!byCreationOnly) {
-                        // 3.2.2.1.1 The integration service returns an error message to the RDM service
+                        // 4.2.2.1.1 The integration service returns an error message to the RDM service
                         // and terminates the process.
                         log.error("DMP not found by identifier.");
                         throw new NotFoundException("DMP not found by identifier.");
                     } else {
-                        // 3.2.2.2 Else
+                        // 4.2.2.2 Else
 
-                        // 3.2.2.2.1 If multiple values of the created property were found
+                        // 4.2.2.2.1 If multiple values of the created property were found
                         if (creationProperties.size() > 1) {
-                            // 3.2.2.2.1.1 The integration service returns an error message to the RDM
+                            // 4.2.2.2.1.1 The integration service returns an error message to the RDM
                             // service and terminates the process.
                             log.error("Multiple creation dates");
                             throw new NotFoundException("Multiple creation dates");
                         } else {
-                            // 3.2.2.2.2 Else
+                            // 4.2.2.2.2 Else
 
-                            // 3.2.2.2.2.1 The integration service corrects the maDMP identifier in storage.
+                            // 4.2.2.2.2.1 The integration service corrects the maDMP identifier in storage.
                             final Property newIdentifier = Functions.propertyMaker(dmp,
                                     creationProperties.get(0).getAtLocation(), "dmp:identifier",
                                     dmp.getObjectIdentifier());
@@ -123,24 +126,24 @@ public class DMPModule {
                     }
                 }
             } else {
-                // 3.3 Else
+                // 4.3 Else
 
-                // 3.3.1 If identification only by identifier is not allowed.
+                // 4.3.1 If identification only by identifier is not allowed.
                 if (!byIdentifierOnly) {
-                    // 3.3.1.1 The integration service returns an error message to the RDM service
+                    // 4.3.1.1 The integration service returns an error message to the RDM service
                     // and terminates the process
                     log.error("DMP not found by creation date.");
                     throw new NotFoundException("DMP not found by creation date.");
                 } else {
-                    // 3.3.2 Else
+                    // 4.3.2 Else
 
-                    // 3.3.2.1 The integration service tries to identify the maDMP using an
+                    // 4.3.2.1 The integration service tries to identify the maDMP using an
                     // identifier.
                     final Property madmpIdentifier = findMaDMPIdentifier(dmp.getDmp_id().getIdentifier());
 
-                    // 3.3.2.2 If maDMP was not identified
+                    // 4.3.2.2 If maDMP was not identified
                     if (madmpIdentifier == null) {
-                        // 3.3.2.2.1 The integration service returns an error message to the RDM service
+                        // 4.3.2.2.1 The integration service returns an error message to the RDM service
                         // and terminates the process.
                         log.error("DMP not found by either identifier or creation date.");
                         throw new NotFoundException("DMP not found by either identifier or creation date.");

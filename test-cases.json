@@ -1176,7 +1176,7 @@
 					"response": []
 				},
 				{
-					"name": "5. Delete the object with the wrong class identifier.",
+					"name": "5. Delete the object with the wrong identifier.",
 					"event": [
 						{
 							"listen": "test",

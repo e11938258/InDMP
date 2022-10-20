@@ -144,43 +144,43 @@ In the following table you can see the individual functional test cases with ste
 
 | Test case | Description | Steps | Expected code | Expected body |
 | - | - | - | - | - |
-| FTC1 | Testing the operation to modify maDMP information | 1. Send a minimal maDMP with the incomplete body. | 400 |  |
+| FTC1 | Test the use case to modify the maDMP information for proper functionality. | 1. Send a minimal maDMP with the incomplete body. | 400 |  |
 |  |  | 2. Send a new minimal maDMP with wrong timing. | 404 |  |
 |  |  | 3. Send a new minimal maDMP. | 200 |  |
 |  |  | 4. Send a new minimal maDMP again with the same identifier. | 409 |  |
 |  |  | 5. Send the minimal maDMP with the invalid modified property. | 409 |  |
 |  |  | 6. Send a long maDMP with the same identifier. | 200 |  |
-| FTC2 | Testing the operation to get the maDMP | 1. Send a new minimal maDMP. | 200 |  |
+| FTC2 | Test the use case to get the maDMP for proper functionality. | 1. Send a new minimal maDMP. | 200 |  |
 |  |  | 2. Get the maDMP with incomplete parameters. | 400 |  |
 |  |  | 3. Get the maDMP with wrong parameters. | 400 |  |
 |  |  | 4. Get the maDMP with wrong identifiers. | 404 |  |
 |  |  | 5. Get the current version of the maDMP. | 200 | n. 1 |
-| FTC3 | Testing the operation to modify the maDMP object identifier | 1. Send a new maDMP with the dataset. | 200 |  |
+| FTC3 | Test the use case to modify the maDMP object identifier for proper functionality. | 1. Send a new maDMP with the dataset. | 200 |  |
 |  |  | 2. Update the identifier with incomplete parameters. | 400 |  |
 |  |  | 3. Update the identifier with the incomplete body. | 400 |  |
 |  |  | 4. Update the identifier with the wrong specialization. | 403 |  |
 |  |  | 5. Update the identifier of the dataset.| 200 |  |
 |  |  | 6. Get the current version of the maDMP and verify the modification. | 200 | n. 2 |
-| FTC4 | Testing the operation to remove the maDMP object | 1. Send a new maDMP with the dataset. | 200 |  |
+| FTC4 | Test the use case to remove the maDMP object for proper functionality. | 1. Send a new maDMP with the dataset. | 200 |  |
 |  |  | 2. Delete the object with incomplete parameters. | 400 |  |
 |  |  | 3. Delete the object without the body. | 400 |  |
 |  |  | 4. Delete the object with the wrong identifier. | 404 |  |
-|  |  | 5. Delete the object with the wrong class identifier. | 400 |  |
+|  |  | 5. Delete the object with the wrong identifier. | 400 |  |
 |  |  | 6. Delete the object. | 200 |  |
 |  |  | 7. Get the current version of the maDMP and verify the deletions. | 200 | n. 3 |
-| FTC5 | Testing the operation to get provenance information | 1. Send a new maDMP with dataset. | 200 |  |
+| FTC5 | Test the use case to get provenance information for proper functionality. | 1. Send a new maDMP with dataset. | 200 |  |
 |  |  | 2. Update the identifier of the dataset. | 200 |  |
 |  |  | 3. Get identifier history with wrong parameters. | 400 |  |
 |  |  | 4. Get identifier history of the dataset.| 200 | n. 4 |
-| FTC6 | Testing the RDM service modification rights | 1. Send a new minimal maDMP. | 200 |  |
+| FTC6 | Test the use case to set RDM service rights for proper functionality. | 1. Send a new minimal maDMP. | 200 |  |
 |  |  | 2. Send a new maDMP out of the modification scope. | 200 |  |
 |  |  | 3. Get the current version of the maDMP and verify the modification scope. | 200 | n. 5 |
-| FTC7 | Simulation of production env. 1 | 1. Send a new minimal maDMP. | 200 |  |
+| FTC7 | Simulate common situations that may happen in a production environment. | 1. Send a new minimal maDMP. | 200 |  |
 |  |  | 2. Update the maDMP with a long body. | 200 |  |
 |  |  | 3. Delete the dataset. | 200 |  |
 |  |  | 4. Update the maDMP with the deleted dataset. | 200 |  |
 |  |  | 5. Update the maDMP with the old modified property. | 409 |  |
-| FTC8 | Simulation of production env. 2 | 1. Send a new long maDMP with 3 datasets. | 200 |  |
+| FTC8 | Simulate common situations that may happen in a production environment. | 1. Send a new long maDMP with 3 datasets. | 200 |  |
 |  |  | 2. Delete the dataset 0. | 200 |  |
 |  |  | 3. Delete the dataset 1. | 200 |  |
 |  |  | 4. Update the identifier of the dataset 2 to 0. | 200 |  |
