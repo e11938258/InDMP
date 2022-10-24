@@ -64,11 +64,12 @@ public class RDMServiceController {
     @ResponseStatus(HttpStatus.OK)
     @RequestMapping(value = Endpoints.SET_PROPERTY_RIGHTS_TO_RDM_SERVICE, method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
     public void setPropertyRightsToRDMService(@PathVariable("id") Long id, @Valid @RequestBody List<String> propertyRights) {
-        // 2. Identify the RDM service by the identifier.
+        // 1. The integration service tries to identify the RDM service by the identifier.
         final RDMService rdmService = rdmServiceModule.find(id);
         
-        // 3., 3.1 The integration service updates the maDMP property rights to the specific RDM service.
+        // 2., 2.1 The integration service updates the maDMP property rights to the specific RDM service.
         rdmService.setPropertyRights(propertyRights);
         rdmServiceModule.update(rdmService);
+        // 2.2 The integration service return a response about a successful change.
     }
 }

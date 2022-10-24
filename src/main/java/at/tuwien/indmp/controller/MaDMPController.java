@@ -66,27 +66,27 @@ public class MaDMPController {
     @RequestMapping(value = Endpoints.MODIFY_MADMP_INFORMATION, method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
     public void updateMaDMP(Principal principal, @Valid @RequestBody DMPScheme dmpScheme) {
 
-        // 5. UC8: Identify RDM service
+        // 1. UC8: Identify RDM service
         final RDMService rdmService = rdmServiceModule.findByAccessRights(principal.getName());
 
-        // 6. UC7: Validate and identify maDMP
+        // 2. UC7: Validate and identify maDMP
         dmpModule.validateAndIdentifyMaDMP(dmpScheme.getDmp(), rdmService);
 
-        // 7. If maDMP is not new
+        // 3. If maDMP is not new
         if (!dmpScheme.getDmp().isNew()) {
-            // 7.1 The integration service checks whether the modified property is newer
+            // 3.1 The integration service checks whether the modified property is newer
             // than the last saved version.
             dmpModule.checkModifiedProperty(dmpScheme.getDmp());
 
-            // 7.2
+            // 3.2
             dmpModule.update(dmpScheme.getDmp(), rdmService);
         } else {
-            // 8. Else
-            // 8.1 The integration service stores all properties from the received maDMP.
+            // 4. Else
+            // 4.1 The integration service stores all properties from the received maDMP.
             dmpModule.create(dmpScheme.getDmp(), rdmService);
         }
 
-        // 9. UC9: Synchronize changes with RDM services
+        // 5. UC9: Synchronize changes with RDM services
         sendMaDMPToAllActiveServices(dmpScheme.getDmp(), rdmService);
     }
 
@@ -108,38 +108,38 @@ public class MaDMPController {
             @RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime modified,
             @Valid @RequestBody Property property) {
 
-        // 4. UC8: Identify RDM service
+        // 1. UC8: Identify RDM service
         final RDMService rdmService = rdmServiceModule.findByAccessRights(principal.getName());
 
-        // 5. The integration service creates a maDMP representation with the received
+        // 2. The integration service creates a maDMP representation with the received
         // values
         final DMP dmp = new DMP(created, modified, new DMP_id(identifier));
 
-        // 6. UC7: Validate and identify maDMP
+        // 3. UC7: Validate and identify maDMP
         dmpModule.validateAndIdentifyMaDMP(dmp, rdmService);
 
-        // 7. If maDMP is new
+        // 4. If maDMP is new
         if (dmp.isNew()) {
-            // 7.1 The integration service returns an error message to the RDM service and
+            // 4.1 The integration service returns an error message to the RDM service and
             // terminates the process.
             throw new NotFoundException("It is not possible to change the identifier for the new maDMP.");
         } else {
-            // 8. Else
-            // 8.1 The integration service checks whether the modified property is newer
+            // 5. Else
+            // 5.1 The integration service checks whether the modified property is newer
             // than the last saved version.
             dmpModule.checkModifiedProperty(dmp);
 
-            // 8.2 The integration service checks whether the message contains all the
+            // 5.2 The integration service checks whether the message contains all the
             // necessary and valid information for a successful identifier change.
             if (property == null || property.getAtLocation() == null || property.getSpecializationOf() == null
                     || property.getValue() == null) {
                 throw new BadRequestException("Incomplete input data.");
             }
 
-            // 8.3
+            // 5.3
             dmpModule.changeObjectIdentifier(dmp, property, rdmService);
 
-            // 8.4 UC9: Synchronize changes with RDM services
+            // 5.4 UC9: Synchronize changes with RDM services
             sendMaDMPToAllActiveServices(dmp, rdmService);
         }
 
@@ -163,28 +163,28 @@ public class MaDMPController {
             @RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime modified,
             @Valid @RequestBody Property property) {
 
-        // 4. UC8: Identify RDM service
+        // 1. UC8: Identify RDM service
         final RDMService rdmService = rdmServiceModule.findByAccessRights(principal.getName());
 
-        // 5. The integration service creates a maDMP representation with the received
+        // 2. The integration service creates a maDMP representation with the received
         // values
         final DMP dmp = new DMP(created, modified, new DMP_id(identifier));
 
-        // 6. UC7: Validate and identify maDMP
+        // 3. UC7: Validate and identify maDMP
         dmpModule.validateAndIdentifyMaDMP(dmp, rdmService);
 
-        // 7. If maDMP is new
+        // 4. If maDMP is new
         if (dmp.isNew()) {
-            // 7.1 The integration service returns an error message to the RDM service and
+            // 4.1 The integration service returns an error message to the RDM service and
             // terminates the process.
             throw new NotFoundException("It is not possible to remove the object for the new maDMP.");
         } else {
-            // 8. Else
-            // 8.1 The integration service checks whether the modified property is newer
+            // 5. Else
+            // 5.1 The integration service checks whether the modified property is newer
             // than the last saved version.
             dmpModule.checkModifiedProperty(dmp);
 
-            // 8.2 The integration service checks whether the message contains all the
+            // 5.2 The integration service checks whether the message contains all the
             // necessary and valid information to delete the object successfully.
             if (property == null || property.getAtLocation() == null ||
                     property.getSpecializationOf() == null) {
@@ -194,10 +194,10 @@ public class MaDMPController {
                         "Invalid property: cannot find atLocation in maDMP:" + property.getAtLocation());
             }
 
-            // 8.3
+            // 5.3
             dmpModule.deleteInstance(dmp, property, rdmService);
 
-            // 8.4 UC9: Synchronize changes with RDM services
+            // 5.4 UC9: Synchronize changes with RDM services
             sendMaDMPToAllActiveServices(dmp, rdmService);
         }
     }
@@ -219,25 +219,26 @@ public class MaDMPController {
             @RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime created,
             @RequestParam(required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime version) {
 
-        // 3. UC8: Identify RDM service
+        // 1. UC8: Identify RDM service
         final RDMService rdmService = rdmServiceModule.findByAccessRights(principal.getName());
 
-        // 4. The integration service creates a maDMP representation with the received
+        // 2. The integration service creates a maDMP representation with the received
         // values. The modified property is set to the current time
         final DMP dmp = new DMP(created, LocalDateTime.now(), new DMP_id(identifier));
 
-        // 5. UC7: Validate and identify maDMP
+        // 3. UC7: Validate and identify maDMP
         dmpModule.validateAndIdentifyMaDMP(dmp, rdmService);
 
-        // 6. If maDMP is new
+        // 4. If maDMP is new
         if (dmp.isNew()) {
-            // 6.1 The integration service returns an error message to the RDM service and
+            // 4.1 The integration service returns an error message to the RDM service and
             // terminates the process.
             throw new NotFoundException("It is not possible to get the maDMP for the new one.");
         } else {
-            // 7.1 The integration service loads the properties based on the defined time.
+            // 5.1 The integration service loads the properties based on the defined time.
             // If the parameter is null, it returns the current maDMP
             // TODO: Support older version of the maDMP based on the parameter
+            // 5.2 The integration service returns a response to the RDM service.
             return dmpModule.loadWholeDMP(dmp);
         }
     }
@@ -260,18 +261,19 @@ public class MaDMPController {
             @RequestParam(required = true) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME) LocalDateTime created,
             @RequestParam(required = true) String specializationOf) {
 
-        // 3. UC8: Identify RDM service
+        // 1. UC8: Identify RDM service
         final RDMService rdmService = rdmServiceModule.findByAccessRights(principal.getName());
 
-        // 4. The integration service creates a maDMP representation with the received
+        // 2. The integration service creates a maDMP representation with the received
         // values. The modified property is set to the current time
         final DMP dmp = new DMP(created, LocalDateTime.now(), new DMP_id(identifier));
 
-        // 5. UC7: Validate and identify maDMP
+        // 3. UC7: Validate and identify maDMP
         dmpModule.validateAndIdentifyMaDMP(dmp, rdmService);
 
-        // 6. The integration service loads all stored values for a given property of
+        // 4. The integration service loads all stored values for a given property of
         // the particular maDMP.
+        // 5. The integration service returns a response to the RDM service.
         return dmpModule.getProvenanceInformation(dmp, new Property(specializationOf));
     }
 

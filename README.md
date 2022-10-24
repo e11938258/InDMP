@@ -14,7 +14,7 @@ The software was developed by Filip Zoubek (https://orcid.org/0000-0003-1269-266
 
 ## General info
 
-The integrated machine-actionable Data Management plan (InDMP) serves as a proof-of-concept for the thesis Framework for integration of Reasearch Data Management (RDM) services using machine-actionable Data Management Plan (maDMPs). This service allows to integrate RDM services using maDMPs to exchange information through the REST API, manage property modification of each service as well as to track the evolution of DMPs and provenance of information. The repository contains the mentioned service as well as the JSON file in which the test cases are stored ready for uploading to the Postman application. You can see the structure of the repository in the following listing:
+The Integrated DMP (InDMP) application serves as a proof-of-concept for the thesis Service for integration of Reasearch Data Management (RDM) services using machine-actionable Data Management Plan (maDMPs). The application allows to integrate RDM services using maDMPs to exchange information through the REST API, manage property modification of each service as well as to track the evolution of DMPs and provenance of information. The repository contains the mentioned application as well as the JSON file in which the test cases are stored ready for uploading to the Postman application. You can see the structure of the repository in the following listing:
 
 ```
 indmp-app
@@ -25,15 +25,15 @@ indmp-app
 │   test-cases.json
 ```
 
-There is also API documentation of the InDMP service available on the [SwaggerHub](https://app.swaggerhub.com/apis/e11938258/InDMP/1.0.0#/).
+There is API documentation of the InDMP application available on the [SwaggerHub](https://app.swaggerhub.com/apis/e11938258/InDMP/1.0.0#/).
 
 ## Technologies
 
-The service was developed using Spring Boot in Java programming language version 11.0.13. The authorization between InDMP and Postman (client) is done using the OAuth2 protocol, where [Keycloak](https://www.keycloak.org/) 6.0.1 was used as the authorization server. The InDMP service also uses the PostgreSQL 10.19 tool as data storage. Tests were performed operating system on Ubuntu 18.04.6.
+The application was developed using Spring Boot in Java programming language version 11.0.13. The authorization between InDMP and Postman (client) is done using the OAuth2 protocol, where [Keycloak](https://www.keycloak.org/) 6.0.1 was used as the authorization server. The InDMP application also uses the PostgreSQL 10.19 tool as data storage. Tests were performed operating system on Ubuntu 18.04.6.
 
 ## Setup
 
-The InDMP service has configuration file in /src/main/resources/application.properties. By default, all applications are configured that can run on the same machine with ports:
+The InDMP application has configuration file in /src/main/resources/application.properties. By default, all applications are configured that can run on the same machine with ports:
 
 | Address| Service name |
 | - | - |
@@ -43,7 +43,7 @@ The InDMP service has configuration file in /src/main/resources/application.prop
 
 ### Keycloak
 
-Every request has to be authorized before communicating with the service using the OAuth2 protocol. This is done using the [Keycloak](https://www.keycloak.org/) application, which needs to be set up properly after installation.
+Every request has to be authorized before communicating with the application using the OAuth2 protocol. This is done using the [Keycloak](https://www.keycloak.org/) application, which needs to be set up properly after installation.
 
 NOTE: The default port of the application is 8080, it is necessary to change it to port 8090 before starting the application, for example using the input argument:
 
@@ -70,11 +70,11 @@ You need to perform the following steps:
 
 That's it! 
 
-When creating users, each of them will get a client id, which the InDMP service will use to identify the service.
+When creating users, each of them will get a client id, which the InDMP application will use to identify the RDM service.
 
 ### PostgreSQL
 
-The InDMP service uses the PostgreSQL 10 database system. After installation and logging into this system, you have to create a new user with database and grant neccessary privileges. Therefore, you need to perform the following actions:
+The InDMP application uses the PostgreSQL 10 database system. After installation and logging into this system, you have to create a new user with database and grant neccessary privileges. Therefore, you need to perform the following actions:
 
 1. Create a new user:
 
@@ -104,11 +104,11 @@ That's it! By default, InDMP uses the following configuration:
 | Username | indmp |
 | Password | indmp123 |
 
-NOTE: The InDMP service deletes the content of the tables each time it starts by default. If you want to change it, you need to modify the parameter spring.jpa.hibernate.ddl-auto in the service configuration from create-drop to update.
+NOTE: The InDMP application deletes the content of the tables each time it starts by default. If you want to change it, you need to modify the parameter spring.jpa.hibernate.ddl-auto in the application configuration from create-drop to update.
 
 ## How to run
 
-If PostgreSQL and Keycloak are running and are properly configured, you first build the InDMP service using the following command in terminal:
+If PostgreSQL and Keycloak are running and are properly configured, you first build the InDMP application using the following command in terminal:
 
 ```console
 > mvn clean package
@@ -126,11 +126,11 @@ InDMP in its current version cannot retrieve older versions of maDMP and also ha
 
 ## Test cases
 
-To verify the functionality of the InDMP service, a set of functional and non-functional test cases were created to model common situations in DMP development during the research. 
+To verify the functionality of the InDMP application, a set of functional and non-functional test cases were created to model common situations in DMP development during the research. 
 
 If you have Postman installed, import the test cases from the repository into your environment via the File menu. You will need to obtain a token from the authorization server before running the test cases. It can be get at the collection level, where the necessary information is preloaded. There are also general variables that can be changed at will as needed. Test case 6 contains one step/request (the second one) which has a different authorization due to the modification scope test. Therefore it is necessary to generate a new token, which can be obtained at the level of this request.
 
-Each new run of the service you have to send at least two requests in the INIT folder that register services - dmp tool and data repository - and two requests that set them property rights. However, first you need to change the values of accessRights, to the correct client id from the application Keycloak, and endpointURL which should point to the endpoint where InDMP will send the new maDMP information after each modification. For testing purposes, this can be done using the [Webhook.site](https://webhook.site/) application, which will generate an API endpoint to receive requests. You just need one for both services. Test cases can also run all at once within the entire collection.
+Each new run of the application you have to send at least two requests in the INIT folder that register services - dmp tool and data repository - and two requests that set them property rights. However, first you need to change the values of accessRights, to the correct client id from the application Keycloak, and endpointURL which should point to the endpoint where InDMP will send the new maDMP information after each modification. For testing purposes, this can be done using the [Webhook.site](https://webhook.site/) application, which will generate an API endpoint to receive requests. You just need one for both services. Test cases can also run all at once within the entire collection.
 
 ### Modification scope of services
 
@@ -376,4 +376,4 @@ In the following table you can see the individual functional test cases with ste
 
 ## License
 
-InDMP is licensed under the [MIT license](https://github.com/e11938258/InDMP/blob/main/LICENSE).
+The InDMP application is licensed under the [MIT license](https://github.com/e11938258/InDMP/blob/main/LICENSE).

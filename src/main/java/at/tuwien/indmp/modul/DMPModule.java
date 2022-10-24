@@ -226,29 +226,29 @@ public class DMPModule {
         Objects.requireNonNull(property, "Identifier is null.");
         Objects.requireNonNull(rdmService, "Service is null.");
 
-        // 8.3 If (the message contains the correct information and) the identifier is
+        // 5.3 If (the message contains the correct information and) the identifier is
         // changeable
         if (ModelConstants.IDENTIFIER_CHANGEABLE_CLASSES.contains(property.getSpecializationOf())) {
 
-            // 8.3.1 The integration service checks whether the RDM service has the right to
+            // 5.3.1 The integration service checks whether the RDM service has the right to
             // change this property (identifier).
-            // 8.3.2 If the RDM service has the right to change the property
+            // 5.3.2 If the RDM service has the right to change the property
             if (rdmService.getPropertyRights().contains(property.getSpecializationOf())) {
 
-                // 8.3.2.1 The integration service finds the stored identifier.
+                // 5.3.2.1 The integration service finds the stored identifier.
                 final Property currentIdentifier = propertyModule.findProperty(property.getAtLocation(),
                         property.getSpecializationOf(), null, true);
 
-                // 8.3.2.2 If the identifier was found and the values are different
+                // 5.3.2.2 If the identifier was found and the values are different
                 if (currentIdentifier != null && !currentIdentifier.getValue().equals(property.getValue())) {
 
-                    // 8.3.2.2.1 The integration service terminates the previous value of the
+                    // 5.3.2.2.1 The integration service terminates the previous value of the
                     // property modified and creates a new record with the received value
                     final List<Property> properties = dmp.getProperties(dmp, "", rdmService);
                     final Property modifiedProperty = Functions.findPropertyInList("dmp:modified", properties);
                     propertyModule.terminateAndCreateProperty(modifiedProperty, rdmService);
 
-                    // 8.3.2.2.2 The integration service terminates the previous value of the
+                    // 5.3.2.2.2 The integration service terminates the previous value of the
                     // identifier and creates a new record with the received value
                     final String oldLocation = currentIdentifier.getAtLocation();
                     final String location = oldLocation.replace(currentIdentifier.getValue(), property.getValue());
@@ -256,7 +256,7 @@ public class DMPModule {
                             currentIdentifier.getSpecializationOf(), property.getValue());
                     propertyModule.terminateAndCreateProperty(newIdentifier, rdmService);
 
-                    // 8.3.2.2.3 The integration service changes all references to this identifier
+                    // 5.3.2.2.3 The integration service changes all references to this identifier
                     propertyModule.changeNestedProperties(oldLocation, location);
                 } else {
                     log.error("Cannot find identifier at location " + property.getAtLocation());
@@ -286,11 +286,11 @@ public class DMPModule {
         Objects.requireNonNull(property, "Identifier is null.");
         Objects.requireNonNull(rdmService, "Service is null.");
 
-        // 8.3 If (the message contains the correct information and) the object is
+        // 5.3 If (the message contains the correct information and) the object is
         // removable
         if (ModelConstants.REMOVABLE_CLASSES.containsKey(property.getSpecializationOf())) {
 
-            // 8.3.1 The integration service finds all active properties belonging to the
+            // 5.3.1 The integration service finds all active properties belonging to the
             // object.
             final List<Property> objectProperties = propertyModule.findProperties(property.getAtLocation(), null, null,
                     true);
@@ -298,15 +298,15 @@ public class DMPModule {
                     ModelConstants.REMOVABLE_CLASSES.get(property.getSpecializationOf()),
                     objectProperties);
 
-            // 8.3.2 If the active identifier was found
+            // 5.3.2 If the active identifier was found
             if (objectIdentifier != null) {
 
-                // 8.3.2.1 The integration service finds all active properties depending on the
+                // 5.3.2.1 The integration service finds all active properties depending on the
                 // object.
                 final List<Property> properties = propertyModule.findAllProperties(property.getAtLocation(), null,
                         true);
 
-                // 8.3.2.2 The integration service checks whether the RDM service has the right
+                // 5.3.2.2 The integration service checks whether the RDM service has the right
                 // to modify all properties of the object as well as of objects that are
                 // dependent to it
                 for (final Property p : properties) {
@@ -317,17 +317,17 @@ public class DMPModule {
                     }
                 }
 
-                // 8.3.2.3 If the RDM service has the right to remove all properties
+                // 5.3.2.3 If the RDM service has the right to remove all properties
 
-                // 8.3.2.3.1 The integration service terminates the previous value of the
+                // 5.3.2.3.1 The integration service terminates the previous value of the
                 // property modified and creates a new record with the received value.
                 final List<Property> dmpProperties = dmp.getProperties(dmp, "", rdmService);
                 final Property modifiedProperty = Functions.findPropertyInList("dmp:modified", dmpProperties);
                 propertyModule.terminateAndCreateProperty(modifiedProperty, rdmService);
 
-                // 8.3.2.3.2 The integration service terminates all properties of dependent
+                // 5.3.2.3.2 The integration service terminates all properties of dependent
                 // objects
-                // 8.3.2.3.3 The integration service terminates all properties of the object
+                // 5.3.2.3.3 The integration service terminates all properties of the object
                 propertyModule.terminateAllProperties(property.getAtLocation(), dmp.getModified(), rdmService);
 
             } else {
