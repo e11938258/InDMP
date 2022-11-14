@@ -1,4 +1,4 @@
-package at.tuwien.indmp.modul;
+package at.tuwien.indmp.module;
 
 import at.tuwien.indmp.dao.ActivityDao;
 import at.tuwien.indmp.dao.PropertyDao;

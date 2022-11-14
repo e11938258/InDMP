@@ -1,4 +1,4 @@
-package at.tuwien.indmp.modul;
+package at.tuwien.indmp.module;
 
 import java.time.LocalDateTime;
 import java.util.List;

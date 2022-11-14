@@ -11,8 +11,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 
 @Configuration
-@ComponentScan(basePackages = "at.tuwien.indmp.rest")
-public class RestConfiguration {
+@ComponentScan(basePackages = "at.tuwien.indmp.controller")
+public class ControllerConfiguration {
 
     @Bean
     public ObjectMapper objectMapper() {

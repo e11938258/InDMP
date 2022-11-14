@@ -14,7 +14,7 @@ The software was developed by Filip Zoubek (https://orcid.org/0000-0003-1269-266
 
 ## General info
 
-The Integrated DMP (InDMP) application serves as a proof-of-concept for the thesis Service for integration of Reasearch Data Management (RDM) services using machine-actionable Data Management Plan (maDMPs). The application allows to integrate RDM services using maDMPs to exchange information through the REST API, manage property modification of each service as well as to track the evolution of DMPs and provenance of information. The repository contains the mentioned application as well as the JSON file in which the test cases are stored ready for uploading to the Postman application. You can see the structure of the repository in the following listing:
+The Integrated DMP (InDMP) application serves as a proof-of-concept for the thesis Integrating RDM services using machine-actionable Data  Management Plans. The application allows to integrate RDM services using maDMPs to exchange information through the REST API, manage property modification of each service as well as to track the evolution of DMPs and provenance of information. The repository contains the mentioned application as well as the JSON file in which the test cases are stored ready for uploading to the Postman application. You can see the structure of the repository in the following listing:
 
 ```
 indmp-app

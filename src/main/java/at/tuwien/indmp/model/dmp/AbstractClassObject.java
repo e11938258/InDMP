@@ -6,7 +6,7 @@ import java.util.List;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import at.tuwien.indmp.model.RDMService;
-import at.tuwien.indmp.modul.PropertyModule;
+import at.tuwien.indmp.module.PropertyModule;
 import at.tuwien.indmp.model.Property;
 
 public abstract class AbstractClassObject extends AbstractObject {

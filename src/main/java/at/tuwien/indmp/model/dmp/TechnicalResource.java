@@ -5,7 +5,7 @@ import java.util.List;
 import javax.validation.constraints.NotNull;
 
 import at.tuwien.indmp.model.Property;
-import at.tuwien.indmp.modul.PropertyModule;
+import at.tuwien.indmp.module.PropertyModule;
 import at.tuwien.indmp.util.Functions;
 
 public class TechnicalResource extends AbstractClassObject {

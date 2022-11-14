@@ -5,7 +5,7 @@ import java.util.List;
 import javax.validation.Valid;
 
 import at.tuwien.indmp.model.RDMService;
-import at.tuwien.indmp.modul.RDMServiceModule;
+import at.tuwien.indmp.module.RDMServiceModule;
 import at.tuwien.indmp.util.Endpoints;
 import at.tuwien.indmp.util.Views;
 

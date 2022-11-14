@@ -9,7 +9,7 @@ import javax.validation.constraints.NotNull;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 import at.tuwien.indmp.model.Property;
-import at.tuwien.indmp.modul.PropertyModule;
+import at.tuwien.indmp.module.PropertyModule;
 import at.tuwien.indmp.util.ModelConstants;
 import at.tuwien.indmp.util.Functions;
 

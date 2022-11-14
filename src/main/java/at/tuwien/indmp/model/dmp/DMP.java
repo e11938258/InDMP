@@ -12,7 +12,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import at.tuwien.indmp.model.RDMService;
-import at.tuwien.indmp.modul.PropertyModule;
+import at.tuwien.indmp.module.PropertyModule;
 import at.tuwien.indmp.model.Property;
 import at.tuwien.indmp.util.ModelConstants;
 import at.tuwien.indmp.util.Functions;

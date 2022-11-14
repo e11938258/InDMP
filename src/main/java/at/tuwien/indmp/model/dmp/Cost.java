@@ -6,7 +6,7 @@ import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
 import at.tuwien.indmp.model.Property;
-import at.tuwien.indmp.modul.PropertyModule;
+import at.tuwien.indmp.module.PropertyModule;
 import at.tuwien.indmp.util.ModelConstants;
 import at.tuwien.indmp.util.Functions;
 
